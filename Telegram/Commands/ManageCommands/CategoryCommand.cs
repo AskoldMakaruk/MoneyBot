@@ -26,7 +26,7 @@ namespace MoneyBot.Telegram.Commands
             if (Message.Text == "Edit category")
             {
                 Account.Status = AccountStatus.EditCategory;
-                await Client.SendTextMessageAsync(Account.ChatId, "Select category to edit:", replyMarkup : Keyboards.Categories(Controller.GetCategories(Account.Id)));
+                await Client.SendTextMessageAsync(Account.ChatId, "Select category to edit:", replyMarkup : Keyboards.Categories(Controller.GetCategories(Account.Id), "Edit"));
 
                 return;
             }

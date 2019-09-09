@@ -16,7 +16,7 @@ namespace MoneyBot.Telegram.Commands
         public override async void Execute()
         {
             var categories = Controller.GetCategories(Account.Id);
-            await Client.SendTextMessageAsync(Account.ChatId, $"You have {categories.Length} categories.", replyMarkup : Keyboards.Categories(categories));
+            await Client.SendTextMessageAsync(Account.ChatId, $"You have {categories.Length} categories.", replyMarkup : Keyboards.Categories(categories, "Show"));
         }
     }
 }

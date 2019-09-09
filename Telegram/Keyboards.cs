@@ -42,7 +42,7 @@ namespace MoneyBot.Telegram
             }
 
         }, true);
-        public static InlineKeyboardMarkup Categories(ExspenseCategory[] categories)
+        public static InlineKeyboardMarkup Categories(ExspenseCategory[] categories, string query)
         {
             var keys = new List<List<InlineKeyboardButton>>();
 
