@@ -1,0 +1,34 @@
+﻿using MoneyBot.DB.Model;
+using StickerMemeBot.Telegram.Commands;
+using Telegram.Bot.Types;
+
+namespace MoneyBot.Telegram.Commands
+{
+    public class MainCommand : Command
+    {
+        public MainCommand(Message message, Bot Client, Account Account) : base(message, Client, Account) { }
+
+        public override int Suitability()
+        {
+            int res = 0;
+            if (Account.Status == AccountStatus.Free) res++;
+            if (Message.Text != null) res++;
+            return res;
+        }
+        public override async void Execute()
+        {
+
+            if (Message.Text == "Another menu?")
+            {
+                await Client.SendTextMessageAsync(Account.ChatId, "Do something", replyMarkup : Keyboards.Manage);
+                Account.Status = AccountStatus.Manage;
+                return;
+            }
+            if (Message.Text.StartsWith("/start"))
+            {
+                await Client.SendTextMessageAsync(Account.ChatId, "Welcome to MoneyBot.", replyMarkup : Keyboards.Main);
+                return;
+            }
+        }
+    }
+}
