@@ -43,7 +43,10 @@ namespace MoneyBot.Telegram
                 var assembly = baseType.Assembly;
                 var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c, e.Message, this, account) as Command).OrderByDescending(c => c.Suitability()).First();
                 command.Controller = account.Controller;
-                Console.WriteLine($"Command type: {command.ToString()}, account status: {account.Status.ToString()}");
+                var canceled = command.Canceled();
+                Console.WriteLine($"Command: {command.ToString()}, status: {account.Status.ToString()}, canceled: {canceled}");
+                if (canceled)
+                    command.Relieve();
                 command.Execute();
             }
             catch (Exception ex) { Console.WriteLine(ex); }

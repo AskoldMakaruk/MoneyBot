@@ -18,8 +18,8 @@ namespace MoneyBot.Telegram.Commands
         {
             if (Message.Text == "Add category")
             {
-                Account.Status = AccountStatus.AddCategory;
-                await Client.SendTextMessageAsync(Account.ChatId, "Enter new category in format:\n[emoji] - [category name]");
+                Account.Status = AccountStatus.AddCategories;
+                await Client.SendTextMessageAsync(Account.ChatId, "Enter new categories in format:\n[emoji] - [category name]\n\nExample:\n💊 - Hard drugs\n🥦 - Trees\n👨🏿 - Nigga", replyMarkup : Keyboards.Cancel);
                 return;
             }
             if (Message.Text == "Edit category")

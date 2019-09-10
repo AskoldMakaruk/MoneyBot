@@ -11,12 +11,12 @@ namespace MoneyBot.Telegram
                 new KeyboardButton("Cancel")
             },
             true, true);
-
+        public static IReplyMarkup Clear => new ReplyKeyboardRemove();
         public static ReplyKeyboardMarkup Main => new ReplyKeyboardMarkup(new []
         {
             new []
             {
-                new KeyboardButton("Add exspense"),
+                new KeyboardButton("Add expense"),
                     new KeyboardButton("Stats")
             },
             new []
@@ -48,7 +48,7 @@ namespace MoneyBot.Telegram
             }
 
         }, true);
-        public static InlineKeyboardMarkup Categories(ExspenseCategory[] categories, string query)
+        public static InlineKeyboardMarkup Categories(ExpenseCategory[] categories, string query)
         {
             var keys = new List<List<InlineKeyboardButton>>();
 

@@ -24,5 +24,13 @@ namespace MoneyBot.Telegram.Commands
         // 4 high priority
         public abstract int Suitability();
         public abstract void Execute();
+        public virtual bool Canceled()
+        {
+            return Message.Text.ToLower().Equals("cancel");
+        }
+        public virtual void Relieve()
+        {
+            new MainCommand(Message, Client, Account).Execute();
+        }
     }
 }

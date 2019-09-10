@@ -8,11 +8,11 @@ namespace MoneyBot.DB.Model
         public int Id { get; set; }
         public string Name { get; set; }
         public long ChatId { get; set; }
-        public List<ExspenseCategory> Categories { get; set; }
+        public List<ExpenseCategory> Categories { get; set; }
         public AccountStatus Status { get; set; }
 
         [NotMapped]
-        public Exspense CurrentExspense { get; set; }
+        public Expense CurrentExpense { get; set; }
 
         [NotMapped]
         public Controllers.TelegramController Controller { get; set; }
@@ -23,8 +23,8 @@ namespace MoneyBot.DB.Model
         Free,
         Start,
         Manage,
-        AddCategory,
+        AddCategories,
         EditCategory,
-        EnterExspenseSum,
+        EnterExpenseSum,
     }
 }

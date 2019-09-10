@@ -10,6 +10,7 @@ namespace MoneyBot.Telegram.Commands
         {
             int res = 0;
             if (Message.Text == "Show categories") res += 2;
+            if (Account.Status == AccountStatus.Free) res++;
             return res;
         }
         public override async void Execute()

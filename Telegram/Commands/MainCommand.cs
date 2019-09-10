@@ -28,6 +28,7 @@ namespace MoneyBot.Telegram.Commands
                 await Client.SendTextMessageAsync(Account.ChatId, "Welcome to MoneyBot.", replyMarkup : Keyboards.Main);
                 return;
             }
+            await Client.SendTextMessageAsync(Account.ChatId, $"Hi!", replyMarkup : Keyboards.Main);
         }
     }
 }

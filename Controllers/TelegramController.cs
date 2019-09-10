@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MoneyBot.DB;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
@@ -42,7 +43,7 @@ namespace MoneyBot.Controllers
             {
                 return Accounts[message.Chat.Id];
             }
-            Account account = Context.Accounts.FirstOrDefault(a => a.ChatId == message.Chat.Id);
+            Account account = Context.Accounts.Include(a => a.Categories).Include("Categories.Expenses").FirstOrDefault(a => a.ChatId == message.Chat.Id);
 
             if (account == null)
             {
@@ -82,21 +83,21 @@ namespace MoneyBot.Controllers
         #endregion
 
         #region Categories
-        public void AddCategory(ExspenseCategory category)
+        public void AddCategories(IEnumerable<ExpenseCategory> categories)
         {
-            Context.Categories.Add(category);
+            Context.Categories.AddRange(categories);
             SaveChanges();
         }
-        public ExspenseCategory[] GetCategories(int accountId)
+        public ExpenseCategory[] GetCategories(int accountId)
         {
             return Context.Categories.Where(c => c.Account.Id == accountId).ToArray();
         }
         #endregion
 
-        #region Exspenses        
-        public void AddExspense(Exspense exspense)
+        #region Expenses        
+        public void AddExpense(Expense expense)
         {
-            Context.Exspenses.Add(exspense);
+            Context.Expenses.Add(expense);
             SaveChanges();
         }
         #endregion

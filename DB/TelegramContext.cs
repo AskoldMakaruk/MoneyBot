@@ -6,8 +6,8 @@ namespace MoneyBot.DB
     public class TelegramContext : DbContext
     {
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<ExspenseCategory> Categories { get; set; }
-        public DbSet<Exspense> Exspenses { get; set; }
+        public DbSet<ExpenseCategory> Categories { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
         public DbSet<Fund> Funds { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<Template> Templates { get; set; }
@@ -19,13 +19,13 @@ namespace MoneyBot.DB
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Account>().HasMany(p => p.Exspenses);
-            modelBuilder.Entity<Account>().HasMany(p => p.Categories);
+            //modelBuilder.Entity<Account>().HasMany(p => p.Expenses);
+            modelBuilder.Entity<Account>().HasMany(p => p.Categories).WithOne(p => p.Account).IsRequired();
 
-            // modelBuilder.Entity<Exspense>().HasOne(p => p.Category);
-            // modelBuilder.Entity<Exspense>().HasOne(p => p.Account);
+            // modelBuilder.Entity<Expense>().HasOne(p => p.Category);
+            // modelBuilder.Entity<Expense>().HasOne(p => p.Account);
 
-            modelBuilder.Entity<ExspenseCategory>().HasMany(p => p.Exspenses);
+            modelBuilder.Entity<ExpenseCategory>().HasMany(p => p.Expenses).WithOne(p => p.Category).IsRequired();
 
             //            modelBuilder.Entity<Template>().HasOne(p => p.Account);
             //      modelBuilder.Entity<Template>().HasOne(p => p.Category);
