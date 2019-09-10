@@ -53,7 +53,7 @@ namespace MoneyBot.Telegram
                     new InlineKeyboardButton()
                     {
                         Text = $"{category.Emoji} {category.Name}",
-                        CallbackData = "Edit_cat " + category.Id
+                        CallbackData = query + category.Id
                     };
                 if (keys.Count == 0)
                 {

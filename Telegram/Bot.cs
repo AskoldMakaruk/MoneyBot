@@ -2,11 +2,10 @@
 using System.Linq;
 using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
-using StickerMemeBot.Telegram.Commands;
-using StickerMemeBot.Telegram.Queries;
+using MoneyBot.Telegram.Commands;
+using MoneyBot.Telegram.Queries;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types.InputFiles;
 
 namespace MoneyBot.Telegram
 {

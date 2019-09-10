@@ -1,9 +1,8 @@
 using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
-using MoneyBot.Telegram;
 using Telegram.Bot.Types;
 
-namespace StickerMemeBot.Telegram.Queries
+namespace MoneyBot.Telegram.Queries
 {
     public abstract class Query
     {

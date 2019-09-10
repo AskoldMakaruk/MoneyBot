@@ -1,9 +1,8 @@
 ﻿using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
-using MoneyBot.Telegram;
 using Telegram.Bot.Types;
 
-namespace StickerMemeBot.Telegram.Commands
+namespace MoneyBot.Telegram.Commands
 {
     public abstract class Command
     {
