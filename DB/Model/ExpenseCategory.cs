@@ -12,6 +12,7 @@ namespace MoneyBot.DB.Model
         public string Name { get; set; }
         public string Emoji { get; set; }
         public List<Expense> Expenses { get; set; }
+        public List<Template> Templates { get; set; }
         public override string ToString() => $"{Emoji} {Name}";
     }
 }

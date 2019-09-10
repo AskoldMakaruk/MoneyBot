@@ -14,8 +14,7 @@ namespace MoneyBot.Telegram.Queries
         }
         public override async void Execute()
         {
-            var idStr = Message.Data.Substring(Message.Data.LastIndexOf(" ") + 1);
-            int.TryParse(idStr, out var id);
+            Message.Data.TryParseId(out var id);
 
             var category = Account.Categories?.First(ct => ct.Id == id);
 
@@ -30,7 +29,7 @@ namespace MoneyBot.Telegram.Queries
 
             string message = $"{category.ToString()}\n{string.Join(new string('-', 10)+"\n", categoryDays)}";
 
-            await Client.SendTextMessageAsync(Account.ChatId, message, replyMarkup : Keyboards.Main);
+            await Client.EditMessageTextAsync(Account.ChatId, Message.Message.MessageId, message, replyMarkup : Keyboards.Categories(Account.Categories.ToArray(), "Show"));
             Account.Status = AccountStatus.Free;
         }
     }

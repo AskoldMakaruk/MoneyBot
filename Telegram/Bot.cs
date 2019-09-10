@@ -47,7 +47,8 @@ namespace MoneyBot.Telegram
                 Console.WriteLine($"Command: {command.ToString()}, status: {account.Status.ToString()}, canceled: {canceled}");
                 if (canceled)
                     command.Relieve();
-                command.Execute();
+                else
+                    command.Execute();
             }
             catch (Exception ex) { Console.WriteLine(ex); }
         }

@@ -16,6 +16,9 @@ namespace MoneyBot.DB.Model
 
         [NotMapped]
         public Controllers.TelegramController Controller { get; set; }
+
+        [NotMapped]
+        public Template CurrentTemplate { get; set; }
     }
 
     public enum AccountStatus
@@ -26,5 +29,6 @@ namespace MoneyBot.DB.Model
         AddCategories,
         EditCategory,
         EnterExpenseSum,
+        EnterTemplate,
     }
 }

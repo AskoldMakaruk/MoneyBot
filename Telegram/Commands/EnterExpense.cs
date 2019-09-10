@@ -15,7 +15,8 @@ namespace MoneyBot.Telegram.Commands
         public override async void Execute()
         {
             var values = Message.Text.TrySplit(new [] { '-', ' ' });
-            if (double.TryParse(values[1].Trim().Replace('.', ','), out var sum))
+            var sum = values[1].ParseSum();
+            if (sum != -1)
             {
                 Account.CurrentExpense.Description = values[0];
                 Account.CurrentExpense.Sum = sum;

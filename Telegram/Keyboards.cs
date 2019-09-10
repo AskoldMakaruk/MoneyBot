@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoneyBot.DB.Model;
@@ -17,14 +18,15 @@ namespace MoneyBot.Telegram
             new []
             {
                 new KeyboardButton("Add expense"),
-                    new KeyboardButton("Manage Menu")
+                    new KeyboardButton("Show categories")
 
             },
             new []
             {
 
                 new KeyboardButton("Stats"),
-                    new KeyboardButton("Show categories")
+                    new KeyboardButton("Manage Menu")
+
             }
 
         }, true);
@@ -35,6 +37,12 @@ namespace MoneyBot.Telegram
                 new KeyboardButton("Add category"),
                     new KeyboardButton("Edit category"),
                     new KeyboardButton("Show categories")
+            },
+            new []
+            {
+                new KeyboardButton("Add template"),
+                    new KeyboardButton("Edit template"),
+                    new KeyboardButton("Show templates")
             },
             new []
             {
@@ -50,8 +58,15 @@ namespace MoneyBot.Telegram
             }
 
         }, true);
-        public static InlineKeyboardMarkup Categories(ExpenseCategory[] categories, string query)
+
+        public static InlineKeyboardMarkup Templates(List<Template> templates, string query)
         {
+            return templates.Select(t => new InlineKeyboardButton { CallbackData = query + " " + t.Id, Text = t.Category.Emoji + t.Name + ": " + t.Sum }).ToArray();
+        }
+
+        public static InlineKeyboardMarkup Categories(IEnumerable<ExpenseCategory> input, string query)
+        {
+            var categories = input.ToArray();
             var keys = new List<List<InlineKeyboardButton>>();
 
             for (int i = 0; i < categories.Length; i++)
