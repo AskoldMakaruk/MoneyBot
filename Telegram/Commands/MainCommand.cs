@@ -1,5 +1,4 @@
 ﻿using MoneyBot.DB.Model;
-using StickerMemeBot.Telegram.Commands;
 using Telegram.Bot.Types;
 
 namespace MoneyBot.Telegram.Commands
