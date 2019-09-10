@@ -17,7 +17,7 @@ namespace MoneyBot.Telegram.Commands
         public override async void Execute()
         {
 
-            if (Message.Text == "Another menu?")
+            if (Message.Text == "Manage Menu")
             {
                 await Client.SendTextMessageAsync(Account.ChatId, "Do something", replyMarkup : Keyboards.Manage);
                 Account.Status = AccountStatus.Manage;

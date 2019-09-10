@@ -17,12 +17,14 @@ namespace MoneyBot.Telegram
             new []
             {
                 new KeyboardButton("Add expense"),
-                    new KeyboardButton("Stats")
+                    new KeyboardButton("Manage Menu")
+
             },
             new []
             {
-                new KeyboardButton("Show categories"),
-                    new KeyboardButton("Another menu?")
+
+                new KeyboardButton("Stats"),
+                    new KeyboardButton("Show categories")
             }
 
         }, true);
