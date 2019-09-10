@@ -21,7 +21,7 @@ namespace MoneyBot.Telegram.Commands
             var name = text.Substring(text.IndexOf('-') + 1);
             var category = new ExspenseCategory()
             {
-                AccountId = Account.Id,
+                Account = Account,
                 Emoji = emoji,
                 Name = name
             };

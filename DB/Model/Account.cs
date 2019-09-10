@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MoneyBot.DB.Model
 {
     public class Account
@@ -9,6 +11,9 @@ namespace MoneyBot.DB.Model
         public List<ExspenseCategory> Categories { get; set; }
         public List<Exspense> Exspenses { get; set; }
         public AccountStatus Status { get; set; }
+
+        [NotMapped]
+        public Exspense CurrentExspense { get; set; }
     }
 
     public enum AccountStatus
@@ -18,5 +23,6 @@ namespace MoneyBot.DB.Model
         Manage,
         AddCategory,
         EditCategory,
+        EnterExspenseSum,
     }
 }

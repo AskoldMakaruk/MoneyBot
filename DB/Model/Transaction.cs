@@ -3,8 +3,8 @@ namespace MoneyBot.DB.Model
     public class Transaction
     {
         public int Id { get; set; }
-        public int AccountId { get; set; }
-        public int PersonId { get; set; }
+        public Account Account { get; set; }
+        public Person Person { get; set; }
         public double Sum { get; set; }
     }
 }

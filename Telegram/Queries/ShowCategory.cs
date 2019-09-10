@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Queries
         }
         public override async void Execute()
         {
-            //todo
+
         }
     }
 }

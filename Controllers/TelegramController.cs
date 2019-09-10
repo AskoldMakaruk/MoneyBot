@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MoneyBot.DB;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
@@ -86,7 +84,7 @@ namespace MoneyBot.Controllers
         }
         public ExspenseCategory[] GetCategories(int accountId)
         {
-            return Context.Categories.Where(c => c.AccountId == accountId).ToArray();
+            return Context.Categories.Where(c => c.Account.Id == accountId).ToArray();
         }
         #endregion
 
