@@ -21,7 +21,7 @@ namespace MoneyBot.DB
         {
             modelBuilder.Entity<Account>().HasMany(p => p.Exspenses);
             modelBuilder.Entity<Account>().HasMany(p => p.Categories);
-
+            modelBuilder.Entity<Exspense>().HasOne(p => p.Category);
         }
     }
 }
