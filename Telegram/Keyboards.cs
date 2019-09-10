@@ -6,6 +6,12 @@ namespace MoneyBot.Telegram
 {
     public static class Keyboards
     {
+        public static IReplyMarkup Cancel => new ReplyKeyboardMarkup(new []
+            {
+                new KeyboardButton("Cancel")
+            },
+            true, true);
+
         public static ReplyKeyboardMarkup Main => new ReplyKeyboardMarkup(new []
         {
             new []
@@ -53,7 +59,7 @@ namespace MoneyBot.Telegram
                     new InlineKeyboardButton()
                     {
                         Text = $"{category.Emoji} {category.Name}",
-                        CallbackData = query + category.Id
+                        CallbackData = query + " " + category.Id
                     };
                 if (keys.Count == 0)
                 {

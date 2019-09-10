@@ -9,11 +9,13 @@ namespace MoneyBot.DB.Model
         public string Name { get; set; }
         public long ChatId { get; set; }
         public List<ExspenseCategory> Categories { get; set; }
-        public List<Exspense> Exspenses { get; set; }
         public AccountStatus Status { get; set; }
 
         [NotMapped]
         public Exspense CurrentExspense { get; set; }
+
+        [NotMapped]
+        public Controllers.TelegramController Controller { get; set; }
     }
 
     public enum AccountStatus

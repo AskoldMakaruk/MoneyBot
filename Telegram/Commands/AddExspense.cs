@@ -16,10 +16,7 @@ namespace MoneyBot.Telegram.Commands
         {
             var categories = Controller.GetCategories(Account.Id);
             var keyboard = Keyboards.Categories(categories, "AddExspense");
-            Account.CurrentExspense = new Exspense()
-            {
-                Account = Account
-            };
+            Account.CurrentExspense = new Exspense();
             await Client.SendTextMessageAsync(Account.ChatId, $"Select exspense category:", replyMarkup : keyboard);
         }
     }

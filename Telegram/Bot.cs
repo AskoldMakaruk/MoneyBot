@@ -15,6 +15,7 @@ namespace MoneyBot.Telegram
         public Bot(string token) : base(token)
         {
             OnMessage += OnMessageRecieved;
+            OnCallbackQuery += OnQueryReceived;
             StartReceiving();
         }
 
@@ -23,15 +24,25 @@ namespace MoneyBot.Telegram
             Console.WriteLine(DateTime.Now.ToShortTimeString() + " " + e.Message.From.Username + ": " + e.Message.Text);
             try
             {
-                var contoller = new TelegramController();
-                contoller.Start();
+                var chatId = e.Message.Chat.Id;
+                Account account;
 
-                var account = contoller.FromMessage(e.Message);
+                if (TelegramController.Accounts.ContainsKey(chatId))
+                {
+                    account = TelegramController.Accounts[chatId];
+                }
+                else
+                {
+                    var contoller = new TelegramController();
+                    contoller.Start();
+                    account = contoller.FromMessage(e.Message);
+                    account.Controller = contoller;
+                }
 
                 var baseType = typeof(Command);
                 var assembly = baseType.Assembly;
                 var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c, e.Message, this, account) as Command).OrderByDescending(c => c.Suitability()).First();
-                command.Controller = contoller;
+                command.Controller = account.Controller;
                 Console.WriteLine($"Command type: {command.ToString()}, account status: {account.Status.ToString()}");
                 command.Execute();
             }

@@ -26,8 +26,8 @@ namespace MoneyBot.Telegram.Commands
                 Name = name
             };
             Controller.AddCategory(category);
-            Account.Status = AccountStatus.Manage;
-            await Client.SendTextMessageAsync(Account.ChatId, "Category added");
+            Account.Status = AccountStatus.Free;
+            await Client.SendTextMessageAsync(Account.ChatId, "Category added", replyMarkup : Keyboards.Main);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoneyBot.DB;
@@ -47,8 +48,12 @@ namespace MoneyBot.Controllers
             {
                 account = CreateAccount(message);
             }
+            else
+                account.Status = AccountStatus.Free;
+
             if (!Accounts.ContainsKey(account.ChatId))
                 Accounts.Add(account.ChatId, account);
+
             return account;
         }
         public Account FromMessage(Chat chat)
@@ -85,6 +90,14 @@ namespace MoneyBot.Controllers
         public ExspenseCategory[] GetCategories(int accountId)
         {
             return Context.Categories.Where(c => c.Account.Id == accountId).ToArray();
+        }
+        #endregion
+
+        #region Exspenses        
+        public void AddExspense(Exspense exspense)
+        {
+            Context.Exspenses.Add(exspense);
+            SaveChanges();
         }
         #endregion
 
