@@ -48,7 +48,7 @@ namespace MoneyBot.Telegram
             {
                 new KeyboardButton("Add person"),
                     new KeyboardButton("Edit person"),
-                    new KeyboardButton("Show persons")
+                    new KeyboardButton("Show people")
             },
             new []
             {
