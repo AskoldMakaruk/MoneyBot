@@ -30,5 +30,6 @@ namespace MoneyBot.DB.Model
         EditCategory,
         EnterExpenseSum,
         EnterTemplate,
+        ChooseExpenseType,
     }
 }

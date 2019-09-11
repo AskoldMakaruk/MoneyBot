@@ -59,6 +59,20 @@ namespace MoneyBot.Telegram
 
         }, true);
 
+        public static IReplyMarkup CategoryTypes => new InlineKeyboardMarkup(new InlineKeyboardButton[]
+        {
+            new InlineKeyboardButton()
+                {
+                    CallbackData = "ExpenseType Out",
+                        Text = "😳😭I'm paying😤"
+                },
+                new InlineKeyboardButton()
+                {
+                    CallbackData = "ExpenseType In",
+                        Text = "😎👌💵I'm being payed💵👌"
+                },
+        });
+
         public static InlineKeyboardMarkup Templates(List<Template> templates, string query)
         {
             return templates.Select(t => new InlineKeyboardButton { CallbackData = query + " " + t.Id, Text = t.Category.Emoji + t.Name + ": " + t.Sum }).ToArray();

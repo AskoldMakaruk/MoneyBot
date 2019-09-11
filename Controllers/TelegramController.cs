@@ -109,6 +109,18 @@ namespace MoneyBot.Controllers
             Context.Expenses.Add(expense);
             SaveChanges();
         }
+        internal void AddExpense(int templateId)
+        {
+            var template = Context.Templates.Include(q => q.Category).First(t => t.Id == templateId);
+            Context.Expenses.Add(new Expense
+            {
+                Description = template.Name,
+                    Category = template.Category,
+                    Date = DateTime.Now,
+                    Sum = template.Sum
+            });
+            SaveChanges();
+        }
         #endregion
 
         public void SaveChanges() => Context.SaveChanges();
