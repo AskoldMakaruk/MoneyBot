@@ -12,12 +12,22 @@ Bot to manage personal budget.
     - [ ] using emoji
   - [ ] remove 
   - [ ] edit  
+- [ ] People
+  - [ ] add
+    - [ ] array
+  - [ ] some type of alias
+  - [ ] transfers
+    - [ ] to
+    - [ ] from
+  - [ ] total
+  - [ ] inline button catalog
+  - [ ] short profile
 - [x] Categories
   - [ ] add
     - [x] category type (income / expense)
     - [x] array
       - [ ] with type
-  - [ ] use emoji as shortcut
+  - [ ] use emoji as alias
 - [ ] Templates
   - [ ] adding
     - [x] by hand
