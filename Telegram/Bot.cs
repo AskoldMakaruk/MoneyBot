@@ -77,15 +77,5 @@ namespace MoneyBot.Telegram
             }
             catch (Exception ex) { Console.WriteLine(ex); }
         }
-
-        public async void SendMessage(long chatId, object mes)
-        {
-            await SendTextMessageAsync(chatId, mes.ToString());
-        }
-        public async void SendMessage(Account account, object mes)
-        {
-            await SendTextMessageAsync(account.ChatId, mes.ToString());
-        }
-
     }
 }

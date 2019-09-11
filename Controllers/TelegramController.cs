@@ -38,12 +38,6 @@ namespace MoneyBot.Controllers
             return account;
         }
 
-        internal void AddTemplates(IEnumerable<Template> templates)
-        {
-            Context.Templates.AddRange(templates);
-            SaveChanges();
-        }
-
         public Account FromMessage(Message message)
         {
             if (Accounts.ContainsKey(message.Chat.Id))
@@ -51,7 +45,9 @@ namespace MoneyBot.Controllers
                 return Accounts[message.Chat.Id];
             }
             Account account = Context.Accounts.Include(a => a.Categories)
-                .Include("Categories.Expenses").Include("Categories.Templates")
+                .Include(a => a.People)
+                .Include("Categories.Expenses")
+                .Include("Categories.Templates")
                 .FirstOrDefault(a => a.ChatId == message.Chat.Id);
 
             if (account == null)
@@ -122,6 +118,11 @@ namespace MoneyBot.Controllers
             SaveChanges();
         }
         #endregion
+        internal void AddTemplates(IEnumerable<Template> templates)
+        {
+            Context.Templates.AddRange(templates);
+            SaveChanges();
+        }
 
         public void SaveChanges() => Context.SaveChanges();
     }

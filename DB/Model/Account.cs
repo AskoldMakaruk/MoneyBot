@@ -9,6 +9,8 @@ namespace MoneyBot.DB.Model
         public string Name { get; set; }
         public long ChatId { get; set; }
         public List<ExpenseCategory> Categories { get; set; }
+        public List<Person> People { get; set; }
+        public List<Fund> Funds { get; set; }
         public AccountStatus Status { get; set; }
 
         [NotMapped]
@@ -30,6 +32,6 @@ namespace MoneyBot.DB.Model
         EditCategory,
         EnterExpenseSum,
         EnterTemplate,
-        ChooseExpenseType,
+        AddPerson,
     }
 }
