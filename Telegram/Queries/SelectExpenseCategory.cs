@@ -29,7 +29,7 @@ namespace MoneyBot.Telegram.Queries
 [Description] - [sum]
 
 Example:
-Pork - 229.33{(templates != null?"\n\nOr use template:":"")}", replyMarkup : templates != null? Keyboards.Templates(templates, "Template") : null);
+Pork - 229.33{(templates != null && templates.Count>0?"\n\nOr use template:":"")}", replyMarkup : templates != null? Keyboards.Templates(templates, "Template") : null);
             Account.Status = AccountStatus.EnterExpenseSum;
         }
     }

@@ -27,9 +27,11 @@ namespace MoneyBot.Telegram.Queries
 
             var categoryDays = category.Expenses.GroupBy(e => e.Date.Date).Select(r => $"{r.Key.ToString("dd MMMM")}\n{string.Join('\n', r.Select(k => $"{k.Description}: {k.Sum}"))}");
 
-            string message = $"{category.ToString()}\n{string.Join(new string('-', 10)+"\n", categoryDays)}";
+            string message = $"{category.ToString()}\n{string.Join(new string('-', 10)+"\n", categoryDays)}".Trim();
+            if (Message.Message.Text != message)
+                await Client.EditMessageTextAsync(Account.ChatId, Message.Message.MessageId, message, replyMarkup : Keyboards.Categories(Account.Categories.ToArray(), "Show"));
+            else await Client.AnswerCallbackQueryAsync(Message.Id);
 
-            await Client.EditMessageTextAsync(Account.ChatId, Message.Message.MessageId, message, replyMarkup : Keyboards.Categories(Account.Categories.ToArray(), "Show"));
             Account.Status = AccountStatus.Free;
         }
     }

@@ -29,9 +29,8 @@ namespace MoneyBot.DB.Model
         Start,
         Manage,
         AddCategories,
-        EditCategory,
         EnterExpenseSum,
         EnterTemplate,
-        AddPerson,
+        AddPeople,
     }
 }

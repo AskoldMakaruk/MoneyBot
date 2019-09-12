@@ -11,8 +11,7 @@ namespace MoneyBot.Telegram.Commands
         public override int Suitability()
         {
             int res = 0;
-            if (Account.Status == AccountStatus.AddCategories) res += 2;
-            if (Message.Text != null) res++;
+            if (Account.Status == AccountStatus.AddCategories) res++;
             return res;
         }
         public override async void Execute()
@@ -23,7 +22,10 @@ namespace MoneyBot.Telegram.Commands
             {
                 Account = Account,
                     Emoji = v[0],
-                    Name = v[1]
+                    //todo default type if one is missing
+                    Type = v[1].ToLower().Contains("in") ? ExpenseType.In : ExpenseType.Out,
+                    Name = v[2],
+
             });
             Controller.AddCategories(categories);
             Account.Status = AccountStatus.Free;

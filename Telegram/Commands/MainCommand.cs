@@ -1,6 +1,7 @@
-﻿using MoneyBot.DB.Model;
+﻿using System;
+using System.Linq;
+using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
-
 namespace MoneyBot.Telegram.Commands
 {
     public class MainCommand : Command
@@ -11,12 +12,11 @@ namespace MoneyBot.Telegram.Commands
         {
             int res = 0;
             if (Account.Status == AccountStatus.Free) res++;
-            if (Message.Text != null) res++;
             return res;
         }
         public override async void Execute()
         {
-
+            Account.Status = AccountStatus.Free;
             if (Message.Text == "Manage Menu")
             {
                 await Client.SendTextMessageAsync(Account.ChatId, "Do something", replyMarkup : Keyboards.Manage);
@@ -31,7 +31,17 @@ namespace MoneyBot.Telegram.Commands
             }
             if (Message.Text == "Stats")
             {
-
+                var stats = Controller.GetStats(Account.Id);
+                var message =
+                    $@"Your stats
+{(DateTime.Now - new TimeSpan(30,0,0,0)).ToString("dd MMMM")} - {DateTime.Now.ToString("dd MMMM")}
+Balance: {stats.Balance}
+Incomes: {stats.Incomes}
+    {string.Join("\t\t\n",stats.TopIncomeCategories.Select(c => $"{c.Emoji}{c.Name} {c.Expenses.Sum(r => r.Sum)}"))}
+Expenses: {stats.Expenses}
+    {string.Join("\t\t\n",stats.TopExpenseCategories.Select(c => $"{c.Emoji}{c.Name} {c.Expenses.Sum(r => r.Sum)}"))}";
+                await Client.SendTextMessageAsync(Account.ChatId, message);
+                return;
             }
             if (Message.Text.StartsWith("/start"))
             {

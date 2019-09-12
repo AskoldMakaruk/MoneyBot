@@ -1,3 +1,4 @@
+using System.Linq;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
 namespace MoneyBot.Telegram.Commands
@@ -14,12 +15,17 @@ namespace MoneyBot.Telegram.Commands
         }
         public override async void Execute()
         {
-            if (Message.Text == "Add person")
+            if (Message.Text == "Add people")
             {
-                Account.Status = AccountStatus.AddPerson;
+                Account.Status = AccountStatus.AddPeople;
                 await Client.SendTextMessageAsync(Account.ChatId, $"Enter new people in format:\n" +
                     "[alias] [name]", replyMarkup : Keyboards.Cancel);
-                //todo
+                return;
+            }
+            if (Message.Text == "Show people")
+            {
+                await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
+                return;
             }
         }
     }

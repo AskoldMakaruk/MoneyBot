@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MoneyBot.DB;
 using MoneyBot.DB.Model;
+using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types;
 
 namespace MoneyBot.Controllers
@@ -37,7 +38,6 @@ namespace MoneyBot.Controllers
             }
             return account;
         }
-
         public Account FromMessage(Message message)
         {
             if (Accounts.ContainsKey(message.Chat.Id))
@@ -62,6 +62,7 @@ namespace MoneyBot.Controllers
 
             return account;
         }
+
         public Account FromMessage(Chat chat)
         {
             if (Accounts.ContainsKey(chat.Id))
@@ -118,9 +119,24 @@ namespace MoneyBot.Controllers
             SaveChanges();
         }
         #endregion
+
         internal void AddTemplates(IEnumerable<Template> templates)
         {
             Context.Templates.AddRange(templates);
+            SaveChanges();
+        }
+
+        internal Stats GetStats(int accountId)
+        {
+
+            return new Stats()
+            {
+                Categories = Context.Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray()
+            };
+        }
+        internal void AddPeople(IEnumerable<Person> people)
+        {
+            Context.People.AddRange(people);
             SaveChanges();
         }
 

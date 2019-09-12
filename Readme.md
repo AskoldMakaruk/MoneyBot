@@ -44,7 +44,7 @@ Bot to manage personal budget.
     - [ ] json
     - [ ] xlsx (i dont wanna do it)       
 - [ ] Export
-  - [ ] categories
+  - [x] categories
   - [ ] templates  
   - [ ] full export
     - [ ] by period    

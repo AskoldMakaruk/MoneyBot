@@ -34,26 +34,26 @@ namespace MoneyBot.Telegram
         {
             new []
             {
-                new KeyboardButton("Add category"),
-                    new KeyboardButton("Edit category"),
+                new KeyboardButton("Add categories"),
+                    new KeyboardButton("Override category"),
                     new KeyboardButton("Show categories")
             },
             new []
             {
-                new KeyboardButton("Add template"),
-                    new KeyboardButton("Edit template"),
+                new KeyboardButton("Add templates"),
+                    new KeyboardButton("Override templates"),
                     new KeyboardButton("Show templates")
             },
             new []
             {
-                new KeyboardButton("Add person"),
-                    new KeyboardButton("Edit person"),
+                new KeyboardButton("Add people"),
+                    new KeyboardButton("Override people"),
                     new KeyboardButton("Show people")
             },
             new []
             {
                 new KeyboardButton("Add fund"),
-                    new KeyboardButton("Edit fund"),
+                    new KeyboardButton("Override funds"),
                     new KeyboardButton("Show funds")
             }
 

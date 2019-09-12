@@ -1,3 +1,4 @@
+using System.Linq;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
 
@@ -16,17 +17,15 @@ namespace MoneyBot.Telegram.Commands
         }
         public override async void Execute()
         {
-            if (Message.Text == "Add category")
+            if (Message.Text == "Add categories")
             {
                 Account.Status = AccountStatus.AddCategories;
-                await Client.SendTextMessageAsync(Account.ChatId, "Enter new categories in format:\n[emoji] - [category name]\n\nExample:\n💊 - Hard drugs\n🥦 - Trees\n👨🏿 - Nigga", replyMarkup : Keyboards.Cancel);
+                await Client.SendTextMessageAsync(Account.ChatId, "Enter new categories in format:\n[emoji] - [categoryType(In/Out)] - [category name]\n\nExample:\n💊 - in - Hard drugs\n🥦 - out - Trees\n👨🏿 - in - Nigga", replyMarkup : Keyboards.Cancel);
                 return;
             }
-            if (Message.Text == "Edit category")
+            if (Message.Text == "Show categories")
             {
-                Account.Status = AccountStatus.EditCategory;
-                await Client.SendTextMessageAsync(Account.ChatId, "Select category to edit:", replyMarkup : Keyboards.Categories(Controller.GetCategories(Account.Id), "Edit"));
-
+                await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.Categories.Select(c => $"{c.Emoji} - {c.Type} - {c.Name}"))}");
                 return;
             }
         }
