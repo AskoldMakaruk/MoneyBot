@@ -10,7 +10,6 @@ namespace MoneyBot.Telegram.Commands
         {
             int res = 0;
             if (Account.Status == AccountStatus.EnterTemplate) res++;
-            if (Message.Text != null) res++;
             return res;
         }
         public override async void Execute()

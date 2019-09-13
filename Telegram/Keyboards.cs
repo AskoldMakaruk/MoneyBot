@@ -18,7 +18,7 @@ namespace MoneyBot.Telegram
             new []
             {
                 new KeyboardButton("Add"),
-                    new KeyboardButton("Show categories")
+                    new KeyboardButton("Show")
 
             },
             new []
@@ -59,10 +59,19 @@ namespace MoneyBot.Telegram
             }
         }, true);
 
+        public static ReplyKeyboardMarkup MainShow => new ReplyKeyboardMarkup(new []
+        {
+            new []
+            {
+                new KeyboardButton("Show people"),
+                    new KeyboardButton("Show categories")
+            }
+        }, true);
+
         internal static InlineKeyboardMarkup AddType(Account account)
         {
             var keys = new List<InlineKeyboardButton>();
-            if (account.People.Count > 0)
+            if (account.People?.Count > 0)
                 keys.Add(new InlineKeyboardButton()
                 {
                     CallbackData = "AddType Person",
@@ -98,7 +107,7 @@ namespace MoneyBot.Telegram
             return templates.Select(t => new InlineKeyboardButton { CallbackData = query + " " + t.Id, Text = t.Category.Emoji + t.Name + ": " + t.Sum }).ToArray();
         }
 
-        internal static InlineKeyboardMarkup People(List<Person> people, string query)
+        internal static InlineKeyboardMarkup People(IEnumerable<Person> people, string query)
         {
             var categories = people.ToArray();
             var keys = new List<List<InlineKeyboardButton>>();

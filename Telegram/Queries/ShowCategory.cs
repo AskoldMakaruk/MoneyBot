@@ -10,7 +10,7 @@ namespace MoneyBot.Telegram.Queries
         public ShowCategoryQuery(CallbackQuery message, Bot client, Account account) : base(message, client, account) { }
         public override bool IsSuitable()
         {
-            return Message.Data.StartsWith("Show");
+            return Message.Data.StartsWith("ShowCategory");
         }
         public override async void Execute()
         {

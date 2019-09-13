@@ -9,8 +9,7 @@ namespace MoneyBot.Telegram.Commands
         public override int Suitability()
         {
             int res = 0;
-            if (Account.Status == AccountStatus.Manage) res++;
-            if (Message.Text.Contains("person") || Message.Text.Contains("people")) res++;
+            if (Account.Status == AccountStatus.Manage && (Message.Text.Contains("person") || Message.Text.Contains("people"))) res++;
             return res;
         }
         public override async void Execute()

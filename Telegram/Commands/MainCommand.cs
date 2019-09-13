@@ -32,6 +32,12 @@ namespace MoneyBot.Telegram.Commands
                     await Client.SendTextMessageAsync(Account.ChatId, $"Add category or person first");
                 return;
             }
+            if (Message.Text == "Show")
+            {
+                Account.Status = AccountStatus.ChooseShow;
+                await Client.SendTextMessageAsync(Account.ChatId, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
+                return;
+            }
             if (Message.Text == "Stats")
             {
                 var stats = Controller.GetStats(Account.Id);
@@ -55,6 +61,7 @@ Expenses: {stats.Expenses}
             {
                 Controller.DeleteDb();
             }
+
             await Client.SendTextMessageAsync(Account.ChatId, $"Hi!", replyMarkup : Keyboards.Main);
         }
     }

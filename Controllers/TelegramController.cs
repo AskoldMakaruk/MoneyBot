@@ -26,8 +26,14 @@ namespace MoneyBot.Controllers
         }
         internal void DeleteDb()
         {
-            Context.Database.EnsureDeleted();
-            Context.Database.EnsureCreated();
+            try
+            {
+                Context.Database.EnsureDeleted();
+                Context.Database.EnsureCreated();
+                // Context.Accounts.AddRange(Accounts.Values);
+                Accounts = new Dictionary<long, Account>();
+            }
+            catch { }
         }
         #region Account
 
@@ -54,6 +60,7 @@ namespace MoneyBot.Controllers
                 .Include(a => a.People)
                 .Include("Categories.Expenses")
                 .Include("Categories.Templates")
+                .Include("People.Transactions")
                 .FirstOrDefault(a => a.ChatId == message.Chat.Id);
 
             if (account == null)
