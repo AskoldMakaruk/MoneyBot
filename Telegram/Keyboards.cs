@@ -17,7 +17,7 @@ namespace MoneyBot.Telegram
         {
             new []
             {
-                new KeyboardButton("Add expense"),
+                new KeyboardButton("Add"),
                     new KeyboardButton("Show categories")
 
             },
@@ -30,6 +30,7 @@ namespace MoneyBot.Telegram
             }
 
         }, true);
+
         public static ReplyKeyboardMarkup Manage => new ReplyKeyboardMarkup(new []
         {
             new []
@@ -59,23 +60,76 @@ namespace MoneyBot.Telegram
 
         }, true);
 
-        public static IReplyMarkup CategoryTypes => new InlineKeyboardMarkup(new InlineKeyboardButton[]
+        internal static InlineKeyboardMarkup AddType(Account account)
+        {
+            var keys = new List<InlineKeyboardButton>();
+            if (account.People.Count > 0)
+                keys.Add(new InlineKeyboardButton()
+                {
+                    CallbackData = "AddType Person",
+                        Text = "Someone else and me"
+                });
+            if (account.Categories.Count > 0)
+                keys.Add(new InlineKeyboardButton()
+                {
+                    CallbackData = "AddType Category",
+                        Text = "Me"
+                });
+            return keys.ToArray();
+        }
+
+        public static InlineKeyboardMarkup CategoryTypes(string query) => new InlineKeyboardMarkup(new InlineKeyboardButton[]
         {
             new InlineKeyboardButton()
                 {
-                    CallbackData = "ExpenseType Out",
+                    CallbackData = $"{query} Out",
                         Text = "😳😭I'm paying😤"
                 },
                 new InlineKeyboardButton()
                 {
-                    CallbackData = "ExpenseType In",
+                    CallbackData = $"{query} In",
                         Text = "😎👌💵I'm being payed💵👌"
                 },
         });
 
+        //todo page navigation with buttons
+
         public static InlineKeyboardMarkup Templates(List<Template> templates, string query)
         {
             return templates.Select(t => new InlineKeyboardButton { CallbackData = query + " " + t.Id, Text = t.Category.Emoji + t.Name + ": " + t.Sum }).ToArray();
+        }
+
+        internal static InlineKeyboardMarkup People(List<Person> people, string query)
+        {
+            var categories = people.ToArray();
+            var keys = new List<List<InlineKeyboardButton>>();
+
+            for (int i = 0; i < categories.Length; i++)
+            {
+                var category = categories[i];
+                var button =
+                    new InlineKeyboardButton()
+                    {
+                        Text = $"{category.Name}",
+                        CallbackData = query + " " + category.Id
+                    };
+                if (keys.Count == 0)
+                {
+                    keys.Add(new List<InlineKeyboardButton> { button });
+                }
+                else if (keys.Count > 0)
+                {
+                    if (keys.Last().Count == 1)
+                    {
+                        keys.Last().Add(button);
+                    }
+                    else
+                    {
+                        keys.Add(new List<InlineKeyboardButton> { button });
+                    }
+                }
+            }
+            return keys.ToArray();
         }
 
         public static InlineKeyboardMarkup Categories(IEnumerable<ExpenseCategory> input, string query)

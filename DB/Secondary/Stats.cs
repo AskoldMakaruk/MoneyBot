@@ -25,8 +25,8 @@ namespace MoneyBot.DB.Secondary
             .Take(4)
             .ToArray();
 
-        private ExpenseCategory[] _expenses => Categories.Where(e => e.Type == ExpenseType.Out).ToArray();
-        private ExpenseCategory[] _incomes => Categories.Where(e => e.Type == ExpenseType.In).ToArray();
+        private ExpenseCategory[] _expenses => Categories.Where(e => e.Type == MoneyDirection.Out).ToArray();
+        private ExpenseCategory[] _incomes => Categories.Where(e => e.Type == MoneyDirection.In).ToArray();
 
         public double Balance => Incomes - Expenses;
 

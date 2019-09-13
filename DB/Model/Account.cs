@@ -17,6 +17,9 @@ namespace MoneyBot.DB.Model
         public Expense CurrentExpense { get; set; }
 
         [NotMapped]
+        public Transaction CurrentTransaction { get; set; }
+
+        [NotMapped]
         public Controllers.TelegramController Controller { get; set; }
 
         [NotMapped]
@@ -32,5 +35,6 @@ namespace MoneyBot.DB.Model
         EnterExpenseSum,
         EnterTemplate,
         AddPeople,
+        EnterTransactionSum,
     }
 }

@@ -23,10 +23,13 @@ namespace MoneyBot.Telegram.Commands
                 Account.Status = AccountStatus.Manage;
                 return;
             }
-            if (Message.Text == "Add expense")
+            if (Message.Text == "Add")
             {
-                Account.CurrentExpense = new Expense();
-                await Client.SendTextMessageAsync(Account.ChatId, $"Choose one:", replyMarkup : Keyboards.CategoryTypes);
+                var keys = Keyboards.AddType(Account);
+                if (keys.InlineKeyboard.Count() != 0)
+                    await Client.SendTextMessageAsync(Account.ChatId, $"This is about", replyMarkup : keys);
+                else
+                    await Client.SendTextMessageAsync(Account.ChatId, $"Add category or person first");
                 return;
             }
             if (Message.Text == "Stats")

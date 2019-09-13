@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Queries
         }
         public override async void Execute()
         {
-            var categories = Account.Categories.Where(c => c.Type == (Message.Data.EndsWith("In") ? ExpenseType.In : ExpenseType.Out));
+            var categories = Account.Categories.Where(c => c.Type == (Message.Data.EndsWith("In") ? MoneyDirection.In : MoneyDirection.Out));
             var keyboard = Keyboards.Categories(categories, "AddExpense");
             await Client.EditMessageTextAsync(Account.ChatId, Message.Message.MessageId, $"Select expense category:", replyMarkup : keyboard);
         }

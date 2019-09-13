@@ -11,12 +11,12 @@ namespace MoneyBot.DB.Model
         public Account Account { get; set; }
         public string Name { get; set; }
         public string Emoji { get; set; }
-        public ExpenseType Type { get; set; }
+        public MoneyDirection Type { get; set; }
         public List<Expense> Expenses { get; set; }
         public List<Template> Templates { get; set; }
         public override string ToString() => $"{Emoji} {Name}";
     }
-    public enum ExpenseType : byte
+    public enum MoneyDirection : byte
     {
         Out,
         In

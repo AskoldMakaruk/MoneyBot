@@ -19,19 +19,11 @@ namespace MoneyBot.DB
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Account>().HasMany(p => p.Expenses);
             modelBuilder.Entity<Account>().HasMany(p => p.Categories).WithOne(p => p.Account).IsRequired();
 
-            // modelBuilder.Entity<Expense>().HasOne(p => p.Category);
-            // modelBuilder.Entity<Expense>().HasOne(p => p.Account);
-
             modelBuilder.Entity<ExpenseCategory>().HasMany(p => p.Expenses).WithOne(p => p.Category).IsRequired();
-
-            //            modelBuilder.Entity<Template>().HasOne(p => p.Account);
-            //      modelBuilder.Entity<Template>().HasOne(p => p.Category);
-
-            //          modelBuilder.Entity<Transaction>().HasOne(p => p.Account);
-            //        modelBuilder.Entity<Transaction>().HasOne(p => p.Person);
+            modelBuilder.Entity<ExpenseCategory>().HasIndex(p => p.Emoji).IsUnique();
+            modelBuilder.Entity<Person>().HasIndex(p => p.Alias).IsUnique();
         }
     }
 }

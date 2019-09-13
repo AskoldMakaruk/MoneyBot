@@ -38,6 +38,7 @@ namespace MoneyBot.Controllers
             }
             return account;
         }
+
         public Account FromMessage(Message message)
         {
             if (Accounts.ContainsKey(message.Chat.Id))
@@ -128,7 +129,6 @@ namespace MoneyBot.Controllers
 
         internal Stats GetStats(int accountId)
         {
-
             return new Stats()
             {
                 Categories = Context.Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray()
@@ -137,6 +137,11 @@ namespace MoneyBot.Controllers
         internal void AddPeople(IEnumerable<Person> people)
         {
             Context.People.AddRange(people);
+            SaveChanges();
+        }
+        internal void AddTransaction(Transaction transaction)
+        {
+            Context.Transactions.Add(transaction);
             SaveChanges();
         }
 
