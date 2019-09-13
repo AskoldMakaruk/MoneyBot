@@ -16,9 +16,9 @@ Bot to manage personal budget.
   - [ ] add
     - [ ] array
   - [ ] some type of alias
-  - [ ] transfers
-    - [ ] to
-    - [ ] from
+  - [x] transfers
+    - [x] to
+    - [x] from
   - [ ] total
   - [ ] inline button catalog
   - [ ] short profile
@@ -38,7 +38,8 @@ Bot to manage personal budget.
     - [ ] detailed    
     - [ ] as image
       - [ ] with graphs
-    - [x] by category    
+    - [x] by category
+    - [x] by person
   - [ ] external
     - [ ] csv
     - [ ] json
