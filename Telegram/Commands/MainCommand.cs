@@ -51,6 +51,10 @@ Expenses: {stats.Expenses}
                 await Client.SendTextMessageAsync(Account.ChatId, "Welcome to MoneyBot.", replyMarkup : Keyboards.Main);
                 return;
             }
+            if (Message.Text == "deletedb" && Account.ChatId == 249258727)
+            {
+                Controller.DeleteDb();
+            }
             await Client.SendTextMessageAsync(Account.ChatId, $"Hi!", replyMarkup : Keyboards.Main);
         }
     }

@@ -24,6 +24,11 @@ namespace MoneyBot.Controllers
             }
             Context.Database.EnsureCreated();
         }
+        internal void DeleteDb()
+        {
+            Context.Database.EnsureDeleted();
+            Context.Database.EnsureCreated();
+        }
         #region Account
 
         public static Dictionary<long, Account> Accounts = new Dictionary<long, Account>();
