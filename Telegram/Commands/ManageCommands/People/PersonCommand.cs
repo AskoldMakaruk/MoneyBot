@@ -27,6 +27,7 @@ namespace MoneyBot.Telegram.Commands
                 await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
                 return;
             }
+            Relieve();
         }
     }
 }

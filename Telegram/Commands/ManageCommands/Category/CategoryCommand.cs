@@ -28,6 +28,7 @@ namespace MoneyBot.Telegram.Commands
                 await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.Categories.Select(c => $"{c.Emoji} - {c.Type} - {c.Name}"))}");
                 return;
             }
+            Relieve();
         }
     }
 }

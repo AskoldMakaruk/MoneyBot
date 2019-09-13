@@ -26,7 +26,8 @@ namespace MoneyBot.Telegram.Commands
         public abstract void Execute();
         public virtual bool Canceled()
         {
-            return Message.Text.ToLower().Equals("cancel") || Message.Text.ToLower().Equals("/cancel");
+            return Message.Text.ToLower().Equals("cancel") ||
+                Message.Text.ToLower().Equals("/cancel");
         }
         public virtual void Relieve()
         {

@@ -20,6 +20,7 @@ namespace MoneyBot.Telegram.Commands
                 await Client.SendTextMessageAsync(Account.ChatId, "Select category for new template:", replyMarkup : Keyboards.Categories(Account.Categories, "AddTemplate"));
                 return;
             }
+            Relieve();
         }
     }
 }

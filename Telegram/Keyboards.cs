@@ -57,7 +57,6 @@ namespace MoneyBot.Telegram
                     new KeyboardButton("Override funds"),
                     new KeyboardButton("Show funds")
             }
-
         }, true);
 
         internal static InlineKeyboardMarkup AddType(Account account)
