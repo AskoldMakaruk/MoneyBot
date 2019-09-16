@@ -37,5 +37,6 @@ namespace MoneyBot.DB.Model
         AddPeople,
         EnterTransactionSum,
         ChooseShow,
+        OverrideCategories,
     }
 }
