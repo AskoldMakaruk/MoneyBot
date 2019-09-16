@@ -61,7 +61,10 @@ Expenses: {stats.Expenses}
             {
                 Controller.DeleteDb();
             }
+            if (Account.Categories.Count(c => Message.Text.StartsWith(c.Emoji)) == 1)
+            {
 
+            }
             await Client.SendTextMessageAsync(Account.ChatId, $"Hi!", replyMarkup : Keyboards.Main);
         }
     }
