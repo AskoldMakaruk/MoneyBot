@@ -20,16 +20,16 @@ namespace MoneyBot.Telegram.Commands
             {
                 Account = Account,
                     Emoji = v[0],
-                    //todo default type if one is missing
+                    //TODO default type if one is missing
                     Type = v[1].ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out,
                     Name = v[2],
 
             });
             //categories to be saved
-            var a = Account.Categories.Where(c => categories.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) != null);
+            var saved = Account.Categories.Where(c => categories.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) != null);
+            //to save records about categories that haven't changed
+            Account.Categories = saved.Union(categories.Where(c => saved.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) == null)).ToList();
 
-            var s = a.Union(categories.Where(c => a.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) == null)).ToList();
-            Account.Categories = s;
             Controller.SaveChanges();
             Account.Status = AccountStatus.Free;
             await Client.SendTextMessageAsync(Account.ChatId, "Categories overrided", replyMarkup : Keyboards.Main);

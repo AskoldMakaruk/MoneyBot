@@ -100,7 +100,7 @@ namespace MoneyBot.Telegram
                 },
         });
 
-        //todo page navigation with buttons
+        //TODO page navigation with buttons
 
         public static InlineKeyboardMarkup Templates(List<Template> templates, string query)
         {

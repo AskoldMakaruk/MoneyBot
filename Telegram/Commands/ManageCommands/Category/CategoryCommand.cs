@@ -30,7 +30,7 @@ namespace MoneyBot.Telegram.Commands
             if (Message.Text == "Override category")
             {
                 Account.Status = AccountStatus.OverrideCategories;
-                await Client.SendTextMessageAsync(Account.ChatId, "This will override your categories and delete your attached expenses.\nEnter new categories in format:\n[emoji] - [categoryType(In/Out)] - [category name]\n\nExample:\n💊 - in - Hard drugs\n🥦 - out - Trees\n👨🏿 - in - Nigga", replyMarkup : Keyboards.Cancel);
+                await Client.SendTextMessageAsync(Account.ChatId, "This will override your categories and delete attached expenses.\nEnter new categories in format:\n[emoji] - [categoryType(In/Out)] - [category name]\n\nExample:\n💊 - in - Hard drugs\n🥦 - out - Trees\n👨🏿 - in - Nigga", replyMarkup : Keyboards.Cancel);
                 return;
             }
             Relieve();

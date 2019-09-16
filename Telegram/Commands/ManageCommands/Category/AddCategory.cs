@@ -22,7 +22,7 @@ namespace MoneyBot.Telegram.Commands
             {
                 Account = Account,
                     Emoji = v[0],
-                    //todo default type if one is missing
+                    //TODO default type if one is missing
                     Type = v[1].ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out,
                     Name = v[2],
 

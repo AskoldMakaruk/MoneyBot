@@ -26,6 +26,13 @@ namespace MoneyBot.Telegram.Commands
                 await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
                 return;
             }
+            if (Message.Text == "Override people")
+            {
+                Account.Status = AccountStatus.OverridePeople;
+                await Client.SendTextMessageAsync(Account.ChatId, "This will override your people and delete attached transactions.\nEnter new people in format:\n" +
+                    "[alias] [name]", replyMarkup : Keyboards.Cancel);
+                return;
+            }
             Relieve();
         }
     }
