@@ -12,6 +12,7 @@ namespace MoneyBot.Telegram.Queries
         public override async void Execute()
         {
             var keyboard = Keyboards.People(Account.People, "AddTransaction");
+            Account.CurrentTransaction.Type = Message.Data.ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out;
             await Client.EditMessageTextAsync(Account.ChatId, Message.Message.MessageId, $"Select person that {(Account.CurrentTransaction.Type == MoneyDirection.In?"gives money to you": "ownes you money")}:", replyMarkup : keyboard);
         }
     }

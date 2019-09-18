@@ -47,10 +47,18 @@ namespace MoneyBot.Telegram.Commands
                     $@"Your stats
 {(DateTime.Now - new TimeSpan(30,0,0,0)).ToString("dd MMMM")} - {DateTime.Now.ToString("dd MMMM")}
 Balance: {stats.Balance}
+Ownings: {stats.Owe}
 Incomes: {stats.Incomes}
-    {string.Join("\t\t\n",stats.TopIncomeCategories.Select(c => $"{c.Emoji}{c.Name} {c.Expenses.Sum(r => r.Sum)}"))}
+{string.Join("\n",stats.TopIncomeCategories.Select(c => $"{c.Emoji}{c.Name} {c.Expenses.Sum(r => r.Sum)}"))}
 Expenses: {stats.Expenses}
-    {string.Join("\t\t\n",stats.TopExpenseCategories.Select(c => $"{c.Emoji}{c.Name} {c.Expenses.Sum(r => r.Sum)}"))}";
+{string.Join("\n",stats.TopExpenseCategories.Select(c => $"{c.Emoji}{c.Name} {c.Expenses.Sum(r => r.Sum)}"))}
+
+Your top creditors:
+{string.Join("\n",stats.TopCreditors.Select(d => $"{d.Name}: {d.CountSum()}"))}
+
+Your top debtors:
+{string.Join("\n",stats.TopDeptors.Select(d => $"{d.Name}: {d.CountSum()}"))}
+";
                 await Client.SendTextMessageAsync(Account.ChatId, message);
                 return;
             }

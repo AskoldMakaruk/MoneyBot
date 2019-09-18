@@ -143,7 +143,8 @@ namespace MoneyBot.Controllers
         {
             return new Stats()
             {
-                Categories = Context.Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray()
+                Categories = Context.Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray(),
+                    People = Context.People.Include(c => c.Transactions).Where(c => c.Account.Id == accountId).ToArray(),
             };
         }
         internal void AddPeople(IEnumerable<Person> people)

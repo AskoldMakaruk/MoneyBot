@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text.RegularExpressions;
+using MoneyBot.DB.Model;
 
 namespace MoneyBot
 {
@@ -21,6 +22,10 @@ namespace MoneyBot
         public static double ParseSum(this string source)
         {
             return double.TryParse(source.Trim().Replace('.', ','), out var sum) ? sum : -1;
+        }
+        public static double CountSum(this Person source)
+        {
+            return source.Transactions.Select(t => t.Type == MoneyDirection.In? t.Sum: -t.Sum).Sum();
         }
     }
 }
