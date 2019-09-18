@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
 namespace MoneyBot.Telegram.Commands
@@ -61,9 +63,38 @@ Expenses: {stats.Expenses}
             {
                 Controller.DeleteDb();
             }
-            if (Account.Categories.Count(c => Message.Text.StartsWith(c.Emoji)) == 1)
-            {
 
+            var regex = new Regex("(.{0,} - .{0,} - [0123456789.]{0,})");
+            var added = Message.Text
+                .Split("\n")
+                .Where(m => regex.Match(m).Success)
+                .Select(m => new
+                {
+                    Category = Account.Categories
+                        .FirstOrDefault(c => m.StartsWith(c.Emoji)),
+                        Message = m
+                })
+                .Where(c => c.Category != null);
+
+            if (added.Count() != 0)
+            {
+                var builder = new StringBuilder();
+                foreach (var a in added)
+                {
+                    var values = a.Message.TrimDoubleSpaces().TrySplit('-', ' ');
+                    var expense = new Expense
+                    {
+                        Category = a.Category,
+                        Date = DateTime.Now,
+                        Description = values[1],
+                        Sum = values[2].ParseSum()
+                    };
+                    a.Category.Expenses.Add(expense);
+                    builder.Append($"{expense.Category.Emoji}: {expense.Sum}\n");
+                }
+                await Client.SendTextMessageAsync(Account.ChatId, $"{builder.ToString()}", replyMarkup : Keyboards.Main);
+                Account.Controller.SaveChanges();
+                return;
             }
             await Client.SendTextMessageAsync(Account.ChatId, $"Hi!", replyMarkup : Keyboards.Main);
         }
