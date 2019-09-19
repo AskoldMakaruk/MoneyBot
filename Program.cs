@@ -11,3 +11,4 @@ namespace MoneyBot
         }
     }
 }
+//todo add fastway to guide user to add stuff

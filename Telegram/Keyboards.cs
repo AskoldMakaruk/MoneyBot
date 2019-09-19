@@ -77,7 +77,7 @@ namespace MoneyBot.Telegram
                     CallbackData = "AddType Person",
                         Text = "Someone else and me"
                 });
-            if (account.Categories.Count > 0)
+            if (account.Categories?.Count > 0)
                 keys.Add(new InlineKeyboardButton()
                 {
                     CallbackData = "AddType Category",
