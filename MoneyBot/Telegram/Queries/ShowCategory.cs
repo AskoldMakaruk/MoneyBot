@@ -25,7 +25,7 @@ namespace MoneyBot.Telegram.Queries
                 return;
             }
 
-            var categoryDays = category.Expenses.GroupBy(e => e.Date.Date).Select(r => $"{r.Key.ToString("dd MMMM")}\n{string.Join('\n', r.Select(k => $"{k.Description}: {k.Sum}"))}");
+            var categoryDays = category.Expenses.GroupBy(e => e.Date.Date).Select(r => $"{r.Key.ToString("dd MMMM")}\n{string.Join("\n", r.Select(k => $"{k.Description}: {k.Sum}"))}");
 
             string message = $"{category.ToString()}\n{string.Join(new string('-', 10)+"\n", categoryDays)}".Trim();
             if (Message.Message.Text != message)

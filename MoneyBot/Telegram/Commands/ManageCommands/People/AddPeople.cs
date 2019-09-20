@@ -14,7 +14,7 @@ namespace MoneyBot.Telegram.Commands
         }
         public override async void Execute()
         {
-            var values = Message.Text.Split("\n").Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
+            var values = Message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
             var people = values.Select(v => new Person()
             {
                 Account = Account,
