@@ -78,8 +78,13 @@ Your top debtors:
             if (Message.Text == "deletedb" && Account.ChatId == 249258727)
             {
                 Controller.DeleteDb();
+                return;
             }
-
+            if (Message.Text.ToLower() == "deleteme" && Account.ChatId == 249258727)
+            {
+                Controller.RemoveAccount(Account);
+                return;
+            }
             var regex = new Regex("(.{0,} - .{0,} - [0123456789.]{0,})");
             var added = Message.Text
                 .Split("\n")

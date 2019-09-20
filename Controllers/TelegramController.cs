@@ -99,6 +99,13 @@ namespace MoneyBot.Controllers
             return account;
         }
 
+        internal void RemoveAccount(Account account)
+        {
+            Context.Accounts.Remove(account);
+            Accounts.Remove(account.ChatId);
+            SaveChanges();
+        }
+
         #endregion
 
         #region Categories
