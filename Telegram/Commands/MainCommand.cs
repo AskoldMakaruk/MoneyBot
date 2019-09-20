@@ -39,7 +39,7 @@ namespace MoneyBot.Telegram.Commands
             }
             if (Message.Text == "Show")
             {
-                if (Account.People?.Count != 0 || Account.Categories?.Count != 0)
+                if ((Account.People != null && Account.People?.Count != 0) || (Account.Categories != null && Account.Categories?.Count != 0))
                 {
                     Account.Status = AccountStatus.ChooseShow;
                     await Client.SendTextMessageAsync(Account.ChatId, $"What you desire to see?", replyMarkup : Keyboards.MainShow);

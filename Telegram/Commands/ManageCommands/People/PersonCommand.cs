@@ -23,7 +23,9 @@ namespace MoneyBot.Telegram.Commands
             }
             if (Message.Text == "Show people")
             {
-                await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
+                if (Account.People != null && Account.People.Count != 0)
+                    await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
+                else await Client.SendTextMessageAsync(Account.ChatId, $"You have no people.");
                 return;
             }
             if (Message.Text == "Override people")

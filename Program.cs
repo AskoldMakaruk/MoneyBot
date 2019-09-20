@@ -12,3 +12,4 @@ namespace MoneyBot
     }
 }
 //todo add fastway to guide user to add stuff
+//todo conditional keyboards (hide keys that user can't use)

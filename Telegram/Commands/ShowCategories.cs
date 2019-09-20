@@ -16,12 +16,16 @@ namespace MoneyBot.Telegram.Commands
         {
             if (Message.Text == "Show categories")
             {
-                await Client.SendTextMessageAsync(Account.ChatId, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
+                if (Account.Categories != null)
+                    await Client.SendTextMessageAsync(Account.ChatId, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
+                else await Client.SendTextMessageAsync(Account.ChatId, $"You have 0 categories", replyMarkup : Keyboards.Main);
                 return;
             }
             if (Message.Text == "Show people")
             {
-                await Client.SendTextMessageAsync(Account.ChatId, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
+                if (Account.People != null)
+                    await Client.SendTextMessageAsync(Account.ChatId, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
+                else await Client.SendTextMessageAsync(Account.ChatId, $"You have 0 people", replyMarkup : Keyboards.Main);
                 return;
             }
             Account.Status = AccountStatus.Free;

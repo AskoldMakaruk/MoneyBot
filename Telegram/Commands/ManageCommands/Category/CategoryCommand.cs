@@ -24,7 +24,9 @@ namespace MoneyBot.Telegram.Commands
             }
             if (Message.Text == "Show categories")
             {
-                await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.Categories.Select(c => $"{c.Emoji} - {c.Type} - {c.Name}"))}");
+                if (Account.Categories != null && Account.Categories.Count != 0)
+                    await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.Categories.Select(c => $"{c.Emoji} - {c.Type} - {c.Name}"))}");
+                else await Client.SendTextMessageAsync(Account.ChatId, $"You have no categories.");
                 return;
             }
             if (Message.Text == "Override category")
