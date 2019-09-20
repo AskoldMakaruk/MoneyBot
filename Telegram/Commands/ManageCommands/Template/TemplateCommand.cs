@@ -16,7 +16,7 @@ namespace MoneyBot.Telegram.Commands
             if (Message.Text == "Add template")
             {
                 Account.CurrentTemplate = new Template();
-                await Client.SendTextMessageAsync(Account.ChatId, "Select category for new template:", replyMarkup : Keyboards.Categories(Account.Categories, "AddTemplate"));
+                await Client.SendTextMessageAsync(Account, "Select category for new template:", replyMarkup : Keyboards.Categories(Account.Categories, "AddTemplate"));
                 return;
             }
             Relieve();

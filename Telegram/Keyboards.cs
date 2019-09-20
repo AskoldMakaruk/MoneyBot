@@ -13,71 +13,82 @@ namespace MoneyBot.Telegram
             },
             true, true);
         public static IReplyMarkup Clear => new ReplyKeyboardRemove();
-        public static ReplyKeyboardMarkup Main => new ReplyKeyboardMarkup(new []
+        public static ReplyKeyboardMarkup MainKeyboard(Account account)
         {
-            new []
+
+            var firstRow = new List<KeyboardButton>();
+            var secondRow = new List<KeyboardButton>();
+
+            if (account.CategoriesInited() || account.PeopleInited())
             {
-                new KeyboardButton("Add"),
-                    new KeyboardButton("Show")
-
-            },
-            new []
-            {
-
-                new KeyboardButton("Stats"),
-                    new KeyboardButton("Manage Menu")
-
+                firstRow = new List<KeyboardButton>
+                {
+                    "Add",
+                    "Show"
+                };
+                secondRow.Add("Stats");
             }
+            secondRow.Add("Manage Menu");
+            return new ReplyKeyboardMarkup(new []
+            {
+                firstRow,
+                secondRow
+            }, true);
+        }
 
-        }, true);
-
-        public static ReplyKeyboardMarkup Manage => new ReplyKeyboardMarkup(new []
+        public static ReplyKeyboardMarkup Manage(Account account)
         {
-            new []
-            {
-                new KeyboardButton("Add categories"),
-                    new KeyboardButton("Override category"),
-                    new KeyboardButton("Show categories")
-            },
-            new []
-            {
-                new KeyboardButton("Add templates"),
-                    new KeyboardButton("Override templates"),
-                    new KeyboardButton("Show templates")
-            },
-            new []
-            {
-                new KeyboardButton("Add people"),
-                    new KeyboardButton("Override people"),
-                    new KeyboardButton("Show people")
-            },
-            new []
-            {
-                new KeyboardButton("Add fund"),
-                    new KeyboardButton("Override funds"),
-                    new KeyboardButton("Show funds")
-            }
-        }, true);
+            var firstRow = new List<KeyboardButton>() { "Add categories" };
+            var secondRow = new List<KeyboardButton>();
+            var thirdRow = new List<KeyboardButton>() { "Add people" };
+            var fourthRow = new List<KeyboardButton>();
 
-        public static ReplyKeyboardMarkup MainShow => new ReplyKeyboardMarkup(new []
-        {
-            new []
+            if (account.CategoriesInited())
             {
-                new KeyboardButton("Show people"),
-                    new KeyboardButton("Show categories")
+                firstRow.Add("Override categories");
+                firstRow.Add("Show categories");
+
+                secondRow.Add("Add templates");
+                secondRow.Add("Override templates");
+                secondRow.Add("Show templates");
             }
-        }, true);
+            if (account.PeopleInited())
+            {
+                thirdRow.Add("Override people");
+                thirdRow.Add("Show people");
+            }
+            if (account.FundsInited())
+            {
+                fourthRow.Add("Override funds");
+                fourthRow.Add("Show funds");
+            }
+            return new ReplyKeyboardMarkup(new []
+            {
+                firstRow,
+                secondRow,
+                thirdRow,
+                fourthRow
+            }, true);
+        }
+
+        public static ReplyKeyboardMarkup MainShow => new ReplyKeyboardMarkup(
+            new KeyboardButton[]
+            {
+                "Show people",
+                "Show categories"
+            },
+            true);
 
         internal static InlineKeyboardMarkup AddType(Account account)
         {
             var keys = new List<InlineKeyboardButton>();
-            if (account.People?.Count > 0)
+            if (account.PeopleInited())
                 keys.Add(new InlineKeyboardButton()
                 {
                     CallbackData = "AddType Person",
                         Text = "Someone else and me"
                 });
-            if (account.Categories?.Count > 0)
+            if (account.CategoriesInited())
                 keys.Add(new InlineKeyboardButton()
                 {
                     CallbackData = "AddType Category",

@@ -12,24 +12,27 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.ChooseShow) res++;
             return res;
         }
-        public override async void Execute()
+        public override void Execute()
         {
             if (Message.Text == "Show categories")
             {
-                if (Account.Categories != null)
-                    await Client.SendTextMessageAsync(Account.ChatId, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
-                else await Client.SendTextMessageAsync(Account.ChatId, $"You have 0 categories", replyMarkup : Keyboards.Main);
+                ToCategory(Account, Client);
                 return;
             }
             if (Message.Text == "Show people")
             {
-                if (Account.People != null)
-                    await Client.SendTextMessageAsync(Account.ChatId, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
-                else await Client.SendTextMessageAsync(Account.ChatId, $"You have 0 people", replyMarkup : Keyboards.Main);
+                ToPeople(Account, Client);
                 return;
             }
-            Account.Status = AccountStatus.Free;
             Relieve();
+        }
+        public static async void ToCategory(Account Account, Bot Client)
+        {
+            await Client.SendTextMessageAsync(Account, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
+        }
+        public static async void ToPeople(Account Account, Bot Client)
+        {
+            await Client.SendTextMessageAsync(Account, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
         }
     }
 }

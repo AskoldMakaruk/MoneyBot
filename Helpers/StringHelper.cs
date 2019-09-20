@@ -4,7 +4,7 @@ using MoneyBot.DB.Model;
 
 namespace MoneyBot
 {
-    public static class StringHelper
+    public static class Helper
     {
         public static string[] TrySplit(this string source, params char[] splitChars)
         {
@@ -26,6 +26,18 @@ namespace MoneyBot
         public static double CountSum(this Person source)
         {
             return source.Transactions.Select(t => t.Type == MoneyDirection.In? t.Sum: -t.Sum).Sum();
+        }
+        public static bool CategoriesInited(this Account account)
+        {
+            return account.Categories != null && account.Categories.Count != 0;
+        }
+        public static bool PeopleInited(this Account account)
+        {
+            return account.People != null && account.People.Count != 0;
+        }
+        public static bool FundsInited(this Account account)
+        {
+            return account.Funds != null && account.Funds.Count != 0;
         }
     }
 }

@@ -22,11 +22,11 @@ namespace MoneyBot.Telegram.Commands
                 Account.CurrentTransaction.Sum = sum;
                 Account.CurrentTransaction.Date = DateTime.Now;
                 Controller.AddTransaction(Account.CurrentTransaction);
-                await Client.SendTextMessageAsync(Account.ChatId, $"Success!", replyMarkup : Keyboards.Main);
+                await Client.SendTextMessageAsync(Account, $"Success!", replyMarkup : Keyboards.MainKeyboard(Account));
                 Account.Status = AccountStatus.Free;
                 return;
             }
-            await Client.SendTextMessageAsync(Account.ChatId, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
+            await Client.SendTextMessageAsync(Account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
         }
     }
 }

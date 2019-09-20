@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Telegram.Bot.Types;
 
 namespace MoneyBot.DB.Model
 {
@@ -24,6 +25,11 @@ namespace MoneyBot.DB.Model
 
         [NotMapped]
         public Template CurrentTemplate { get; set; }
+
+        [NotMapped]
+        public Message LastMessage { get; set; }
+
+        public static implicit operator ChatId(Account a) => a.ChatId;
     }
 
     public enum AccountStatus

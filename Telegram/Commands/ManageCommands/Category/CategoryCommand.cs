@@ -19,20 +19,20 @@ namespace MoneyBot.Telegram.Commands
             if (Message.Text == "Add categories")
             {
                 Account.Status = AccountStatus.AddCategories;
-                await Client.SendTextMessageAsync(Account.ChatId, "Enter new categories in format:\n[emoji] - [categoryType(In/Out)] - [category name]\n\nExample:\n💊 - in - Hard drugs\n🥦 - out - Trees\n👨🏿 - in - Nigga", replyMarkup : Keyboards.Cancel);
+                await Client.SendTextMessageAsync(Account, "Enter new categories in format:\n[emoji] - [categoryType(In/Out)] - [category name]\n\nExample:\n💊 - in - Hard drugs\n🥦 - out - Trees\n👨🏿 - in - Nigga", replyMarkup : Keyboards.Cancel);
                 return;
             }
             if (Message.Text == "Show categories")
             {
                 if (Account.Categories != null && Account.Categories.Count != 0)
-                    await Client.SendTextMessageAsync(Account.ChatId, $"{string.Join("\n", Account.Categories.Select(c => $"{c.Emoji} - {c.Type} - {c.Name}"))}");
-                else await Client.SendTextMessageAsync(Account.ChatId, $"You have no categories.");
+                    await Client.SendTextMessageAsync(Account, $"{string.Join("\n", Account.Categories.Select(c => $"{c.Emoji} - {c.Type} - {c.Name}"))}");
+                else await Client.SendTextMessageAsync(Account, $"You have no categories.");
                 return;
             }
-            if (Message.Text == "Override category")
+            if (Message.Text == "Override categories")
             {
                 Account.Status = AccountStatus.OverrideCategories;
-                await Client.SendTextMessageAsync(Account.ChatId, "This will override your categories and delete attached expenses.\nEnter new categories in format:\n[emoji] - [categoryType(In/Out)] - [category name]\n\nExample:\n💊 - in - Hard drugs\n🥦 - out - Trees\n👨🏿 - in - Nigga", replyMarkup : Keyboards.Cancel);
+                await Client.SendTextMessageAsync(Account, "This will override your categories and delete attached expenses.\nEnter new categories in format:\n[emoji] - [categoryType(In/Out)] - [category name]\n\nExample:\n💊 - in - Hard drugs\n🥦 - out - Trees\n👨🏿 - in - Nigga", replyMarkup : Keyboards.Cancel);
                 return;
             }
             Relieve();

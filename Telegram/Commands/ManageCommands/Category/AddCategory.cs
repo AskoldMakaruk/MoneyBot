@@ -29,7 +29,7 @@ namespace MoneyBot.Telegram.Commands
             });
             Controller.AddCategories(categories);
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account.ChatId, "Category added", replyMarkup : Keyboards.Main);
+            await Client.SendTextMessageAsync(Account, "Category added", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

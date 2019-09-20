@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
 using MoneyBot.Telegram.Commands;
 using MoneyBot.Telegram.Queries;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MoneyBot.Telegram
 {
@@ -77,5 +82,15 @@ namespace MoneyBot.Telegram
             }
             catch (Exception ex) { Console.WriteLine(ex); }
         }
+
+        public async Task<Message> SendTextMessageAsync(Account account, string text,
+            ParseMode parseMode = ParseMode.Default, bool disableWebPagePreview = false, bool disableNotification = false,
+            int replyToMessageId = 0, IReplyMarkup replyMarkup = null, CancellationToken cancellationToken = default)
+        {
+            var message = await base.SendTextMessageAsync(account, text, parseMode, disableWebPagePreview, disableNotification, replyToMessageId, replyMarkup, cancellationToken);
+            account.LastMessage = message;
+            return message;
+        }
+
     }
 }

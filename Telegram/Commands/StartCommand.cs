@@ -16,7 +16,7 @@ namespace MoneyBot.Telegram.Commands
         }
         public override async void Execute()
         {
-            await Client.SendTextMessageAsync(Account.ChatId, "Welcome to MoneyBot.", replyMarkup : Keyboards.Main);
+            await Client.SendTextMessageAsync(Account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(Account));
             Account.Status = AccountStatus.Free;
         }
     }

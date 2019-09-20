@@ -28,7 +28,7 @@ namespace MoneyBot.Telegram.Commands
             Account.People = saved.Union(people.Where(c => saved.FirstOrDefault(e => e.Name == c.Name && e.Alias == c.Alias) == null)).ToList();
 
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account.ChatId, "People added", replyMarkup : Keyboards.Main);
+            await Client.SendTextMessageAsync(Account, "People added", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

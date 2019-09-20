@@ -9,20 +9,38 @@ namespace MoneyBot.Telegram.Queries
         {
             return Message.Data.StartsWith("AddType");
         }
-        public override async void Execute()
+        public override void Execute()
         {
             if (Message.Data.EndsWith("Category"))
             {
-                Account.CurrentExpense = new Expense();
-                await Client.EditMessageTextAsync(Account.ChatId, Message.Message.MessageId, $"Choose one:", replyMarkup : Keyboards.CategoryTypes("ExpenseType"));
+                TypeCategory(Account, Client, Message.Message);
                 return;
             }
             else
             {
-                Account.CurrentTransaction = new Transaction();
-                await Client.EditMessageTextAsync(Account.ChatId, Message.Message.MessageId, $"Choose one:", replyMarkup : Keyboards.CategoryTypes("TransactionType"));
+                TypePerson(Account, Client, Message.Message);
                 return;
             }
+        }
+
+        public static void TypeCategory(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, true, Message);
+        public static void TypePerson(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, false, Message);
+
+        private static async void SelectType(Account Account, Bot Client, bool category, Message Message = null)
+        {
+            if (category)
+                Account.CurrentExpense = new Expense();
+            else
+                Account.CurrentTransaction = new Transaction();
+
+            var text = category? "ExpenseType": "TransactionType";
+            var replyMarkup = Keyboards.CategoryTypes(text);
+            if (Message == null)
+            {
+                await Client.SendTextMessageAsync(Account.ChatId, $"Choose one:", replyMarkup : replyMarkup);
+            }
+            else
+                await Client.EditMessageTextAsync(Account.ChatId, Message.MessageId, $"Choose one:", replyMarkup : replyMarkup);
         }
     }
 }

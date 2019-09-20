@@ -25,7 +25,7 @@ namespace MoneyBot.Telegram.Commands
             });
             Controller.AddTemplates(templates);
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account.ChatId, "Template added", replyMarkup : Keyboards.Main);
+            await Client.SendTextMessageAsync(Account, "Template added", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

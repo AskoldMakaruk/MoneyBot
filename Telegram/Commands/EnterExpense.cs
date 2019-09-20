@@ -22,15 +22,15 @@ namespace MoneyBot.Telegram.Commands
                 Account.CurrentExpense.Sum = sum;
                 Account.CurrentExpense.Date = DateTime.Now;
                 Controller.AddExpense(Account.CurrentExpense);
-                await Client.SendTextMessageAsync(Account.ChatId, $"Success!", replyMarkup : Keyboards.Main);
+                await Client.SendTextMessageAsync(Account, $"Success!", replyMarkup : Keyboards.MainKeyboard(Account));
                 Account.Status = AccountStatus.Free;
                 return;
             }
-            await Client.SendTextMessageAsync(Account.ChatId, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
+            await Client.SendTextMessageAsync(Account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
         }
         public override async void Relieve()
         {
-            await Client.SendTextMessageAsync(Account.ChatId, $"You shall be freed", replyMarkup : Keyboards.Main);
+            await Client.SendTextMessageAsync(Account, $"You shall be freed", replyMarkup : Keyboards.MainKeyboard(Account));
             Account.Status = AccountStatus.Free;
             return;
         }

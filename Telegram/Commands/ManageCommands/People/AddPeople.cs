@@ -23,7 +23,7 @@ namespace MoneyBot.Telegram.Commands
             });
             Controller.AddPeople(people);
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account.ChatId, "People added", replyMarkup : Keyboards.Main);
+            await Client.SendTextMessageAsync(Account, "People added", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

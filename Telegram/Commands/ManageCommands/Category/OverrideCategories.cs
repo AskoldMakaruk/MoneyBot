@@ -32,7 +32,7 @@ namespace MoneyBot.Telegram.Commands
 
             Controller.SaveChanges();
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account.ChatId, "Categories overrided", replyMarkup : Keyboards.Main);
+            await Client.SendTextMessageAsync(Account, "Categories overrided", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }
