@@ -1,6 +1,8 @@
 # MoneyBot 
 Bot to manage personal budget.
 
+You can test it in telegram @throwhimintosocietybot
+
 ## Feature roadmap
 <details>
     <summary>Expand</summary>
