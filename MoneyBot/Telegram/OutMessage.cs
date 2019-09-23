@@ -1,7 +1,7 @@
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace MoneyBot.DB.Secondary
+namespace MoneyBot.Telegram
 {
     public class OutMessage
     {

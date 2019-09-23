@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
 
@@ -16,7 +17,8 @@ namespace MoneyBot.Telegram.Commands
         }
         public override async void Execute()
         {
-            var values = Message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
+            var regex = new Regex(@"\w{0,} - .{2,3} - \w{0,}");
+            var values = Message.Text.Split('\n').Where(v => regex.IsMatch(v)).Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
 
             var categories = values.Select(v => new ExpenseCategory()
             {
@@ -29,7 +31,20 @@ namespace MoneyBot.Telegram.Commands
             });
             Controller.AddCategories(categories);
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account, "Category added", replyMarkup : Keyboards.MainKeyboard(Account));
+            var message = "";
+            if (categories.Count() == 0)
+            {
+                message = "No categories were added.";
+            }
+            else if (categories.Count() == 1)
+            {
+                message = $"Category {categories.First().Name} was added.";
+            }
+            else
+            {
+                message = $"{categories.Count()} categories were added.";
+            }
+            await Client.SendTextMessageAsync(Account, message, replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

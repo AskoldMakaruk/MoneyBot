@@ -6,9 +6,9 @@ using Xunit;
 
 namespace Test
 {
-    public class BotStartupTests
+    public class BotTests
     {
-        public BotStartupTests()
+        public BotTests()
         {
 
         }
