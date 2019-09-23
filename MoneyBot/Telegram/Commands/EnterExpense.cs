@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.EnterExpenseSum) res += 2;
             return res;
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
             var values = Message.Text.TrySplit('-', ' ');
             var sum = values[1].ParseSum();
@@ -22,17 +22,16 @@ namespace MoneyBot.Telegram.Commands
                 Account.CurrentExpense.Sum = sum;
                 Account.CurrentExpense.Date = DateTime.Now;
                 Controller.AddExpense(Account.CurrentExpense);
-                await Client.SendTextMessageAsync(Account, $"Success!", replyMarkup : Keyboards.MainKeyboard(Account));
                 Account.Status = AccountStatus.Free;
-                return;
+                return new OutMessage(Account, $"Success!", replyMarkup : Keyboards.MainKeyboard(Account));
+
             }
-            await Client.SendTextMessageAsync(Account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
+            return new OutMessage(Account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
         }
-        public override async void Relieve()
+        public override OutMessage Relieve()
         {
-            await Client.SendTextMessageAsync(Account, $"You shall be freed", replyMarkup : Keyboards.MainKeyboard(Account));
             Account.Status = AccountStatus.Free;
-            return;
+            return new OutMessage(Account, $"You shall be freed", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

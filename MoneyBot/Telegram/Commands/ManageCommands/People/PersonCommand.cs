@@ -12,30 +12,27 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.Manage && (Message.Text.Contains("person") || Message.Text.Contains("people"))) res += 2;
             return res;
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
             if (Message.Text == "Add people")
             {
                 Account.Status = AccountStatus.AddPeople;
-                await Client.SendTextMessageAsync(Account, $"Enter new people in format:\n" +
+                return new OutMessage(Account, $"Enter new people in format:\n" +
                     "[alias] [name]", replyMarkup : Keyboards.Cancel);
-                return;
             }
             if (Message.Text == "Show people")
             {
                 if (Account.People != null && Account.People.Count != 0)
-                    await Client.SendTextMessageAsync(Account, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
-                else await Client.SendTextMessageAsync(Account, $"You have no people.");
-                return;
+                    return new OutMessage(Account, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
+                else return new OutMessage(Account, $"You have no people.");
             }
             if (Message.Text == "Override people")
             {
                 Account.Status = AccountStatus.OverridePeople;
-                await Client.SendTextMessageAsync(Account, "This will override your people and delete attached transactions.\nEnter new people in format:\n" +
+                return new OutMessage(Account, "This will override your people and delete attached transactions.\nEnter new people in format:\n" +
                     "[alias] [name]", replyMarkup : Keyboards.Cancel);
-                return;
             }
-            Relieve();
+            return Relieve();
         }
     }
 }

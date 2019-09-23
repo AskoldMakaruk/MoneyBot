@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.OverrideCategories) res++;
             return res;
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
             var values = Message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
 
@@ -32,7 +32,7 @@ namespace MoneyBot.Telegram.Commands
 
             Controller.SaveChanges();
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account, "Categories overrided", replyMarkup : Keyboards.MainKeyboard(Account));
+            return new OutMessage(Account, "Categories overrided", Keyboards.MainKeyboard(Account));
         }
     }
 }

@@ -15,7 +15,7 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.AddCategories) res++;
             return res;
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
             var regex = new Regex(@"\w{0,} - .{2,3} - \w{0,}");
             var values = Message.Text.Split('\n').Where(v => regex.IsMatch(v)).Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
@@ -44,7 +44,7 @@ namespace MoneyBot.Telegram.Commands
             {
                 message = $"{categories.Count()} categories were added.";
             }
-            await Client.SendTextMessageAsync(Account, message, replyMarkup : Keyboards.MainKeyboard(Account));
+            return new OutMessage(Account, message, Keyboards.MainKeyboard(Account));
         }
     }
 }

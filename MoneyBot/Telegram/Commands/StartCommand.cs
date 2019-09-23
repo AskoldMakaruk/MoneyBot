@@ -14,10 +14,10 @@ namespace MoneyBot.Telegram.Commands
             if (Message.Text.StartsWith("/start")) res += 2;
             return res;
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
-            await Client.SendTextMessageAsync(Account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(Account));
             Account.Status = AccountStatus.Free;
+            return new OutMessage(Account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

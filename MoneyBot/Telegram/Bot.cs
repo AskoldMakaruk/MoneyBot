@@ -80,16 +80,42 @@ namespace MoneyBot.Telegram
                 account.Controller = contoller;
             }
 
+            var command = GetCommand(message, account);
+            var canceled = command.Canceled();
+
+            Console.WriteLine($"Command: {command.ToString()}, status: {account.Status.ToString()}, canceled: {canceled}");
+
+            SendTextMessageAsync(canceled?command.Relieve() : command.Execute());
+        }
+
+        protected Command GetCommand(Message message, Account account)
+        {
             var baseType = typeof(Command);
             var assembly = baseType.Assembly;
             var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c, message, this, account) as Command).OrderByDescending(c => c.Suitability()).First();
             command.Controller = account.Controller;
-            var canceled = command.Canceled();
-            Console.WriteLine($"Command: {command.ToString()}, status: {account.Status.ToString()}, canceled: {canceled}");
-            if (canceled)
-                command.Relieve();
+            return command;
+        }
+
+        public async Task<Message> SendTextMessageAsync(OutMessage m)
+        {
+            if (Testing)
+            {
+                OnMessageSent?.Invoke(m);
+                return new Message();
+            }
+            else if (m.EditMessageId == 0)
+            {
+                var message = await base.SendTextMessageAsync(m.Account, m.Text, replyToMessageId : m.ReplyToMessageId, replyMarkup : m.ReplyMarkup);
+                m.Account.LastMessage = message;
+                return message;
+            }
             else
-                command.Execute();
+            {
+                var message = await base.EditMessageTextAsync(m.Account, m.EditMessageId, m.Text, replyMarkup : m.ReplyMarkup as InlineKeyboardMarkup);
+                m.Account.LastMessage = message;
+                return message;
+            }
         }
 
         public async Task<Message> SendTextMessageAsync(Account account, string text,
@@ -98,7 +124,7 @@ namespace MoneyBot.Telegram
         {
             if (Testing)
             {
-                OnMessageSent?.Invoke(new OutMessage(account, text, replyToMessageId, replyMarkup));
+                OnMessageSent?.Invoke(new OutMessage(account, text, replyMarkup, replyToMessageId));
                 return new Message();
             }
             else

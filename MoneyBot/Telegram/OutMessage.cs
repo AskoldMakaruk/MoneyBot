@@ -5,7 +5,7 @@ namespace MoneyBot.Telegram
 {
     public class OutMessage
     {
-        public OutMessage(Account account, string text, int replyToMessageId = 0, IReplyMarkup replyMarkup = null)
+        public OutMessage(Account account, string text, IReplyMarkup replyMarkup = null, int replyToMessageId = 0)
         {
             Account = account;
             Text = text;
@@ -16,5 +16,6 @@ namespace MoneyBot.Telegram
         public string Text { get; set; }
         public int ReplyToMessageId { get; set; } = 0;
         public IReplyMarkup ReplyMarkup { get; set; }
+        public int EditMessageId { get; set; } = 0;
     }
 }

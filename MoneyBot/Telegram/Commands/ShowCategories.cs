@@ -12,27 +12,27 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.ChooseShow) res++;
             return res;
         }
-        public override void Execute()
+        public override OutMessage Execute()
         {
             if (Message.Text == "Show categories")
             {
-                ToCategory(Account, Client);
-                return;
+                return ToCategory(Account, Client);
+
             }
             if (Message.Text == "Show people")
             {
-                ToPeople(Account, Client);
-                return;
+                return ToPeople(Account, Client);
+
             }
-            Relieve();
+            return Relieve();
         }
-        public static async void ToCategory(Account Account, Bot Client)
+        public static OutMessage ToCategory(Account Account, Bot Client)
         {
-            await Client.SendTextMessageAsync(Account, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
+            return new OutMessage(Account, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
         }
-        public static async void ToPeople(Account Account, Bot Client)
+        public static OutMessage ToPeople(Account Account, Bot Client)
         {
-            await Client.SendTextMessageAsync(Account, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
+            return new OutMessage(Account, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
         }
     }
 }

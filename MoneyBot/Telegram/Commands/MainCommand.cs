@@ -17,52 +17,49 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.Free) res++;
             return res;
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
             Account.Status = AccountStatus.Free;
             if (Message.Text == "Manage Menu")
             {
-                await Client.SendTextMessageAsync(Account, "Do something", replyMarkup : Keyboards.Manage(Account));
                 Account.Status = AccountStatus.Manage;
-                return;
+                return new OutMessage(Account, "Do something", replyMarkup : Keyboards.Manage(Account));
             }
             if (Message.Text == "Add")
             {
                 var keys = Keyboards.AddType(Account);
                 if (Account.PeopleInited() && Account.CategoriesInited())
                 {
-                    await Client.SendTextMessageAsync(Account, $"This is about", replyMarkup : keys);
+                    return new OutMessage(Account, $"This is about", replyMarkup : keys);
                 }
                 else if (Account.PeopleInited())
                 {
-                    AddTypeQuery.TypePerson(Account, Client);
+                    return AddTypeQuery.TypePerson(Account, Client);
                 }
                 else if (Account.CategoriesInited())
                 {
-                    AddTypeQuery.TypeCategory(Account, Client);
+                    return AddTypeQuery.TypeCategory(Account, Client);
                 }
                 else
-                    await Client.SendTextMessageAsync(Account, $"Add category or person first");
-                return;
+                    return new OutMessage(Account, $"Add category or person first");
             }
             if (Message.Text == "Show")
             {
                 if (Account.PeopleInited() && Account.CategoriesInited())
                 {
                     Account.Status = AccountStatus.ChooseShow;
-                    await Client.SendTextMessageAsync(Account, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
+                    return new OutMessage(Account, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
                 }
                 else if (Account.PeopleInited())
                 {
-                    ShowCategoriesCommand.ToPeople(Account, Client);
+                    return ShowCategoriesCommand.ToPeople(Account, Client);
                 }
                 else if (Account.CategoriesInited())
                 {
-                    ShowCategoriesCommand.ToCategory(Account, Client);
+                    return ShowCategoriesCommand.ToCategory(Account, Client);
                 }
                 else
-                    await Client.SendTextMessageAsync(Account, $"Add category or person first");
-                return;
+                    return new OutMessage(Account, $"Add category or person first");
             }
             if (Message.Text == "Stats")
             {
@@ -84,23 +81,21 @@ Your top creditors:
 Your top debtors:
 {string.Join("\n",stats.TopDeptors.Select(d => $"{d.Name}: {d.CountSum()}"))}
 ";
-                await Client.SendTextMessageAsync(Account, message);
-                return;
+                return new OutMessage(Account, message);
             }
             if (Message.Text.StartsWith("/start"))
             {
-                await Client.SendTextMessageAsync(Account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(Account));
-                return;
+                return new OutMessage(Account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(Account));
             }
             if (Message.Text == "deletedb" && Account.ChatId == 249258727)
             {
                 Controller.DeleteDb();
-                return;
+                return new OutMessage(Account, "Beep boop.");
             }
             if (Message.Text.ToLower() == "deleteme" && Account.ChatId == 249258727)
             {
                 Controller.RemoveAccount(Account);
-                return;
+                return new OutMessage(Account, "You were deleted.");
             }
             var regex = new Regex("(.{0,} - .{0,} - [0123456789.]{0,})");
             var added = Message.Text
@@ -130,11 +125,10 @@ Your top debtors:
                     a.Category.Expenses.Add(expense);
                     builder.Append($"{expense.Category.Emoji}: {expense.Sum}\n");
                 }
-                await Client.SendTextMessageAsync(Account, $"{builder.ToString()}", replyMarkup : Keyboards.MainKeyboard(Account));
                 Account.Controller.SaveChanges();
-                return;
+                return new OutMessage(Account, $"{builder.ToString()}", replyMarkup : Keyboards.MainKeyboard(Account));
             }
-            await Client.SendTextMessageAsync(Account, $"Hi!", replyMarkup : Keyboards.MainKeyboard(Account));
+            return new OutMessage(Account, $"Hi!", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }

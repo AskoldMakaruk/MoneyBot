@@ -23,10 +23,10 @@ namespace MoneyBot.Telegram.Queries
             }
         }
 
-        public static void TypeCategory(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, true, Message);
-        public static void TypePerson(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, false, Message);
+        public static OutMessage TypeCategory(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, true, Message);
+        public static OutMessage TypePerson(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, false, Message);
 
-        private static async void SelectType(Account Account, Bot Client, bool category, Message Message = null)
+        private static OutMessage SelectType(Account Account, Bot Client, bool category, Message Message = null)
         {
             if (category)
                 Account.CurrentExpense = new Expense();
@@ -37,10 +37,13 @@ namespace MoneyBot.Telegram.Queries
             var replyMarkup = Keyboards.CategoryTypes(text);
             if (Message == null)
             {
-                await Client.SendTextMessageAsync(Account.ChatId, $"Choose one:", replyMarkup : replyMarkup);
+                return new OutMessage(Account, $"Choose one:", replyMarkup : replyMarkup);
             }
             else
-                await Client.EditMessageTextAsync(Account.ChatId, Message.MessageId, $"Choose one:", replyMarkup : replyMarkup);
+                return new OutMessage(Account, $"Choose one:", replyMarkup : replyMarkup)
+                {
+                    EditMessageId = Message.MessageId
+                };
         }
     }
 }

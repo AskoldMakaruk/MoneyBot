@@ -23,15 +23,15 @@ namespace MoneyBot.Telegram.Commands
         // 3 role staff
         // 4 high priority
         public abstract int Suitability();
-        public abstract void Execute();
+        public abstract OutMessage Execute();
         public virtual bool Canceled()
         {
             return Message.Text.ToLower().Equals("cancel") ||
                 Message.Text.ToLower().Equals("/cancel");
         }
-        public virtual void Relieve()
+        public virtual OutMessage Relieve()
         {
-            new MainCommand(Message, Client, Account).Execute();
+            return new MainCommand(Message, Client, Account).Execute();
         }
     }
 }

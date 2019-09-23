@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
             if (Account.Status == AccountStatus.AddPeople) res++;
             return res;
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
             var values = Message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
             var people = values.Select(v => new Person()
@@ -23,7 +23,7 @@ namespace MoneyBot.Telegram.Commands
             });
             Controller.AddPeople(people);
             Account.Status = AccountStatus.Free;
-            await Client.SendTextMessageAsync(Account, "People added", replyMarkup : Keyboards.MainKeyboard(Account));
+            return new OutMessage(Account, "People added", replyMarkup : Keyboards.MainKeyboard(Account));
         }
     }
 }
