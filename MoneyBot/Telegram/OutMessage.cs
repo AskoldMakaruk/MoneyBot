@@ -12,10 +12,25 @@ namespace MoneyBot.Telegram
             ReplyToMessageId = replyToMessageId;
             ReplyMarkup = replyMarkup;
         }
+        public OutMessage(Account account, int editMessageId, string text, IReplyMarkup replyMarkup = null)
+        {
+            Account = account;
+            Text = text;
+            ReplyMarkup = replyMarkup;
+            EditMessageId = editMessageId;
+        }
+        public OutMessage(string answerToMessageId, string text, bool answerQuery = true)
+        {
+            AnswerToMessageId = answerToMessageId;
+            Text = text;
+            AnswerQuery = answerQuery;
+        }
         public Account Account { get; set; }
         public string Text { get; set; }
         public int ReplyToMessageId { get; set; } = 0;
         public IReplyMarkup ReplyMarkup { get; set; }
         public int EditMessageId { get; set; } = 0;
+        public bool AnswerQuery { get; set; } = false;
+        public string AnswerToMessageId { get; set; }
     }
 }

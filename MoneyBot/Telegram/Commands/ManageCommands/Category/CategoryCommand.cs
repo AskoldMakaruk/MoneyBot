@@ -6,7 +6,7 @@ namespace MoneyBot.Telegram.Commands
 {
     public class CategoryCommand : Command
     {
-        public CategoryCommand(Message message, Bot Client, Account Account) : base(message, Client, Account) { }
+        public CategoryCommand(Message message, Account Account) : base(message, Account) { }
 
         public override int Suitability()
         {

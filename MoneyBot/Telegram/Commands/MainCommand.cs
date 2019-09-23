@@ -9,7 +9,7 @@ namespace MoneyBot.Telegram.Commands
 {
     public class MainCommand : Command
     {
-        public MainCommand(Message message, Bot Client, Account Account) : base(message, Client, Account) { }
+        public MainCommand(Message message, Account Account) : base(message, Account) { }
 
         public override int Suitability()
         {
@@ -34,11 +34,11 @@ namespace MoneyBot.Telegram.Commands
                 }
                 else if (Account.PeopleInited())
                 {
-                    return AddTypeQuery.TypePerson(Account, Client);
+                    return AddTypeQuery.TypePerson(Account);
                 }
                 else if (Account.CategoriesInited())
                 {
-                    return AddTypeQuery.TypeCategory(Account, Client);
+                    return AddTypeQuery.TypeCategory(Account);
                 }
                 else
                     return new OutMessage(Account, $"Add category or person first");
@@ -52,11 +52,11 @@ namespace MoneyBot.Telegram.Commands
                 }
                 else if (Account.PeopleInited())
                 {
-                    return ShowCategoriesCommand.ToPeople(Account, Client);
+                    return ShowCategoriesCommand.ToPeople(Account);
                 }
                 else if (Account.CategoriesInited())
                 {
-                    return ShowCategoriesCommand.ToCategory(Account, Client);
+                    return ShowCategoriesCommand.ToCategory(Account);
                 }
                 else
                     return new OutMessage(Account, $"Add category or person first");

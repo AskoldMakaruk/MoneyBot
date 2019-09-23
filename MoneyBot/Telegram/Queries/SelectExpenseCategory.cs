@@ -6,31 +6,33 @@ namespace MoneyBot.Telegram.Queries
 {
     public class SelectExpenseCategoryQuery : Query
     {
-        public SelectExpenseCategoryQuery(CallbackQuery message, Bot client, Account account) : base(message, client, account) { }
+        public SelectExpenseCategoryQuery(CallbackQuery message, Account account) : base(message, account) { }
         public override bool IsSuitable()
         {
             return Message.Data.StartsWith("AddExpense");
         }
-        public override async void Execute()
+        public override OutMessage Execute()
         {
-            if (Account.CurrentExpense == null) return;
+            if (Account.CurrentExpense == null) return new OutMessage(Message.Id, "You have no expenses");
             if (!Message.Data.TryParseId(out var categoryId))
             {
-                await Client.AnswerCallbackQueryAsync(Message.Id, "Internal error");
-                return;
+                return new OutMessage(Message.Id, "Internal error");
             }
             Account.CurrentExpense.Category = Account.Categories.First(c => c.Id == categoryId);
             var templates = Account.CurrentExpense.Category.Templates;
-            await Client.EditMessageTextAsync(
-                Account.ChatId,
-                Message.Message.MessageId,
+            Account.Status = AccountStatus.EnterExpenseSum;
+            return new OutMessage(
+                Account,
                 $"Adding expense to {Account.CurrentExpense.Category.ToString()}\n" +
                 $@"Enter new expense in format:
 [Description] - [sum]
 
 Example:
-Pork - 229.33{(templates != null && templates.Count>0?"\n\nOr use template:":"")}", replyMarkup : templates != null? Keyboards.Templates(templates, "Template") : null);
-            Account.Status = AccountStatus.EnterExpenseSum;
+Pork - 229.33{(templates != null && templates.Count>0?"\n\nOr use template:":"")}", replyMarkup : templates != null? Keyboards.Templates(templates, "Template") : null)
+            {
+                EditMessageId = Message.Message.MessageId
+            };
+
         }
     }
 }

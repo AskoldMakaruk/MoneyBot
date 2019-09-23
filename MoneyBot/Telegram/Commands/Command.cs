@@ -6,15 +6,13 @@ namespace MoneyBot.Telegram.Commands
 {
     public abstract class Command
     {
-        public Command(Message message, Bot client, Account account)
+        public Command(Message message, Account account)
         {
             Message = message;
-            Client = client;
             Account = account;
         }
         public TelegramController Controller { get; set; }
         public Message Message { get; }
-        public Bot Client { get; }
         public Account Account { get; }
 
         // 0 not at all
@@ -31,7 +29,7 @@ namespace MoneyBot.Telegram.Commands
         }
         public virtual OutMessage Relieve()
         {
-            return new MainCommand(Message, Client, Account).Execute();
+            return new MainCommand(Message, Account).Execute();
         }
     }
 }

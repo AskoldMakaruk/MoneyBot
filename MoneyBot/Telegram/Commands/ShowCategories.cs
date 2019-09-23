@@ -5,7 +5,7 @@ namespace MoneyBot.Telegram.Commands
 {
     public class ShowCategoriesCommand : Command
     {
-        public ShowCategoriesCommand(Message message, Bot Client, Account Account) : base(message, Client, Account) { }
+        public ShowCategoriesCommand(Message message, Account Account) : base(message, Account) { }
         public override int Suitability()
         {
             int res = 0;
@@ -16,21 +16,21 @@ namespace MoneyBot.Telegram.Commands
         {
             if (Message.Text == "Show categories")
             {
-                return ToCategory(Account, Client);
+                return ToCategory(Account);
 
             }
             if (Message.Text == "Show people")
             {
-                return ToPeople(Account, Client);
+                return ToPeople(Account);
 
             }
             return Relieve();
         }
-        public static OutMessage ToCategory(Account Account, Bot Client)
+        public static OutMessage ToCategory(Account Account)
         {
             return new OutMessage(Account, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
         }
-        public static OutMessage ToPeople(Account Account, Bot Client)
+        public static OutMessage ToPeople(Account Account)
         {
             return new OutMessage(Account, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
         }

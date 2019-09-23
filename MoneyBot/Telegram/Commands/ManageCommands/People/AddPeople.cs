@@ -5,7 +5,7 @@ namespace MoneyBot.Telegram.Commands
 {
     public class AddPeopleCommand : Command
     {
-        public AddPeopleCommand(Message message, Bot Client, Account Account) : base(message, Client, Account) { }
+        public AddPeopleCommand(Message message, Account Account) : base(message, Account) { }
         public override int Suitability()
         {
             int res = 0;

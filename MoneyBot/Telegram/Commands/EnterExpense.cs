@@ -5,7 +5,7 @@ namespace MoneyBot.Telegram.Commands
 {
     public class EnterExpenseCommand : Command
     {
-        public EnterExpenseCommand(Message message, Bot Client, Account Account) : base(message, Client, Account) { }
+        public EnterExpenseCommand(Message message, Account Account) : base(message, Account) { }
         public override int Suitability()
         {
             int res = 0;

@@ -4,29 +4,29 @@ namespace MoneyBot.Telegram.Queries
 {
     public class AddTypeQuery : Query
     {
-        public AddTypeQuery(CallbackQuery message, Bot client, Account account) : base(message, client, account) { }
+        public AddTypeQuery(CallbackQuery message, Account account) : base(message, account) { }
         public override bool IsSuitable()
         {
             return Message.Data.StartsWith("AddType");
         }
-        public override void Execute()
+        public override OutMessage Execute()
         {
             if (Message.Data.EndsWith("Category"))
             {
-                TypeCategory(Account, Client, Message.Message);
-                return;
+                return TypeCategory(Account, Message.Message);
+
             }
             else
             {
-                TypePerson(Account, Client, Message.Message);
-                return;
+                return TypePerson(Account, Message.Message);
+
             }
         }
 
-        public static OutMessage TypeCategory(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, true, Message);
-        public static OutMessage TypePerson(Account Account, Bot Client, Message Message = null) => SelectType(Account, Client, false, Message);
+        public static OutMessage TypeCategory(Account Account, Message Message = null) => SelectType(Account, true, Message);
+        public static OutMessage TypePerson(Account Account, Message Message = null) => SelectType(Account, false, Message);
 
-        private static OutMessage SelectType(Account Account, Bot Client, bool category, Message Message = null)
+        private static OutMessage SelectType(Account Account, bool category, Message Message = null)
         {
             if (category)
                 Account.CurrentExpense = new Expense();

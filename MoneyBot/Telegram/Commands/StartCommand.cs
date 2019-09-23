@@ -5,7 +5,7 @@ namespace MoneyBot.Telegram.Commands
 {
     public class StartCommand : Command
     {
-        public StartCommand(Message message, Bot Client, Account Account) : base(message, Client, Account) { }
+        public StartCommand(Message message, Account Account) : base(message, Account) { }
 
         public override int Suitability()
         {
