@@ -5,27 +5,27 @@ namespace MoneyBot.Telegram.Commands
 {
     public class EnterTemplateCommand : Command
     {
-        public EnterTemplateCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public EnterTemplateCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.EnterTemplate) res++;
+            if (account.Status == AccountStatus.EnterTemplate) res++;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            var values = Message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
+            var values = message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
 
             var templates = values.Select(v => new Template()
             {
                 Name = v[0],
                     Sum = v[1].ParseSum(),
-                    Category = Account.CurrentTemplate.Category
+                    Category = account.CurrentTemplate.Category
 
             });
-            Controller.AddTemplates(templates);
-            Account.Status = AccountStatus.Free;
-            return new OutMessage(Account, "Template added", replyMarkup : Keyboards.MainKeyboard(Account));
+            account.Controller.AddTemplates(templates);
+            account.Status = AccountStatus.Free;
+            return new OutMessage(account, "Template added", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }

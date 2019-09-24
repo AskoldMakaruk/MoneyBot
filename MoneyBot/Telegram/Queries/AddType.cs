@@ -4,45 +4,42 @@ namespace MoneyBot.Telegram.Queries
 {
     public class AddTypeQuery : Query
     {
-        public AddTypeQuery(CallbackQuery message, Account account) : base(message, account) { }
-        public override bool IsSuitable()
+        public override bool IsSuitable(CallbackQuery message, Account account)
         {
-            return Message.Data.StartsWith("AddType");
+            return message.Data.StartsWith("AddType");
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(CallbackQuery message, Account account)
         {
-            if (Message.Data.EndsWith("Category"))
+            if (message.Data.EndsWith("Category"))
             {
-                return TypeCategory(Account, Message.Message);
-
+                return TypeCategory(account, message.Message);
             }
             else
             {
-                return TypePerson(Account, Message.Message);
-
+                return TypePerson(account, message.Message);
             }
         }
 
-        public static OutMessage TypeCategory(Account Account, Message Message = null) => SelectType(Account, true, Message);
-        public static OutMessage TypePerson(Account Account, Message Message = null) => SelectType(Account, false, Message);
+        public static OutMessage TypeCategory(Account account, Message message = null) => SelectType(account, true, message);
+        public static OutMessage TypePerson(Account account, Message message = null) => SelectType(account, false, message);
 
-        private static OutMessage SelectType(Account Account, bool category, Message Message = null)
+        private static OutMessage SelectType(Account account, bool category, Message message = null)
         {
             if (category)
-                Account.CurrentExpense = new Expense();
+                account.CurrentExpense = new Expense();
             else
-                Account.CurrentTransaction = new Transaction();
+                account.CurrentTransaction = new Transaction();
 
             var text = category? "ExpenseType": "TransactionType";
             var replyMarkup = Keyboards.CategoryTypes(text);
-            if (Message == null)
+            if (message == null)
             {
-                return new OutMessage(Account, $"Choose one:", replyMarkup : replyMarkup);
+                return new OutMessage(account, $"Choose one:", replyMarkup : replyMarkup);
             }
             else
-                return new OutMessage(Account, $"Choose one:", replyMarkup : replyMarkup)
+                return new OutMessage(account, $"Choose one:", replyMarkup : replyMarkup)
                 {
-                    EditMessageId = Message.MessageId
+                    EditMessageId = message.MessageId
                 };
         }
     }

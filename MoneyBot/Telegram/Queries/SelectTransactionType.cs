@@ -4,16 +4,15 @@ namespace MoneyBot.Telegram.Queries
 {
     public class SelectTransactionTypeQuery : Query
     {
-        public SelectTransactionTypeQuery(CallbackQuery message, Account account) : base(message, account) { }
-        public override bool IsSuitable()
+        public override bool IsSuitable(CallbackQuery message, Account account)
         {
-            return Message.Data.StartsWith("TransactionType");
+            return message.Data.StartsWith("TransactionType");
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(CallbackQuery message, Account account)
         {
-            var keyboard = Keyboards.People(Account.People, "AddTransaction");
-            Account.CurrentTransaction.Type = Message.Data.ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out;
-            return new OutMessage(Account, Message.Message.MessageId, $"Select person that {(Account.CurrentTransaction.Type == MoneyDirection.In?"gives money to you": "ownes you money")}:", replyMarkup : keyboard);
+            var keyboard = Keyboards.People(account.People, "AddTransaction");
+            account.CurrentTransaction.Type = message.Data.ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out;
+            return new OutMessage(account, message.Message.MessageId, $"Select person that {(account.CurrentTransaction.Type == MoneyDirection.In?"gives money to you": "ownes you money")}:", replyMarkup : keyboard);
         }
     }
 }

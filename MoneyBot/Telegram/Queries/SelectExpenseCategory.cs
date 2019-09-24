@@ -6,31 +6,30 @@ namespace MoneyBot.Telegram.Queries
 {
     public class SelectExpenseCategoryQuery : Query
     {
-        public SelectExpenseCategoryQuery(CallbackQuery message, Account account) : base(message, account) { }
-        public override bool IsSuitable()
+        public override bool IsSuitable(CallbackQuery message, Account account)
         {
-            return Message.Data.StartsWith("AddExpense");
+            return message.Data.StartsWith("AddExpense");
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(CallbackQuery message, Account account)
         {
-            if (Account.CurrentExpense == null) return new OutMessage(Message.Id, "You have no expenses");
-            if (!Message.Data.TryParseId(out var categoryId))
+            if (account.CurrentExpense == null) return new OutMessage(message.Id, "You have no expenses");
+            if (!message.Data.TryParseId(out var categoryId))
             {
-                return new OutMessage(Message.Id, "Internal error");
+                return new OutMessage(message.Id, "Internal error");
             }
-            Account.CurrentExpense.Category = Account.Categories.First(c => c.Id == categoryId);
-            var templates = Account.CurrentExpense.Category.Templates;
-            Account.Status = AccountStatus.EnterExpenseSum;
+            account.CurrentExpense.Category = account.Categories.First(c => c.Id == categoryId);
+            var templates = account.CurrentExpense.Category.Templates;
+            account.Status = AccountStatus.EnterExpenseSum;
             return new OutMessage(
-                Account,
-                $"Adding expense to {Account.CurrentExpense.Category.ToString()}\n" +
+                account,
+                $"Adding expense to {account.CurrentExpense.Category.ToString()}\n" +
                 $@"Enter new expense in format:
 [Description] - [sum]
 
 Example:
 Pork - 229.33{(templates != null && templates.Count>0?"\n\nOr use template:":"")}", replyMarkup : templates != null? Keyboards.Templates(templates, "Template") : null)
             {
-                EditMessageId = Message.Message.MessageId
+                EditMessageId = message.Message.MessageId
             };
 
         }

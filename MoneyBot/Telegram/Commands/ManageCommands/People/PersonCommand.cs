@@ -5,34 +5,34 @@ namespace MoneyBot.Telegram.Commands
 {
     public class PersonCommand : Command
     {
-        public PersonCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public PersonCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.Manage && (Message.Text.Contains("person") || Message.Text.Contains("people"))) res += 2;
+            if (account.Status == AccountStatus.Manage && (message.Text.Contains("person") || message.Text.Contains("people"))) res += 2;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            if (Message.Text == "Add people")
+            if (message.Text == "Add people")
             {
-                Account.Status = AccountStatus.AddPeople;
-                return new OutMessage(Account, $"Enter new people in format:\n" +
+                account.Status = AccountStatus.AddPeople;
+                return new OutMessage(account, $"Enter new people in format:\n" +
                     "[alias] [name]", replyMarkup : Keyboards.Cancel);
             }
-            if (Message.Text == "Show people")
+            if (message.Text == "Show people")
             {
-                if (Account.People != null && Account.People.Count != 0)
-                    return new OutMessage(Account, $"{string.Join("\n", Account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
-                else return new OutMessage(Account, $"You have no people.");
+                if (account.People != null && account.People.Count != 0)
+                    return new OutMessage(account, $"{string.Join("\n", account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
+                else return new OutMessage(account, $"You have no people.");
             }
-            if (Message.Text == "Override people")
+            if (message.Text == "Override people")
             {
-                Account.Status = AccountStatus.OverridePeople;
-                return new OutMessage(Account, "This will override your people and delete attached transactions.\nEnter new people in format:\n" +
+                account.Status = AccountStatus.OverridePeople;
+                return new OutMessage(account, "This will override your people and delete attached transactions.\nEnter new people in format:\n" +
                     "[alias] [name]", replyMarkup : Keyboards.Cancel);
             }
-            return Relieve();
+            return Relieve(message, account);
         }
     }
 }

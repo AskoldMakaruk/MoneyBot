@@ -5,25 +5,25 @@ namespace MoneyBot.Telegram.Commands
 {
     public class AddPeopleCommand : Command
     {
-        public AddPeopleCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public AddPeopleCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.AddPeople) res++;
+            if (account.Status == AccountStatus.AddPeople) res++;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            var values = Message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
+            var values = message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
             var people = values.Select(v => new Person()
             {
-                Account = Account,
+                Account = account,
                     Alias = v[0],
                     Name = v[1]
             });
-            Controller.AddPeople(people);
-            Account.Status = AccountStatus.Free;
-            return new OutMessage(Account, "People added", replyMarkup : Keyboards.MainKeyboard(Account));
+            account.Controller.AddPeople(people);
+            account.Status = AccountStatus.Free;
+            return new OutMessage(account, "People added", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }

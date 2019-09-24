@@ -5,33 +5,33 @@ namespace MoneyBot.Telegram.Commands
 {
     public class EnterExpenseCommand : Command
     {
-        public EnterExpenseCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public EnterExpenseCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.EnterExpenseSum) res += 2;
+            if (account.Status == AccountStatus.EnterExpenseSum) res += 2;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            var values = Message.Text.TrySplit('-', ' ');
+            var values = message.Text.TrySplit('-', ' ');
             var sum = values[1].ParseSum();
             if (sum != -1)
             {
-                Account.CurrentExpense.Description = values[0];
-                Account.CurrentExpense.Sum = sum;
-                Account.CurrentExpense.Date = DateTime.Now;
-                Controller.AddExpense(Account.CurrentExpense);
-                Account.Status = AccountStatus.Free;
-                return new OutMessage(Account, $"Success!", replyMarkup : Keyboards.MainKeyboard(Account));
+                account.CurrentExpense.Description = values[0];
+                account.CurrentExpense.Sum = sum;
+                account.CurrentExpense.Date = DateTime.Now;
+                account.Controller.AddExpense(account.CurrentExpense);
+                account.Status = AccountStatus.Free;
+                return new OutMessage(account, $"Success!", replyMarkup : Keyboards.MainKeyboard(account));
 
             }
-            return new OutMessage(Account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
+            return new OutMessage(account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
         }
-        public override OutMessage Relieve()
+        public override OutMessage Relieve(Message message, Account account)
         {
-            Account.Status = AccountStatus.Free;
-            return new OutMessage(Account, $"You shall be freed", replyMarkup : Keyboards.MainKeyboard(Account));
+            account.Status = AccountStatus.Free;
+            return new OutMessage(account, $"You shall be freed", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }

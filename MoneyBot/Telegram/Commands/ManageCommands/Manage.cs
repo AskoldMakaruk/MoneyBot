@@ -4,16 +4,16 @@ namespace MoneyBot.Telegram.Commands
 {
     public class MangeCommand : Command
     {
-        public MangeCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public MangeCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.Manage) res++;
+            if (account.Status == AccountStatus.Manage) res++;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            return Relieve();
+            return Relieve(message, account);
         }
     }
 }

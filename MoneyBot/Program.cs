@@ -16,3 +16,4 @@ namespace MoneyBot
 //todo conditional keyboards (hide keys that user can't use)
 //todo expenses without description
 //todo expenses with date
+//todo faster way to choose template

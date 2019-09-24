@@ -5,24 +5,23 @@ namespace MoneyBot.Telegram.Queries
 {
     public class SelectTransactionPersonQuery : Query
     {
-        public SelectTransactionPersonQuery(CallbackQuery message, Account account) : base(message, account) { }
-        public override bool IsSuitable()
+        public override bool IsSuitable(CallbackQuery message, Account account)
         {
-            return Message.Data.StartsWith("AddTransaction");
+            return message.Data.StartsWith("AddTransaction");
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(CallbackQuery message, Account account)
         {
-            if (Account.CurrentTransaction == null) return new OutMessage(Message.Id, "Something went wrong true again");
-            if (!Message.Data.TryParseId(out var personId))
+            if (account.CurrentTransaction == null) return new OutMessage(message.Id, "Something went wrong true again");
+            if (!message.Data.TryParseId(out var personId))
             {
-                return new OutMessage(Message.Id, "Internal error");
+                return new OutMessage(message.Id, "Internal error");
             }
-            Account.CurrentTransaction.Person = Account.People.First(c => c.Id == personId);
-            Account.Status = AccountStatus.EnterTransactionSum;
+            account.CurrentTransaction.Person = account.People.First(c => c.Id == personId);
+            account.Status = AccountStatus.EnterTransactionSum;
             return new OutMessage(
-                Account,
-                Message.Message.MessageId,
-                $"Adding transaction between you and{Account.CurrentTransaction.Person.Name}\n" +
+                account,
+                message.Message.MessageId,
+                $"Adding transaction between you and{account.CurrentTransaction.Person.Name}\n" +
                 $@"Enter details in format:
 [Description] - [sum]
 

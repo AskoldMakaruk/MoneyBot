@@ -50,7 +50,7 @@ namespace MoneyBot.Controllers
             return account;
         }
 
-        public Account FromMessage(Message message)
+        public virtual Account FromMessage(Message message)
         {
             if (Accounts.ContainsKey(message.Chat.Id))
             {
@@ -76,7 +76,7 @@ namespace MoneyBot.Controllers
             return account;
         }
 
-        public Account FromMessage(Chat chat)
+        public virtual Account FromMessage(Chat chat)
         {
             if (Accounts.ContainsKey(chat.Id))
             {
@@ -109,7 +109,7 @@ namespace MoneyBot.Controllers
         #endregion
 
         #region Categories
-        public void AddCategories(IEnumerable<ExpenseCategory> categories)
+        public virtual void AddCategories(IEnumerable<ExpenseCategory> categories)
         {
             Context.Categories.AddRange(categories);
             SaveChanges();

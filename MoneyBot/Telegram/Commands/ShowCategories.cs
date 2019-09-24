@@ -5,34 +5,34 @@ namespace MoneyBot.Telegram.Commands
 {
     public class ShowCategoriesCommand : Command
     {
-        public ShowCategoriesCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public ShowCategoriesCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.ChooseShow) res++;
+            if (account.Status == AccountStatus.ChooseShow) res++;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            if (Message.Text == "Show categories")
+            if (message.Text == "Show categories")
             {
-                return ToCategory(Account);
+                return ToCategory(account);
 
             }
-            if (Message.Text == "Show people")
+            if (message.Text == "Show people")
             {
-                return ToPeople(Account);
+                return ToPeople(account);
 
             }
-            return Relieve();
+            return Relieve(message, account);
         }
-        public static OutMessage ToCategory(Account Account)
+        public static OutMessage ToCategory(Account account)
         {
-            return new OutMessage(Account, $"You have {Account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(Account.Categories, "ShowCategory"));
+            return new OutMessage(account, $"You have {account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(account.Categories, "ShowCategory"));
         }
-        public static OutMessage ToPeople(Account Account)
+        public static OutMessage ToPeople(Account account)
         {
-            return new OutMessage(Account, $"You have {Account.People.Count} people.", replyMarkup : Keyboards.People(Account.People, "ShowPeople"));
+            return new OutMessage(account, $"You have {account.People.Count} people.", replyMarkup : Keyboards.People(account.People, "ShowPeople"));
         }
     }
 }

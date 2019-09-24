@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
-using MoneyBot.DB.Secondary;
 using MoneyBot.Telegram.Commands;
 using MoneyBot.Telegram.Queries;
 using Telegram.Bot;
@@ -12,58 +12,49 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-
 namespace MoneyBot.Telegram
 {
     public class Bot : TelegramBotClient
     {
-        public bool Testing = false;
-        public delegate void MessageSentHandler(OutMessage message);
-        public event MessageSentHandler OnMessageSent;
-
+        protected Dictionary<Func<Message, Account, int>, Command> Commands { get; set; }
         public Bot(string token) : base(token)
         {
+            var baseType = typeof(Command);
+            var assembly = baseType.Assembly;
+
+            Commands = assembly
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract)
+                .Select(c => Activator.CreateInstance(c) as Command)
+                .ToDictionary(x => new Func<Message, Account, int>(x.Suitability), x => x);
+
             OnMessage += OnMessageRecieved;
             OnCallbackQuery += OnQueryReceived;
             //StartReceiving();
         }
 
-        public void OnMessageRecieved(object sender, MessageEventArgs e)
+        public async void HandleQuery(CallbackQuery query)
         {
-            Console.WriteLine(DateTime.Now.ToShortTimeString() + " " + e.Message.From.Username + ": " + e.Message.Text);
-            try
+            var contoller = new TelegramController();
+            contoller.Start();
+
+            var account = contoller.FromMessage(query.Message.Chat);
+            if (account == null)
             {
-                HandleMessage(e.Message);
+                await AnswerCallbackQueryAsync(query.Id, "Your account doesn't exist.");
+                return;
             }
-            catch (Exception ex) { Console.WriteLine(ex); }
-        }
-        public void OnQueryReceived(object sender, CallbackQueryEventArgs e)
-        {
-            try
-            {
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + " " + e.CallbackQuery.From.Username + ": " + e.CallbackQuery.Data);
-                var contoller = new TelegramController();
-                contoller.Start();
 
-                var account = contoller.FromMessage(e.CallbackQuery.Message.Chat);
-                if (account == null)
-                {
-                    AnswerCallbackQueryAsync(e.CallbackQuery.Id, "Your account doesn't exist.");
-                    return;
-                }
+            var baseType = typeof(Query);
+            var assembly = baseType.Assembly;
 
-                var baseType = typeof(Query);
-                var assembly = baseType.Assembly;
+            var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c) as Query).First(c => c.IsSuitable(query, account));
 
-                var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c, e.CallbackQuery, this, account) as Query).First(c => c.IsSuitable());
-
-                command.Controller = contoller;
-                command.Execute();
-            }
-            catch (Exception ex) { Console.WriteLine(ex); }
+            command.Controller = contoller;
+            await SendTextMessageAsync(command.Execute(query, account));
         }
 
-        public void HandleMessage(Message message)
+        public async void HandleMessage(Message message)
         {
             var chatId = message.Chat.Id;
             Account account;
@@ -81,30 +72,21 @@ namespace MoneyBot.Telegram
             }
 
             var command = GetCommand(message, account);
-            var canceled = command.Canceled();
+            var canceled = command.Canceled(message, account);
 
             Console.WriteLine($"Command: {command.ToString()}, status: {account.Status.ToString()}, canceled: {canceled}");
 
-            SendTextMessageAsync(canceled?command.Relieve() : command.Execute());
+            await SendTextMessageAsync(canceled?command.Relieve(message, account) : command.Execute(message, account));
         }
 
         protected Command GetCommand(Message message, Account account)
         {
-            var baseType = typeof(Command);
-            var assembly = baseType.Assembly;
-            var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c, message, this, account) as Command).OrderByDescending(c => c.Suitability()).First();
-            command.Controller = account.Controller;
-            return command;
+            return Commands[Commands.Keys.OrderByDescending(s => s.Invoke(message, account)).First()];
         }
 
         public async Task<Message> SendTextMessageAsync(OutMessage m)
         {
-            if (Testing)
-            {
-                OnMessageSent?.Invoke(m);
-                return new Message();
-            }
-            else if (m.EditMessageId == 0)
+            if (m.EditMessageId == 0)
             {
                 var message = await base.SendTextMessageAsync(m.Account, m.Text, replyToMessageId : m.ReplyToMessageId, replyMarkup : m.ReplyMarkup);
                 m.Account.LastMessage = message;
@@ -122,17 +104,30 @@ namespace MoneyBot.Telegram
             ParseMode parseMode = ParseMode.Default, bool disableWebPagePreview = false, bool disableNotification = false,
             int replyToMessageId = 0, IReplyMarkup replyMarkup = null, CancellationToken cancellationToken = default)
         {
-            if (Testing)
-            {
-                OnMessageSent?.Invoke(new OutMessage(account, text, replyMarkup, replyToMessageId));
-                return new Message();
-            }
-            else
-            {
-                var message = await base.SendTextMessageAsync(account, text, parseMode, disableWebPagePreview, disableNotification, replyToMessageId, replyMarkup, cancellationToken);
-                account.LastMessage = message;
-                return message;
-            }
+            var message = await base.SendTextMessageAsync(account, text, parseMode, disableWebPagePreview, disableNotification, replyToMessageId, replyMarkup, cancellationToken);
+            account.LastMessage = message;
+            return message;
+
         }
+
+        public void OnMessageRecieved(object sender, MessageEventArgs e)
+        {
+            Console.WriteLine(DateTime.Now.ToShortTimeString() + " " + e.Message.From.Username + ": " + e.Message.Text);
+            try
+            {
+                HandleMessage(e.Message);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
+        }
+        public void OnQueryReceived(object sender, CallbackQueryEventArgs e)
+        {
+            Console.WriteLine(DateTime.Now.ToShortTimeString() + " " + e.CallbackQuery.From.Username + ": " + e.CallbackQuery.Data);
+            try
+            {
+                HandleQuery(e.CallbackQuery);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
+        }
+
     }
 }

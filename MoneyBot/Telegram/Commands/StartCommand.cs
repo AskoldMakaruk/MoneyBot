@@ -5,19 +5,19 @@ namespace MoneyBot.Telegram.Commands
 {
     public class StartCommand : Command
     {
-        public StartCommand(Message message, Account Account) : base(message, Account) { }
+        public StartCommand() : base() { }
 
-        public override int Suitability()
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.Start) res += 2;
-            if (Message.Text.StartsWith("/start")) res += 2;
+            if (account.Status == AccountStatus.Start) res += 2;
+            if (message.Text.StartsWith("/start")) res += 2;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            Account.Status = AccountStatus.Free;
-            return new OutMessage(Account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(Account));
+            account.Status = AccountStatus.Free;
+            return new OutMessage(account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }

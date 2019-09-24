@@ -5,27 +5,27 @@ namespace MoneyBot.Telegram.Commands
 {
     public class EnterTransactionCommand : Command
     {
-        public EnterTransactionCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public EnterTransactionCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.EnterTransactionSum) res++;
+            if (account.Status == AccountStatus.EnterTransactionSum) res++;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            var values = Message.Text.TrySplit('-', ' ');
+            var values = message.Text.TrySplit('-', ' ');
             var sum = values[1].ParseSum();
             if (sum != -1)
             {
-                Account.CurrentTransaction.Description = values[0];
-                Account.CurrentTransaction.Sum = sum;
-                Account.CurrentTransaction.Date = DateTime.Now;
-                Controller.AddTransaction(Account.CurrentTransaction);
-                Account.Status = AccountStatus.Free;
-                return new OutMessage(Account, $"Success!", replyMarkup : Keyboards.MainKeyboard(Account));
+                account.CurrentTransaction.Description = values[0];
+                account.CurrentTransaction.Sum = sum;
+                account.CurrentTransaction.Date = DateTime.Now;
+                account.Controller.AddTransaction(account.CurrentTransaction);
+                account.Status = AccountStatus.Free;
+                return new OutMessage(account, $"Success!", replyMarkup : Keyboards.MainKeyboard(account));
             }
-            return new OutMessage(Account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
+            return new OutMessage(account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
         }
     }
 }

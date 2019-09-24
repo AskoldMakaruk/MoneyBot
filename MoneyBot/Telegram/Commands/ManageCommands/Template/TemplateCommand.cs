@@ -4,21 +4,21 @@ namespace MoneyBot.Telegram.Commands
 {
     public class TemplateCommand : Command
     {
-        public TemplateCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public TemplateCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Message.Text.ToLower().Contains("templat") && Account.Status == AccountStatus.Manage) res += 2;
+            if (message.Text.ToLower().Contains("templat") && account.Status == AccountStatus.Manage) res += 2;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            if (Message.Text == "Add template")
+            if (message.Text == "Add templates")
             {
-                Account.CurrentTemplate = new Template();
-                return new OutMessage(Account, "Select category for new template:", replyMarkup : Keyboards.Categories(Account.Categories, "AddTemplate"));
+                account.CurrentTemplate = new Template();
+                return new OutMessage(account, "Select category for new template:", replyMarkup : Keyboards.Categories(account.Categories, "AddTemplate"));
             }
-            return Relieve();
+            return Relieve(message, account);
         }
     }
 }

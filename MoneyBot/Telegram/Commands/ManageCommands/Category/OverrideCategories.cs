@@ -5,20 +5,20 @@ namespace MoneyBot.Telegram.Commands
 {
     public class OverrideCategoriesCommand : Command
     {
-        public OverrideCategoriesCommand(Message message, Account Account) : base(message, Account) { }
-        public override int Suitability()
+        public OverrideCategoriesCommand() : base() { }
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.OverrideCategories) res++;
+            if (account.Status == AccountStatus.OverrideCategories) res++;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            var values = Message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
+            var values = message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
 
             var categories = values.Select(v => new ExpenseCategory()
             {
-                Account = Account,
+                Account = account,
                     Emoji = v[0],
                     //TODO default type if one is missing
                     Type = v[1].ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out,
@@ -26,13 +26,13 @@ namespace MoneyBot.Telegram.Commands
 
             });
             //categories to be saved
-            var saved = Account.Categories.Where(c => categories.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) != null);
+            var saved = account.Categories.Where(c => categories.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) != null);
             //to save records about categories that haven't changed
-            Account.Categories = saved.Union(categories.Where(c => saved.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) == null)).ToList();
+            account.Categories = saved.Union(categories.Where(c => saved.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) == null)).ToList();
 
-            Controller.SaveChanges();
-            Account.Status = AccountStatus.Free;
-            return new OutMessage(Account, "Categories overrided", Keyboards.MainKeyboard(Account));
+            account.Controller.SaveChanges();
+            account.Status = AccountStatus.Free;
+            return new OutMessage(account, "Categories overrided", Keyboards.MainKeyboard(account));
         }
     }
 }

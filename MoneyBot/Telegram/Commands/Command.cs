@@ -1,35 +1,25 @@
-﻿using MoneyBot.Controllers;
-using MoneyBot.DB.Model;
+﻿using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
 
 namespace MoneyBot.Telegram.Commands
 {
     public abstract class Command
     {
-        public Command(Message message, Account account)
-        {
-            Message = message;
-            Account = account;
-        }
-        public TelegramController Controller { get; set; }
-        public Message Message { get; }
-        public Account Account { get; }
-
         // 0 not at all
         // 1 just handle reply
         // 2 main condition is true
         // 3 role staff
         // 4 high priority
-        public abstract int Suitability();
-        public abstract OutMessage Execute();
-        public virtual bool Canceled()
+        public abstract int Suitability(Message message, Account account);
+        public abstract OutMessage Execute(Message message, Account account);
+        public virtual bool Canceled(Message message, Account account)
         {
-            return Message.Text.ToLower().Equals("cancel") ||
-                Message.Text.ToLower().Equals("/cancel");
+            return message.Text.ToLower().Equals("cancel") ||
+                message.Text.ToLower().Equals("/cancel");
         }
-        public virtual OutMessage Relieve()
+        public virtual OutMessage Relieve(Message message, Account account)
         {
-            return new MainCommand(Message, Account).Execute();
+            return new MainCommand().Execute(message, account);
         }
     }
 }

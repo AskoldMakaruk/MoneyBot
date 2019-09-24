@@ -5,16 +5,15 @@ namespace MoneyBot.Telegram.Queries
 {
     public class SelectExpenseTypeQuery : Query
     {
-        public SelectExpenseTypeQuery(CallbackQuery message, Account account) : base(message, account) { }
-        public override bool IsSuitable()
+        public override bool IsSuitable(CallbackQuery message, Account account)
         {
-            return Message.Data.StartsWith("ExpenseType");
+            return message.Data.StartsWith("ExpenseType");
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(CallbackQuery message, Account account)
         {
-            var categories = Account.Categories.Where(c => c.Type == (Message.Data.EndsWith("In") ? MoneyDirection.In : MoneyDirection.Out));
+            var categories = account.Categories.Where(c => c.Type == (message.Data.EndsWith("In") ? MoneyDirection.In : MoneyDirection.Out));
             var keyboard = Keyboards.Categories(categories, "AddExpense");
-            return new OutMessage(Account, Message.Message.MessageId, $"Select expense category:", replyMarkup : keyboard);
+            return new OutMessage(account, message.Message.MessageId, $"Select expense category:", replyMarkup : keyboard);
         }
     }
 }

@@ -9,63 +9,62 @@ namespace MoneyBot.Telegram.Commands
 {
     public class MainCommand : Command
     {
-        public MainCommand(Message message, Account Account) : base(message, Account) { }
-
-        public override int Suitability()
+        public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (Account.Status == AccountStatus.Free) res++;
+            if (account.Status == AccountStatus.Free) res++;
             return res;
         }
-        public override OutMessage Execute()
+        public override OutMessage Execute(Message message, Account account)
         {
-            Account.Status = AccountStatus.Free;
-            if (Message.Text == "Manage Menu")
+            var Controller = account.Controller;
+            account.Status = AccountStatus.Free;
+            if (message.Text == "Manage Menu")
             {
-                Account.Status = AccountStatus.Manage;
-                return new OutMessage(Account, "Do something", replyMarkup : Keyboards.Manage(Account));
+                account.Status = AccountStatus.Manage;
+                return new OutMessage(account, "Do something", replyMarkup : Keyboards.Manage(account));
             }
-            if (Message.Text == "Add")
+            if (message.Text == "Add")
             {
-                var keys = Keyboards.AddType(Account);
-                if (Account.PeopleInited() && Account.CategoriesInited())
+                var keys = Keyboards.AddType(account);
+                if (account.PeopleInited() && account.CategoriesInited())
                 {
-                    return new OutMessage(Account, $"This is about", replyMarkup : keys);
+                    return new OutMessage(account, $"This is about", replyMarkup : keys);
                 }
-                else if (Account.PeopleInited())
+                else if (account.PeopleInited())
                 {
-                    return AddTypeQuery.TypePerson(Account);
+                    return AddTypeQuery.TypePerson(account);
                 }
-                else if (Account.CategoriesInited())
+                else if (account.CategoriesInited())
                 {
-                    return AddTypeQuery.TypeCategory(Account);
+                    return AddTypeQuery.TypeCategory(account);
                 }
                 else
-                    return new OutMessage(Account, $"Add category or person first");
+                    return new OutMessage(account, $"Add category or person first");
             }
-            if (Message.Text == "Show")
+            if (message.Text == "Show")
             {
-                if (Account.PeopleInited() && Account.CategoriesInited())
+                if (account.PeopleInited() && account.CategoriesInited())
                 {
-                    Account.Status = AccountStatus.ChooseShow;
-                    return new OutMessage(Account, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
+                    account.Status = AccountStatus.ChooseShow;
+                    return new OutMessage(account, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
                 }
-                else if (Account.PeopleInited())
+                else if (account.PeopleInited())
                 {
-                    return ShowCategoriesCommand.ToPeople(Account);
+                    return ShowCategoriesCommand.ToPeople(account);
                 }
-                else if (Account.CategoriesInited())
+                else if (account.CategoriesInited())
                 {
-                    return ShowCategoriesCommand.ToCategory(Account);
+                    return ShowCategoriesCommand.ToCategory(account);
                 }
                 else
-                    return new OutMessage(Account, $"Add category or person first");
+                    return new OutMessage(account, $"Add category or person first");
             }
-            if (Message.Text == "Stats")
+            if (message.Text == "Stats")
             {
                 //todo hide empty categories
-                var stats = Controller.GetStats(Account.Id);
-                var message =
+                var stats = Controller.GetStats(account.Id);
+                var mes =
                     $@"Your stats
 {(DateTime.Now - new TimeSpan(30,0,0,0)).ToString("dd MMMM")} - {DateTime.Now.ToString("dd MMMM")}
 Balance: {stats.Balance}
@@ -81,29 +80,29 @@ Your top creditors:
 Your top debtors:
 {string.Join("\n",stats.TopDeptors.Select(d => $"{d.Name}: {d.CountSum()}"))}
 ";
-                return new OutMessage(Account, message);
+                return new OutMessage(account, mes);
             }
-            if (Message.Text.StartsWith("/start"))
+            if (message.Text.StartsWith("/start"))
             {
-                return new OutMessage(Account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(Account));
+                return new OutMessage(account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(account));
             }
-            if (Message.Text == "deletedb" && Account.ChatId == 249258727)
+            if (message.Text == "deletedb" && account.ChatId == 249258727)
             {
                 Controller.DeleteDb();
-                return new OutMessage(Account, "Beep boop.");
+                return new OutMessage(account, "Beep boop.");
             }
-            if (Message.Text.ToLower() == "deleteme" && Account.ChatId == 249258727)
+            if (message.Text.ToLower() == "deleteme" && account.ChatId == 249258727)
             {
-                Controller.RemoveAccount(Account);
-                return new OutMessage(Account, "You were deleted.");
+                Controller.RemoveAccount(account);
+                return new OutMessage(account, "You were deleted.");
             }
             var regex = new Regex("(.{0,} - .{0,} - [0123456789.]{0,})");
-            var added = Message.Text
+            var added = message.Text
                 .Split('\n')
                 .Where(m => regex.Match(m).Success)
                 .Select(m => new
                 {
-                    Category = Account.Categories
+                    Category = account.Categories
                         .FirstOrDefault(c => m.StartsWith(c.Emoji)),
                         Message = m
                 })
@@ -125,10 +124,10 @@ Your top debtors:
                     a.Category.Expenses.Add(expense);
                     builder.Append($"{expense.Category.Emoji}: {expense.Sum}\n");
                 }
-                Account.Controller.SaveChanges();
-                return new OutMessage(Account, $"{builder.ToString()}", replyMarkup : Keyboards.MainKeyboard(Account));
+                account.Controller.SaveChanges();
+                return new OutMessage(account, $"{builder.ToString()}", replyMarkup : Keyboards.MainKeyboard(account));
             }
-            return new OutMessage(Account, $"Hi!", replyMarkup : Keyboards.MainKeyboard(Account));
+            return new OutMessage(account, $"Hi!", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }
