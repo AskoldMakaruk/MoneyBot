@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
             if (account.Status == AccountStatus.EnterTransactionSum) res++;
             return res;
         }
-        public override OutMessage Execute(Message message, Account account)
+        public override Response Execute(Message message, Account account)
         {
             var values = message.Text.TrySplit('-', ' ');
             var sum = values[1].ParseSum();
@@ -23,9 +23,9 @@ namespace MoneyBot.Telegram.Commands
                 account.CurrentTransaction.Date = DateTime.Now;
                 account.Controller.AddTransaction(account.CurrentTransaction);
                 account.Status = AccountStatus.Free;
-                return new OutMessage(account, $"Success!", replyMarkup : Keyboards.MainKeyboard(account));
+                return new Response(account, $"Success!", replyMarkup : Keyboards.MainKeyboard(account));
             }
-            return new OutMessage(account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
+            return new Response(account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
             if (account.Status == AccountStatus.AddPeople) res++;
             return res;
         }
-        public override OutMessage Execute(Message message, Account account)
+        public override Response Execute(Message message, Account account)
         {
             var values = message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
             var people = values.Select(v => new Person()
@@ -23,7 +23,7 @@ namespace MoneyBot.Telegram.Commands
             });
             account.Controller.AddPeople(people);
             account.Status = AccountStatus.Free;
-            return new OutMessage(account, "People added", replyMarkup : Keyboards.MainKeyboard(account));
+            return new Response(account, "People added", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }

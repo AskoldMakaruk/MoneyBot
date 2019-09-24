@@ -10,17 +10,17 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("AddExpense");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
-            if (account.CurrentExpense == null) return new OutMessage(message.Id, "You have no expenses");
+            if (account.CurrentExpense == null) return new Response(message.Id, "You have no expenses");
             if (!message.Data.TryParseId(out var categoryId))
             {
-                return new OutMessage(message.Id, "Internal error");
+                return new Response(message.Id, "Internal error");
             }
             account.CurrentExpense.Category = account.Categories.First(c => c.Id == categoryId);
             var templates = account.CurrentExpense.Category.Templates;
             account.Status = AccountStatus.EnterExpenseSum;
-            return new OutMessage(
+            return new Response(
                 account,
                 $"Adding expense to {account.CurrentExpense.Category.ToString()}\n" +
                 $@"Enter new expense in format:

@@ -11,7 +11,7 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("ShowCategory");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
             message.Data.TryParseId(out var id);
 
@@ -19,7 +19,7 @@ namespace MoneyBot.Telegram.Queries
 
             if (category == null || category?.Expenses == null)
             {
-                return new OutMessage(message.Id, "Everything is null");
+                return new Response(message.Id, "Everything is null");
             }
 
             var categoryDays = category.Expenses.GroupBy(e => e.Date.Date).Select(r => $"{r.Key.ToString("dd MMMM")}\n{string.Join("\n", r.Select(k => $"{k.Description}: {k.Sum}"))}");
@@ -28,8 +28,8 @@ namespace MoneyBot.Telegram.Queries
 
             string mes = $"{category.ToString()}\n{string.Join(new string('-', 10)+"\n", categoryDays)}".Trim();
             if (message.Message.Text != mes)
-                return new OutMessage(account, message.Message.MessageId, mes, replyMarkup : Keyboards.Categories(account.Categories.ToArray(), "Show"));
-            else return new OutMessage(message.Id, null);
+                return new Response(account, message.Message.MessageId, mes, replyMarkup : Keyboards.Categories(account.Categories.ToArray(), "Show"));
+            else return new Response(message.Id, null);
         }
     }
 }

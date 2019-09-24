@@ -9,11 +9,11 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("ExpenseType");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
             var categories = account.Categories.Where(c => c.Type == (message.Data.EndsWith("In") ? MoneyDirection.In : MoneyDirection.Out));
             var keyboard = Keyboards.Categories(categories, "AddExpense");
-            return new OutMessage(account, message.Message.MessageId, $"Select expense category:", replyMarkup : keyboard);
+            return new Response(account, message.Message.MessageId, $"Select expense category:", replyMarkup : keyboard);
         }
     }
 }

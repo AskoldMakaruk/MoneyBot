@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
             if (account.Status == AccountStatus.ChooseShow) res++;
             return res;
         }
-        public override OutMessage Execute(Message message, Account account)
+        public override Response Execute(Message message, Account account)
         {
             if (message.Text == "Show categories")
             {
@@ -26,13 +26,13 @@ namespace MoneyBot.Telegram.Commands
             }
             return Relieve(message, account);
         }
-        public static OutMessage ToCategory(Account account)
+        public static Response ToCategory(Account account)
         {
-            return new OutMessage(account, $"You have {account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(account.Categories, "ShowCategory"));
+            return new Response(account, $"You have {account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(account.Categories, "ShowCategory"));
         }
-        public static OutMessage ToPeople(Account account)
+        public static Response ToPeople(Account account)
         {
-            return new OutMessage(account, $"You have {account.People.Count} people.", replyMarkup : Keyboards.People(account.People, "ShowPeople"));
+            return new Response(account, $"You have {account.People.Count} people.", replyMarkup : Keyboards.People(account.People, "ShowPeople"));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("AddType");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
             if (message.Data.EndsWith("Category"))
             {
@@ -20,10 +20,10 @@ namespace MoneyBot.Telegram.Queries
             }
         }
 
-        public static OutMessage TypeCategory(Account account, Message message = null) => SelectType(account, true, message);
-        public static OutMessage TypePerson(Account account, Message message = null) => SelectType(account, false, message);
+        public static Response TypeCategory(Account account, Message message = null) => SelectType(account, true, message);
+        public static Response TypePerson(Account account, Message message = null) => SelectType(account, false, message);
 
-        private static OutMessage SelectType(Account account, bool category, Message message = null)
+        private static Response SelectType(Account account, bool category, Message message = null)
         {
             if (category)
                 account.CurrentExpense = new Expense();
@@ -34,10 +34,10 @@ namespace MoneyBot.Telegram.Queries
             var replyMarkup = Keyboards.CategoryTypes(text);
             if (message == null)
             {
-                return new OutMessage(account, $"Choose one:", replyMarkup : replyMarkup);
+                return new Response(account, $"Choose one:", replyMarkup : replyMarkup);
             }
             else
-                return new OutMessage(account, $"Choose one:", replyMarkup : replyMarkup)
+                return new Response(account, $"Choose one:", replyMarkup : replyMarkup)
                 {
                     EditMessageId = message.MessageId
                 };

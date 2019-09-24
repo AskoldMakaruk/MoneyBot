@@ -8,15 +8,15 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("Template");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
             if (message.Data.TryParseId(out var template))
             {
                 Controller.AddExpense(template);
                 account.Status = AccountStatus.Free;
-                return new OutMessage(account, "Success!") { EditMessageId = message.Message.MessageId };
+                return new Response(account, "Success!") { EditMessageId = message.Message.MessageId };
             }
-            else return new OutMessage(message.Id, "Server error: template not found");
+            else return new Response(message.Id, "Server error: template not found");
 
         }
     }

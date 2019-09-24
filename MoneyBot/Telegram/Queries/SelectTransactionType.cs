@@ -8,11 +8,11 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("TransactionType");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
             var keyboard = Keyboards.People(account.People, "AddTransaction");
             account.CurrentTransaction.Type = message.Data.ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out;
-            return new OutMessage(account, message.Message.MessageId, $"Select person that {(account.CurrentTransaction.Type == MoneyDirection.In?"gives money to you": "ownes you money")}:", replyMarkup : keyboard);
+            return new Response(account, message.Message.MessageId, $"Select person that {(account.CurrentTransaction.Type == MoneyDirection.In?"gives money to you": "ownes you money")}:", replyMarkup : keyboard);
         }
     }
 }

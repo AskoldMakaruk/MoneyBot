@@ -84,7 +84,7 @@ namespace MoneyBot.Telegram
             return Commands[Commands.Keys.OrderByDescending(s => s.Invoke(message, account)).First()];
         }
 
-        public async Task<Message> SendTextMessageAsync(OutMessage m)
+        public async Task<Message> SendTextMessageAsync(Response m)
         {
             if (m.EditMessageId == 0)
             {

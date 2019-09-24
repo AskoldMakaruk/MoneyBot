@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
             if (account.Status == AccountStatus.EnterTemplate) res++;
             return res;
         }
-        public override OutMessage Execute(Message message, Account account)
+        public override Response Execute(Message message, Account account)
         {
             var values = message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
 
@@ -25,7 +25,7 @@ namespace MoneyBot.Telegram.Commands
             });
             account.Controller.AddTemplates(templates);
             account.Status = AccountStatus.Free;
-            return new OutMessage(account, "Template added", replyMarkup : Keyboards.MainKeyboard(account));
+            return new Response(account, "Template added", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }

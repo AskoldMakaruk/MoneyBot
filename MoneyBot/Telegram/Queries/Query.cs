@@ -8,7 +8,7 @@ namespace MoneyBot.Telegram.Queries
     {
         public TelegramController Controller { get; set; }
 
-        public abstract OutMessage Execute(CallbackQuery message, Account account);
+        public abstract Response Execute(CallbackQuery message, Account account);
         public abstract bool IsSuitable(CallbackQuery message, Account account);
     }
 }

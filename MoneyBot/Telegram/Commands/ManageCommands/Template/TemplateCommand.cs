@@ -11,12 +11,12 @@ namespace MoneyBot.Telegram.Commands
             if (message.Text.ToLower().Contains("templat") && account.Status == AccountStatus.Manage) res += 2;
             return res;
         }
-        public override OutMessage Execute(Message message, Account account)
+        public override Response Execute(Message message, Account account)
         {
             if (message.Text == "Add templates")
             {
                 account.CurrentTemplate = new Template();
-                return new OutMessage(account, "Select category for new template:", replyMarkup : Keyboards.Categories(account.Categories, "AddTemplate"));
+                return new Response(account, "Select category for new template:", replyMarkup : Keyboards.Categories(account.Categories, "AddTemplate"));
             }
             return Relieve(message, account);
         }

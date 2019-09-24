@@ -3,23 +3,23 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MoneyBot.Telegram
 {
-    public class OutMessage
+    public class Response
     {
-        public OutMessage(Account account, string text, IReplyMarkup replyMarkup = null, int replyToMessageId = 0)
+        public Response(Account account, string text, IReplyMarkup replyMarkup = null, int replyToMessageId = 0)
         {
             Account = account;
             Text = text;
             ReplyToMessageId = replyToMessageId;
             ReplyMarkup = replyMarkup;
         }
-        public OutMessage(Account account, int editMessageId, string text, IReplyMarkup replyMarkup = null)
+        public Response(Account account, int editMessageId, string text, IReplyMarkup replyMarkup = null)
         {
             Account = account;
             Text = text;
             ReplyMarkup = replyMarkup;
             EditMessageId = editMessageId;
         }
-        public OutMessage(string answerToMessageId, string text, bool answerQuery = true)
+        public Response(string answerToMessageId, string text, bool answerQuery = true)
         {
             AnswerToMessageId = answerToMessageId;
             Text = text;

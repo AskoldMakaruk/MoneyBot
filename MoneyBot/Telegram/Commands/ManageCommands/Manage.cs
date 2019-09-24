@@ -11,7 +11,7 @@ namespace MoneyBot.Telegram.Commands
             if (account.Status == AccountStatus.Manage) res++;
             return res;
         }
-        public override OutMessage Execute(Message message, Account account)
+        public override Response Execute(Message message, Account account)
         {
             return Relieve(message, account);
         }

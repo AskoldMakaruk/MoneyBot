@@ -15,21 +15,21 @@ namespace MoneyBot.Telegram.Commands
             if (account.Status == AccountStatus.Free) res++;
             return res;
         }
-        public override OutMessage Execute(Message message, Account account)
+        public override Response Execute(Message message, Account account)
         {
             var Controller = account.Controller;
             account.Status = AccountStatus.Free;
             if (message.Text == "Manage Menu")
             {
                 account.Status = AccountStatus.Manage;
-                return new OutMessage(account, "Do something", replyMarkup : Keyboards.Manage(account));
+                return new Response(account, "Do something", replyMarkup : Keyboards.Manage(account));
             }
             if (message.Text == "Add")
             {
                 var keys = Keyboards.AddType(account);
                 if (account.PeopleInited() && account.CategoriesInited())
                 {
-                    return new OutMessage(account, $"This is about", replyMarkup : keys);
+                    return new Response(account, $"This is about", replyMarkup : keys);
                 }
                 else if (account.PeopleInited())
                 {
@@ -40,14 +40,14 @@ namespace MoneyBot.Telegram.Commands
                     return AddTypeQuery.TypeCategory(account);
                 }
                 else
-                    return new OutMessage(account, $"Add category or person first");
+                    return new Response(account, $"Add category or person first");
             }
             if (message.Text == "Show")
             {
                 if (account.PeopleInited() && account.CategoriesInited())
                 {
                     account.Status = AccountStatus.ChooseShow;
-                    return new OutMessage(account, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
+                    return new Response(account, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
                 }
                 else if (account.PeopleInited())
                 {
@@ -58,7 +58,7 @@ namespace MoneyBot.Telegram.Commands
                     return ShowCategoriesCommand.ToCategory(account);
                 }
                 else
-                    return new OutMessage(account, $"Add category or person first");
+                    return new Response(account, $"Add category or person first");
             }
             if (message.Text == "Stats")
             {
@@ -80,21 +80,21 @@ Your top creditors:
 Your top debtors:
 {string.Join("\n",stats.TopDeptors.Select(d => $"{d.Name}: {d.CountSum()}"))}
 ";
-                return new OutMessage(account, mes);
+                return new Response(account, mes);
             }
             if (message.Text.StartsWith("/start"))
             {
-                return new OutMessage(account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(account));
+                return new Response(account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(account));
             }
             if (message.Text == "deletedb" && account.ChatId == 249258727)
             {
                 Controller.DeleteDb();
-                return new OutMessage(account, "Beep boop.");
+                return new Response(account, "Beep boop.");
             }
             if (message.Text.ToLower() == "deleteme" && account.ChatId == 249258727)
             {
                 Controller.RemoveAccount(account);
-                return new OutMessage(account, "You were deleted.");
+                return new Response(account, "You were deleted.");
             }
             var regex = new Regex("(.{0,} - .{0,} - [0123456789.]{0,})");
             var added = message.Text
@@ -125,9 +125,9 @@ Your top debtors:
                     builder.Append($"{expense.Category.Emoji}: {expense.Sum}\n");
                 }
                 account.Controller.SaveChanges();
-                return new OutMessage(account, $"{builder.ToString()}", replyMarkup : Keyboards.MainKeyboard(account));
+                return new Response(account, $"{builder.ToString()}", replyMarkup : Keyboards.MainKeyboard(account));
             }
-            return new OutMessage(account, $"Hi!", replyMarkup : Keyboards.MainKeyboard(account));
+            return new Response(account, $"Hi!", replyMarkup : Keyboards.MainKeyboard(account));
         }
     }
 }

@@ -11,13 +11,13 @@ namespace MoneyBot.Telegram.Commands
         // 3 role staff
         // 4 high priority
         public abstract int Suitability(Message message, Account account);
-        public abstract OutMessage Execute(Message message, Account account);
+        public abstract Response Execute(Message message, Account account);
         public virtual bool Canceled(Message message, Account account)
         {
             return message.Text.ToLower().Equals("cancel") ||
                 message.Text.ToLower().Equals("/cancel");
         }
-        public virtual OutMessage Relieve(Message message, Account account)
+        public virtual Response Relieve(Message message, Account account)
         {
             return new MainCommand().Execute(message, account);
         }

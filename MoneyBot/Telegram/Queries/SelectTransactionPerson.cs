@@ -9,16 +9,16 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("AddTransaction");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
-            if (account.CurrentTransaction == null) return new OutMessage(message.Id, "Something went wrong true again");
+            if (account.CurrentTransaction == null) return new Response(message.Id, "Something went wrong true again");
             if (!message.Data.TryParseId(out var personId))
             {
-                return new OutMessage(message.Id, "Internal error");
+                return new Response(message.Id, "Internal error");
             }
             account.CurrentTransaction.Person = account.People.First(c => c.Id == personId);
             account.Status = AccountStatus.EnterTransactionSum;
-            return new OutMessage(
+            return new Response(
                 account,
                 message.Message.MessageId,
                 $"Adding transaction between you and{account.CurrentTransaction.Person.Name}\n" +

@@ -1,12 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
-using MoneyBot.DB.Secondary;
-using MoneyBot.Telegram;
 using MoneyBot.Telegram.Commands;
 using Moq;
 using Telegram.Bot.Types;

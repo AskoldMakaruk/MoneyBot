@@ -11,17 +11,17 @@ namespace MoneyBot.Telegram.Queries
         {
             return message.Data.StartsWith("AddTemplate");
         }
-        public override OutMessage Execute(CallbackQuery message, Account account)
+        public override Response Execute(CallbackQuery message, Account account)
         {
             if (!message.Data.TryParseId(out var categoryId))
             {
-                return new OutMessage(message.Id, "Internal error");
+                return new Response(message.Id, "Internal error");
 
             }
             account.CurrentTemplate.Category = account.Categories.First(c => c.Id == categoryId);
             var templates = account.CurrentTemplate.Category.Templates;
             account.Status = AccountStatus.EnterTemplate;
-            return new OutMessage(
+            return new Response(
                 account,
                 message.Message.MessageId,
                 $"Adding template to {account.CurrentTemplate.Category.ToString()}\n" +
