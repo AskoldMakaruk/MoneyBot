@@ -1,6 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MoneyBot.Controllers;
+using MoneyBot.DB.Model;
 using MoneyBot.DB.Secondary;
 using MoneyBot.Telegram;
+using MoneyBot.Telegram.Commands;
+using Moq;
 using Telegram.Bot.Types;
 using Xunit;
 
@@ -8,28 +16,27 @@ namespace Test
 {
     public class BotTests
     {
-        public BotTests()
+        public BotTests() { }
+
+        [Theory]
+        [InlineData("asdasdasd", 0)]
+        [InlineData("🍖- Out -  Food", 1)]
+        [InlineData("🍖- Out -  Food\n🍰  - Out -  Treats", 2)]
+        public void AddCategory(string message, int count)
         {
-
-        }
-
-        [Fact]
-        public async void HandlingMessage()
-        {
-            var Bot = new Bot("823973981:AAGYpq1Eyl_AAYGXLeW8s28uCH89S7fsHZA");
-            Bot.Testing = true;
-
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-
-            Bot.OnMessageSent += (OutMessage mes) =>
+            var mes = Create(message);
+            var mock = new Mock<TelegramController>();
+            mock.Setup(c => c.FromMessage(mes)).Returns(new Account());
+            mock.Setup(c => c.AddCategories(null)).Callback((IEnumerable<ExpenseCategory> input) =>
             {
-                Equals(mes.Text, "Welcome to MoneyBot.");
-                tcs.SetResult(true);
-            };
+                Assert.Equal(input.Count(), count);
+            });
 
-            Bot.HandleMessage(Create("/start"));
+            var account = mock.Object.FromMessage(mes);
+            account.Controller = mock.Object;
 
-            await tcs.Task;
+            var cmd = new AddCategoryCommand();
+            var outmes = cmd.Execute(mes, account);
         }
 
         public static Message Create(string text) => new Message()
