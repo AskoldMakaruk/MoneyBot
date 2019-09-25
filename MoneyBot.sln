@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29318.209
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyBot", "MoneyBot\MoneyBot.csproj", "{FD5862C2-0529-48ED-8DE0-3C942B06B9E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{EB25C551-3036-4FF1-9D4B-06DFE926FE77}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD5862C2-0529-48ED-8DE0-3C942B06B9E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD5862C2-0529-48ED-8DE0-3C942B06B9E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD5862C2-0529-48ED-8DE0-3C942B06B9E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD5862C2-0529-48ED-8DE0-3C942B06B9E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB25C551-3036-4FF1-9D4B-06DFE926FE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB25C551-3036-4FF1-9D4B-06DFE926FE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB25C551-3036-4FF1-9D4B-06DFE926FE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB25C551-3036-4FF1-9D4B-06DFE926FE77}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A422B7D4-96B1-4B95-A81F-6A95805145E4}
+	EndGlobalSection
+EndGlobal
