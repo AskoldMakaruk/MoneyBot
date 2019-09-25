@@ -121,12 +121,12 @@ namespace MoneyBot.Controllers
         #endregion
 
         #region Expenses        
-        public void AddExpense(Expense expense)
+        public virtual void AddExpense(Expense expense)
         {
             Context.Expenses.Add(expense);
             SaveChanges();
         }
-        internal void AddExpense(int templateId)
+        public virtual void AddExpense(int templateId)
         {
             var template = Context.Templates.Include(q => q.Category).First(t => t.Id == templateId);
             Context.Expenses.Add(new Expense

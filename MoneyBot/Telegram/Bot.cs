@@ -35,23 +35,27 @@ namespace MoneyBot.Telegram
 
         public async void HandleQuery(CallbackQuery query)
         {
-            var contoller = new TelegramController();
-            contoller.Start();
-
-            var account = contoller.FromMessage(query.Message.Chat);
-            if (account == null)
+            try
             {
-                await AnswerCallbackQueryAsync(query.Id, "Your account doesn't exist.");
-                return;
+                var contoller = new TelegramController();
+                contoller.Start();
+
+                var account = contoller.FromMessage(query.Message.Chat);
+                if (account == null)
+                {
+                    await AnswerCallbackQueryAsync(query.Id, "Your account doesn't exist.");
+                    return;
+                }
+
+                var baseType = typeof(Query);
+                var assembly = baseType.Assembly;
+
+                var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c) as Query).First(c => c.IsSuitable(query, account));
+
+                command.Controller = contoller;
+                await SendTextMessageAsync(command.Execute(query, account));
             }
-
-            var baseType = typeof(Query);
-            var assembly = baseType.Assembly;
-
-            var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c) as Query).First(c => c.IsSuitable(query, account));
-
-            command.Controller = contoller;
-            await SendTextMessageAsync(command.Execute(query, account));
+            catch (Exception e) { System.Console.WriteLine(e); }
         }
 
         public async void HandleMessage(Message message)

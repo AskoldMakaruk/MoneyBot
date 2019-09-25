@@ -26,7 +26,7 @@ namespace MoneyBot.Telegram.Queries
 
             account.Status = AccountStatus.Free;
 
-            string mes = $"{category.ToString()}\n{string.Join(new string('-', 10)+"\n", categoryDays)}".Trim();
+            string mes = $"{category.ToString()}\n{string.Join("\n"+new string('-', 10)+"\n", categoryDays)}".Trim();
             if (message.Message.Text != mes)
                 return new Response(account, message.Message.MessageId, mes, replyMarkup : Keyboards.Categories(account.Categories.ToArray(), "Show"));
             else return new Response(message.Id, null);
