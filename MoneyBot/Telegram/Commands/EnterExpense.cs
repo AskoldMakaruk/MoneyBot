@@ -14,12 +14,33 @@ namespace MoneyBot.Telegram.Commands
         }
         public override Response Execute(Message message, Account account)
         {
-            var values = message.Text.TrySplit('-', ' ');
-            var sum = values[1].ParseSum();
-            if (sum != -1 && account.CurrentExpense != null)
+            var text = message.Text;
+
+            var sum = -1.0;
+            var description = "";
+
+            var success = false;
+
+            if (text.Contains('-'))
             {
-                account.CurrentExpense.Description = values[0];
+                var values = message.Text.TrySplit('-');
+                if (values.Length == 2)
+                {
+                    success = true;
+                    description = values[0];
+                    sum = values[1].ParseSum();
+                }
+            }
+            else
+            {
+                success = double.TryParse(text.Trim(), out sum);
+            }
+
+            if (success && account.CurrentExpense != null)
+            {
+                account.CurrentExpense.Description = description;
                 account.CurrentExpense.Sum = sum;
+
                 account.CurrentExpense.Date = DateTime.Now;
                 account.Controller.AddExpense(account.CurrentExpense);
                 account.Status = AccountStatus.Free;

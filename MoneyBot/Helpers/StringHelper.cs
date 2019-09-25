@@ -10,6 +10,7 @@ namespace MoneyBot
         {
             return source.Split(splitChars.First(c => source.Contains(c)));
         }
+        public static bool IsNullOrEmpty(this string source) => source == null || source == "";
         public static string TrimDoubleSpaces(this string source)
         {
             Regex regex = new Regex(@"[\s]{2,}", RegexOptions.None);

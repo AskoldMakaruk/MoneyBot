@@ -12,7 +12,3 @@ namespace MoneyBot
         }
     }
 }
-//todo add fastway to guide user to add stuff
-//todo expenses without description
-//todo expenses with date
-//todo faster way to choose template

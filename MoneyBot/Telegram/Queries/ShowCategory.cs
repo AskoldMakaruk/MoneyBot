@@ -23,7 +23,8 @@ namespace MoneyBot.Telegram.Queries
                 return new Response(message.Id, "Everything is null");
             }
 
-            var categoryDays = category.Expenses.GroupBy(e => e.Date.Date).Select(r => $"{r.Key.ToString("dd MMMM")}:\n{string.Join("\n", r.Select(k => $"{k.Description}: {k.Sum}"))}");
+            var categoryDays = category.Expenses.GroupBy(e => e.Date.Date)
+                .Select(r => $"{r.Key.ToString("dd MMMM")}:\n{string.Join("\n", r.Select(k => k.Description.IsNullOrEmpty()?k.Sum.ToString(): $"{k.Description}: {k.Sum}"))}");
 
             string mes = $"{category.ToString()}\n{string.Join("\n"+new string('-', 10)+"\n", categoryDays)}".Trim();
 
