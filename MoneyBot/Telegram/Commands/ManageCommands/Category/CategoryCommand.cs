@@ -6,8 +6,6 @@ namespace MoneyBot.Telegram.Commands
 {
     public class CategoryCommand : Command
     {
-        public CategoryCommand() : base() { }
-
         public override int Suitability(Message message, Account account)
         {
             int res = 0;

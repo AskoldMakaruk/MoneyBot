@@ -27,14 +27,25 @@ namespace MoneyBot
         {
             return source.Transactions.Select(t => t.Type == MoneyDirection.In? t.Sum: -t.Sum).Sum();
         }
+
         public static bool CategoriesInited(this Account account)
         {
             return account.Categories != null && account.Categories.Count != 0;
         }
+        public static bool CategoriesInitedAndNotEmpty(this Account account)
+        {
+            return CategoriesInited(account) && account.Categories.Where(c => c.Expenses != null).SelectMany(c => c.Expenses).Count() != 0;
+        }
+
         public static bool PeopleInited(this Account account)
         {
             return account.People != null && account.People.Count != 0;
         }
+        public static bool PeopleInitedAndNotEmpty(this Account account)
+        {
+            return PeopleInited(account) && account.People.Where(c => c.Transactions != null).SelectMany(c => c.Transactions).Count() != 0;
+        }
+
         public static bool FundsInited(this Account account)
         {
             return account.Funds != null && account.Funds.Count != 0;

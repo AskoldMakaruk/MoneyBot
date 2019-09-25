@@ -10,8 +10,7 @@ namespace MoneyBot.Telegram.Commands
         public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (account.Status == AccountStatus.Start) res += 2;
-            if (message.Text.StartsWith("/start")) res += 2;
+            if (account.Status == AccountStatus.Start && message.Text.StartsWith("/start")) res += 2;
             return res;
         }
         public override Response Execute(Message message, Account account)

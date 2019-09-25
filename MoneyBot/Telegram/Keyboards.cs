@@ -118,7 +118,7 @@ namespace MoneyBot.Telegram
             return templates.Select(t => new InlineKeyboardButton { CallbackData = query + " " + t.Id, Text = t.Category.Emoji + t.Name + ": " + t.Sum }).ToArray();
         }
 
-        internal static InlineKeyboardMarkup People(IEnumerable<Person> people, string query)
+        public static InlineKeyboardMarkup People(IEnumerable<Person> people, string query)
         {
             var categories = people.ToArray();
             var keys = new List<List<InlineKeyboardButton>>();
@@ -151,6 +151,7 @@ namespace MoneyBot.Telegram
             return keys.ToArray();
         }
 
+        public static InlineKeyboardMarkup ShowActiveCategories(IEnumerable<ExpenseCategory> input) => Categories(input.Where(c => c.Expenses != null && c.Expenses.Count != 0), "ShowCategory");
         public static InlineKeyboardMarkup Categories(IEnumerable<ExpenseCategory> input, string query)
         {
             var categories = input.ToArray();

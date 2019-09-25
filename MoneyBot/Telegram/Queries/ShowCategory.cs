@@ -13,22 +13,24 @@ namespace MoneyBot.Telegram.Queries
         }
         public override Response Execute(CallbackQuery message, Account account)
         {
+            account.Status = AccountStatus.Free;
+
             message.Data.TryParseId(out var id);
 
             var category = account.Categories?.First(ct => ct.Id == id);
-
             if (category == null || category?.Expenses == null)
             {
                 return new Response(message.Id, "Everything is null");
             }
 
-            var categoryDays = category.Expenses.GroupBy(e => e.Date.Date).Select(r => $"{r.Key.ToString("dd MMMM")}\n{string.Join("\n", r.Select(k => $"{k.Description}: {k.Sum}"))}");
-
-            account.Status = AccountStatus.Free;
+            var categoryDays = category.Expenses.GroupBy(e => e.Date.Date).Select(r => $"{r.Key.ToString("dd MMMM")}:\n{string.Join("\n", r.Select(k => $"{k.Description}: {k.Sum}"))}");
 
             string mes = $"{category.ToString()}\n{string.Join("\n"+new string('-', 10)+"\n", categoryDays)}".Trim();
+
             if (message.Message.Text != mes)
-                return new Response(account, message.Message.MessageId, mes, replyMarkup : Keyboards.Categories(account.Categories.ToArray(), "Show"));
+            {
+                return new Response(account, message.Message.MessageId, mes, replyMarkup : Keyboards.ShowActiveCategories(account.Categories));
+            }
             else return new Response(message.Id, null);
         }
     }

@@ -5,11 +5,10 @@ namespace MoneyBot.Telegram.Commands
 {
     public class ShowCategoriesCommand : Command
     {
-        public ShowCategoriesCommand() : base() { }
         public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (account.Status == AccountStatus.ChooseShow) res++;
+            if (account.Status == AccountStatus.ChooseShow) res += 2;
             return res;
         }
         public override Response Execute(Message message, Account account)
@@ -28,11 +27,11 @@ namespace MoneyBot.Telegram.Commands
         }
         public static Response ToCategory(Account account)
         {
-            return new Response(account, $"You have {account.Categories.Count} categories.", replyMarkup : Keyboards.Categories(account.Categories, "ShowCategory"));
+            return new Response(account, $"Select one to see info.", replyMarkup : Keyboards.ShowActiveCategories(account.Categories));
         }
         public static Response ToPeople(Account account)
         {
-            return new Response(account, $"You have {account.People.Count} people.", replyMarkup : Keyboards.People(account.People, "ShowPeople"));
+            return new Response(account, $"Select one to see info.", replyMarkup : Keyboards.People(account.People, "ShowPeople"));
         }
     }
 }

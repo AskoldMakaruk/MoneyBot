@@ -12,7 +12,7 @@ namespace MoneyBot.Telegram.Commands
         public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (account.Status == AccountStatus.AddCategories) res++;
+            if (account.Status == AccountStatus.AddCategories) res += 2;
             return res;
         }
         public override Response Execute(Message message, Account account)

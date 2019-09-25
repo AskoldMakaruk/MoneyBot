@@ -30,7 +30,6 @@ namespace MoneyBot.Telegram
 
             OnMessage += OnMessageRecieved;
             OnCallbackQuery += OnQueryReceived;
-            //StartReceiving();
         }
 
         public async void HandleQuery(CallbackQuery query)

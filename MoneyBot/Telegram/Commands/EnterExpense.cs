@@ -16,7 +16,7 @@ namespace MoneyBot.Telegram.Commands
         {
             var values = message.Text.TrySplit('-', ' ');
             var sum = values[1].ParseSum();
-            if (sum != -1)
+            if (sum != -1 && account.CurrentExpense != null)
             {
                 account.CurrentExpense.Description = values[0];
                 account.CurrentExpense.Sum = sum;
