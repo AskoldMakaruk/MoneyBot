@@ -1,4 +1,5 @@
 out/
+*.exe
 # User-specific files
 *.suo
 *.user

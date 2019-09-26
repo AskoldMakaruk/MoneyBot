@@ -1,8 +1,8 @@
 Todo:
-  ☐ add fastway to guide user to add stuff  
+  ☐ add fastway to guide user to add stuff 
   ☐ beautify expense to string in showcategory.cs
   ☐ expenses with date
-  ☐ faster way to choose template
+  ✔ faster way to choose template @started(19-09-26 15:13) @done(19-09-26 15:38) @lasted(25m33s)
 FastFixes:
   ✔ fix stats dispay @started(19-09-26 11:51) @done(19-09-26 11:52) @lasted(1m46s)
 Archive:

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoneyBot.DB.Model;
+using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types.ReplyMarkups;
 namespace MoneyBot.Telegram
 {
@@ -97,21 +98,58 @@ namespace MoneyBot.Telegram
             return keys.ToArray();
         }
 
-        public static InlineKeyboardMarkup CategoryTypes(string query) => new InlineKeyboardMarkup(new InlineKeyboardButton[]
+        public static InlineKeyboardMarkup CategoryTypes(Account account, string query)
         {
-            new InlineKeyboardButton()
+            var templatesKeyboard = new List<List<InlineKeyboardButton>>();
+            var lastRow = new List<InlineKeyboardButton>
+            {
+                new InlineKeyboardButton()
                 {
-                    CallbackData = $"{query} Out",
-                        Text = "😳😭I'm paying😤"
+                CallbackData = $"{query} Out",
+                Text = "😳😭I'm paying😤"
                 },
                 new InlineKeyboardButton()
                 {
-                    CallbackData = $"{query} In",
-                        Text = "😎👌💵I'm being payed💵👌"
+                CallbackData = $"{query} In",
+                Text = "😎👌💵I'm being payed💵👌"
                 },
-        });
+            };
 
-        //TODO page navigation with buttons
+            if (account.CurrentRecord.RecordType == RecordType.Expense)
+            {
+                var templates = account.Categories.SelectMany(c => c.Templates).ToArray();
+                if (templates.Count() > 0)
+                {
+                    for (int i = 0; i < templates.Length; i++)
+                    {
+                        var template = templates[i];
+                        var button = new InlineKeyboardButton()
+                        {
+                            Text = $"{template.Category.Emoji} {template.Name} - {template.Sum}",
+                            CallbackData = query + " " + template.Id
+                        };
+                        if (templatesKeyboard.Count == 0)
+                        {
+                            var arr = new List<InlineKeyboardButton>() { button };
+                            templatesKeyboard.Add(arr);
+                        }
+                        else if (templatesKeyboard.Count > 0)
+                        {
+                            if (templatesKeyboard.Last().Count == 1)
+                            {
+                                templatesKeyboard.Last() [1] = button;
+                            }
+                            else
+                            {
+                                templatesKeyboard.Add(new List<InlineKeyboardButton> { button });
+                            }
+                        }
+                    }
+                }
+            }
+            templatesKeyboard.Add(lastRow);
+            return templatesKeyboard.ToArray();
+        }
 
         public static InlineKeyboardMarkup Templates(List<Template> templates, string query)
         {

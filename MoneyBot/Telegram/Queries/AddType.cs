@@ -20,7 +20,7 @@ namespace MoneyBot.Telegram.Queries
         public static Response SelectRecordType(Account account, RecordType category, Message message = null)
         {
             account.CurrentRecord = new AddRecord() { RecordType = category };
-            var res = new Response(account, $"Choose one:", Keyboards.CategoryTypes("RecordType"));
+            var res = new Response(account, $"Choose one:", Keyboards.CategoryTypes(account, "RecordType"));
 
             if (message != null)
                 res.EditMessageId = message.MessageId;
