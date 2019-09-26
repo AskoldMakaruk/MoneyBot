@@ -1,4 +1,5 @@
 using MoneyBot.DB.Model;
+using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types;
 namespace MoneyBot.Telegram.Queries
 {
@@ -11,36 +12,19 @@ namespace MoneyBot.Telegram.Queries
         public override Response Execute(CallbackQuery message, Account account)
         {
             if (message.Data.EndsWith("Category"))
-            {
-                return TypeCategory(account, message.Message);
-            }
+                return SelectRecordType(account, RecordType.Expense, message.Message);
             else
-            {
-                return TypePerson(account, message.Message);
-            }
+                return SelectRecordType(account, RecordType.Transaction, message.Message);
         }
 
-        public static Response TypeCategory(Account account, Message message = null) => SelectType(account, true, message);
-        public static Response TypePerson(Account account, Message message = null) => SelectType(account, false, message);
-
-        private static Response SelectType(Account account, bool category, Message message = null)
+        public static Response SelectRecordType(Account account, RecordType category, Message message = null)
         {
-            if (category)
-                account.CurrentExpense = new Expense();
-            else
-                account.CurrentTransaction = new Transaction();
+            account.CurrentRecord = new AddRecord() { RecordType = category };
+            var res = new Response(account, $"Choose one:", Keyboards.CategoryTypes("RecordType"));
 
-            var text = category? "ExpenseType": "TransactionType";
-            var replyMarkup = Keyboards.CategoryTypes(text);
-            if (message == null)
-            {
-                return new Response(account, $"Choose one:", replyMarkup : replyMarkup);
-            }
-            else
-                return new Response(account, $"Choose one:", replyMarkup : replyMarkup)
-                {
-                    EditMessageId = message.MessageId
-                };
+            if (message != null)
+                res.EditMessageId = message.MessageId;
+            return res;
         }
     }
 }

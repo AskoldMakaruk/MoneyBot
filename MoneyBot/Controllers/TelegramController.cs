@@ -120,7 +120,7 @@ namespace MoneyBot.Controllers
         }
         #endregion
 
-        #region Expenses        
+        #region Expenses      
         public virtual void AddExpense(Expense expense)
         {
             Context.Expenses.Add(expense);

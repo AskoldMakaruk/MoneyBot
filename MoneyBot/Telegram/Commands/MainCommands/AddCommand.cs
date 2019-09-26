@@ -21,11 +21,11 @@ namespace MoneyBot.Telegram.Commands
             }
             else if (account.PeopleInited())
             {
-                return AddTypeQuery.TypePerson(account);
+                return AddTypeQuery.SelectRecordType(account, DB.Secondary.RecordType.Transaction);
             }
             else if (account.CategoriesInited())
             {
-                return AddTypeQuery.TypeCategory(account);
+                return AddTypeQuery.SelectRecordType(account, DB.Secondary.RecordType.Expense);
             }
             else
                 return new Response(account, $"Add category or person first");

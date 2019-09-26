@@ -1,15 +1,16 @@
 using System;
+using System.Linq;
 using MoneyBot.DB.Model;
+using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types;
 namespace MoneyBot.Telegram.Commands
 {
-    public class EnterExpenseCommand : Command
+    public class EnterRecordSumCommand : Command
     {
-        public EnterExpenseCommand() : base() { }
         public override int Suitability(Message message, Account account)
         {
             int res = 0;
-            if (account.Status == AccountStatus.EnterExpenseSum) res += 2;
+            if (account.Status == AccountStatus.EnterRecordSum) res += 2;
             return res;
         }
         public override Response Execute(Message message, Account account)
@@ -36,13 +37,36 @@ namespace MoneyBot.Telegram.Commands
                 success = double.TryParse(text.Trim(), out sum);
             }
 
-            if (success && account.CurrentExpense != null)
+            if (success && account.CurrentRecord != null)
             {
-                account.CurrentExpense.Description = description;
-                account.CurrentExpense.Sum = sum;
+                var record = account.CurrentRecord;
+                record.Description = description;
+                record.Sum = sum;
 
-                account.CurrentExpense.Date = DateTime.Now;
-                account.Controller.AddExpense(account.CurrentExpense);
+                record.Date = DateTime.Now;
+                switch (record.RecordType)
+                {
+                    case RecordType.Expense:
+                        account.Controller.AddExpense(new Expense
+                        {
+                            Category = account.Categories.First(c => c.Id == record.FromId),
+                                Date = record.Date,
+                                Description = record.Description,
+                                Sum = record.Sum
+                        });
+                        break;
+                    case RecordType.Transaction:
+                        account.Controller.AddTransaction(new Transaction
+                        {
+                            Person = account.People.First(c => c.Id == record.FromId),
+                                Date = record.Date,
+                                Description = record.Description,
+                                Sum = record.Sum,
+                                Type = record.Direction
+                        });
+                        break;
+                }
+
                 account.Status = AccountStatus.Free;
                 return new Response(account, $"Success!", replyMarkup : Keyboards.MainKeyboard(account));
 

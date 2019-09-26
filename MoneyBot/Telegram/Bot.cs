@@ -52,6 +52,9 @@ namespace MoneyBot.Telegram
                 var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c) as Query).First(c => c.IsSuitable(query, account));
 
                 command.Controller = contoller;
+
+                Console.WriteLine($"Command: {command.ToString()}");
+
                 await SendTextMessageAsync(command.Execute(query, account));
             }
             catch (Exception e) { System.Console.WriteLine(e); }

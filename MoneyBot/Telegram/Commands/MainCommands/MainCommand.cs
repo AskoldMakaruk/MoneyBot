@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
 using MoneyBot.Telegram.Queries;
 using Telegram.Bot.Types;
@@ -24,21 +25,24 @@ namespace MoneyBot.Telegram.Commands
                 account.Status = AccountStatus.Manage;
                 return new Response(account, "Do something", replyMarkup : Keyboards.Manage(account));
             }
-            if (message.Text.StartsWith("/start"))
+            if (account.ChatId == 249258727)
             {
-                return new Response(account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(account));
+                if (message.Text.ToLower() == "deletedb")
+                {
+                    Controller.DeleteDb();
+                    return new Response(account, "Beep boop.");
+                }
+                if (message.Text.ToLower() == "deleteme")
+                {
+                    Controller.RemoveAccount(account);
+                    return new Response(account, "You were deleted.");
+                }
+                if (message.Text.ToLower() == "refreshme")
+                {
+                    TelegramController.Accounts.Remove(account.ChatId);
+                    return new Response(account, "Feeling refreshed?");
+                }
             }
-            if (message.Text == "deletedb" && account.ChatId == 249258727)
-            {
-                Controller.DeleteDb();
-                return new Response(account, "Beep boop.");
-            }
-            if (message.Text.ToLower() == "deleteme" && account.ChatId == 249258727)
-            {
-                Controller.RemoveAccount(account);
-                return new Response(account, "You were deleted.");
-            }
-
             var regex = new Regex("(.{0,} - .{0,} - [0123456789.]{0,})");
             var added = message.Text
                 .Split('\n')

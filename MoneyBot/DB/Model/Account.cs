@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types;
 
 namespace MoneyBot.DB.Model
@@ -15,10 +16,7 @@ namespace MoneyBot.DB.Model
         public AccountStatus Status { get; set; }
 
         [NotMapped]
-        public Expense CurrentExpense { get; set; }
-
-        [NotMapped]
-        public Transaction CurrentTransaction { get; set; }
+        public AddRecord CurrentRecord { get; set; }
 
         [NotMapped]
         public Controllers.TelegramController Controller { get; set; }
@@ -38,7 +36,7 @@ namespace MoneyBot.DB.Model
         Start,
         Manage,
         AddCategories,
-        EnterExpenseSum,
+        EnterRecordSum,
         EnterTemplate,
         AddPeople,
         EnterTransactionSum,

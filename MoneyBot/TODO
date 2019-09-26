@@ -1,7 +1,7 @@
 Todo:
-  ☐ add fastway to guide user to add stuff
+  ☐ add fastway to guide user to add stuff  
   ✔ expenses without description @started(19-09-25 16:47) @done(19-09-25 17:06) @lasted(19m58s)
   ☐ beautify expense to string in showcategory.cs
   ☐ expenses with date
   ☐ faster way to choose template
-  ☐ unify path to add expense and transaction
+  ☐ unify path to add expense and transaction @started(19-09-26 10:18)

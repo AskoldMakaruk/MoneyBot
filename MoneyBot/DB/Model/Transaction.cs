@@ -7,11 +7,12 @@ namespace MoneyBot.DB.Model
     {
         public int Id { get; set; }
 
-        [ForeignKey("PersonId")]
-        public Person Person { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public double Sum { get; set; }
         public MoneyDirection Type { get; set; }
+
+        [ForeignKey("PersonId")]
+        public Person Person { get; set; }
     }
 }
