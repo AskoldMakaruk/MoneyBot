@@ -6,7 +6,6 @@ You can test it in telegram @throwhimintosocietybot
 ## Feature roadmap
 <details>
     <summary>Expand</summary>
-
 - [ ] Payments
   - [x] add
     - [x] by hand  
@@ -15,15 +14,15 @@ You can test it in telegram @throwhimintosocietybot
   - [ ] remove 
   - [ ] edit  
 - [ ] People
-  - [ ] add
-    - [ ] array
+  - [x] add
+    - [x] array
   - [ ] some type of alias
   - [x] transfers
     - [x] to
     - [x] from
   - [ ] total
   - [ ] inline button catalog
-  - [ ] short profile
+  - [x] short profile
 - [x] Categories
   - [ ] add
     - [x] category type (income / expense)
