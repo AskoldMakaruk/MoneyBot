@@ -44,12 +44,12 @@ namespace MoneyBot.Telegram.Commands
             }
             if (creditors)
             {
-                builder.AppendLine("Your top creditors:");
+                builder.AppendLine("\n\nYour top creditors:");
                 builder.AppendJoin("\n", stats.TopCreditors.Select(d => $"{d.Name}: {d.CountSum()}"));
             }
             if (debtors)
             {
-                builder.AppendLine("Your top debtors:");
+                builder.AppendLine("\n\nYour top debtors:");
                 builder.AppendJoin("\n", stats.TopDeptors.Select(d => $"{d.Name}: {d.CountSum()}"));
             }
 
