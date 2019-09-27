@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
+using MoneyBot.DB.Secondary;
 using MoneyBot.Telegram.Commands;
 using Moq;
 using Telegram.Bot.Types;
@@ -35,17 +36,38 @@ namespace Test
         }
 
         [Theory]
-        [InlineData("Apples - 14.88", 14.88)]
         [InlineData("Яблоки - 14.88", 14.88)]
+        [InlineData("asldk - 34.88",  34.88)]
+        [InlineData("34.88",          34.88)]
+        [InlineData("34,88",          34.88)]
+        [InlineData("34",             34.0)]
+        [InlineData("Pizza - 53.5",             53.5)]
         public void AddExpense(string message, double sum)
         {
             var mes  = Create(message);
             var mock = new Mock<TelegramController>();
             mock.Setup(c => c.AddExpense(null)).Callback((Expense input) => { Assert.Equal(input.Sum, sum); });
 
-            var account = new Account {CurrentExpense = new Expense(), Controller = mock.Object};
+            var account = new Account
+            {
+                CurrentRecord = new AddRecord()
+                {
+                    RecordType = RecordType.Expense,
+                    FromId     = 1
+                },
+                Controller = mock.Object,
+                Categories = new List<ExpenseCategory>
+                {
+                    new ExpenseCategory
+                    {
+                        Emoji = "a",
+                        Id    = 1,
+                        Name  = "name"
+                    }
+                }
+            };
 
-            var cmd    = new EnterExpenseCommand();
+            var cmd    = new EnterRecordSumCommand();
             var outmes = cmd.Execute(mes, account);
         }
 
