@@ -1,34 +1,47 @@
+using System.Threading.Tasks;
+using BotFramework.Abstractions;
+using BotFramework.Clients.ClientExtensions;
+using MoneyBot.Controllers;
 using MoneyBot.DB.Model;
 using MoneyBot.Telegram.Queries;
 using Telegram.Bot.Types;
+
 namespace MoneyBot.Telegram.Commands
 {
-    public class AddCommand : Command
+    public class AddCommand : IStaticCommand
     {
-        public override int Suitability(Message message, Account account)
+        private readonly AccountRepository _accountRepository;
+
+        public AddCommand(AccountRepository accountRepository)
         {
-            int res = 0;
-            if (message.Text == "Add" && account.Status == AccountStatus.Free) res += 2;
-            return res;
+            _accountRepository = accountRepository;
         }
-        public override Response Execute(Message message, Account account)
+
+        public bool SuitableFirst(Update update) => update?.Message?.Text == "Add"; //&& account.Status == AccountStatus.Free;
+
+        public async Task Execute(IClient client)
         {
+            var update = await client.GetTextMessage();
+            var account = _accountRepository.FromMessage(update);
+
             //todo fast templates and change text on buttons
             var keys = Keyboards.AddType(account);
             if (account.PeopleInited() && account.CategoriesInited())
             {
-                return new Response(account, $"This is about", replyMarkup : keys);
+                await client.SendTextMessage($"This is about", replyMarkup: keys);
             }
             else if (account.PeopleInited())
             {
-                return AddTypeQuery.SelectRecordType(account, DB.Secondary.RecordType.Transaction);
+                //   return AddTypeQuery.SelectRecordType(account, DB.Secondary.RecordType.Transaction);
             }
             else if (account.CategoriesInited())
             {
-                return AddTypeQuery.SelectRecordType(account, DB.Secondary.RecordType.Expense);
+                // return AddTypeQuery.SelectRecordType(account, DB.Secondary.RecordType.Expense);
             }
             else
-                return new Response(account, $"Add category or person first");
+            {
+                await client.SendTextMessage($"Add category or person first", replyMarkup: keys);
+            }
         }
     }
 }

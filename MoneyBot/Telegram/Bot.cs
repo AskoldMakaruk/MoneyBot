@@ -12,11 +12,13 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+
 namespace MoneyBot.Telegram
 {
     public class Bot : TelegramBotClient
     {
         protected Dictionary<Func<Message, Account, int>, Command> Commands { get; set; }
+
         public Bot(string token) : base(token)
         {
             var baseType = typeof(Command);
@@ -26,6 +28,7 @@ namespace MoneyBot.Telegram
                 .GetTypes()
                 .Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract)
                 .Select(c => Activator.CreateInstance(c) as Command)
+                .Where(a => a != null)
                 .ToDictionary(x => new Func<Message, Account, int>(x.Suitability), x => x);
 
             OnMessage += OnMessageRecieved;
@@ -49,7 +52,10 @@ namespace MoneyBot.Telegram
                 var baseType = typeof(Query);
                 var assembly = baseType.Assembly;
 
-                var command = assembly.GetTypes().Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract).Select(c => Activator.CreateInstance(c) as Query).First(c => c.IsSuitable(query, account));
+                var command = assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(baseType) && !t.IsAbstract)
+                    .Select(c => Activator.CreateInstance(c) as Query)
+                    .First(c => c.IsSuitable(query, account));
 
                 command.Controller = contoller;
 
@@ -57,7 +63,10 @@ namespace MoneyBot.Telegram
 
                 await SendTextMessageAsync(command.Execute(query, account));
             }
-            catch (Exception e) { System.Console.WriteLine(e); }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+            }
         }
 
         public async void HandleMessage(Message message)
@@ -65,9 +74,9 @@ namespace MoneyBot.Telegram
             var chatId = message.Chat.Id;
             Account account;
 
-            if (TelegramController.Accounts.ContainsKey(chatId))
+            if (AccountRepository.Accounts.ContainsKey(chatId))
             {
-                account = TelegramController.Accounts[chatId];
+                account = AccountRepository.Accounts[chatId];
             }
             else
             {
@@ -82,7 +91,7 @@ namespace MoneyBot.Telegram
 
             Console.WriteLine($"Command: {command.ToString()}, status: {account.Status.ToString()}, canceled: {canceled}");
 
-            await SendTextMessageAsync(canceled?command.Relieve(message, account) : command.Execute(message, account));
+            await SendTextMessageAsync(canceled ? command.Relieve(message, account) : command.Execute(message, account));
         }
 
         protected Command GetCommand(Message message, Account account)
@@ -94,13 +103,13 @@ namespace MoneyBot.Telegram
         {
             if (m.EditMessageId == 0)
             {
-                var message = await base.SendTextMessageAsync(m.Account, m.Text, replyToMessageId : m.ReplyToMessageId, replyMarkup : m.ReplyMarkup);
+                var message = await base.SendTextMessageAsync(m.Account, m.Text, replyToMessageId: m.ReplyToMessageId, replyMarkup: m.ReplyMarkup);
                 m.Account.LastMessage = message;
                 return message;
             }
             else
             {
-                var message = await base.EditMessageTextAsync(m.Account, m.EditMessageId, m.Text, replyMarkup : m.ReplyMarkup as InlineKeyboardMarkup);
+                var message = await base.EditMessageTextAsync(m.Account, m.EditMessageId, m.Text, replyMarkup: m.ReplyMarkup as InlineKeyboardMarkup);
                 m.Account.LastMessage = message;
                 return message;
             }
@@ -113,7 +122,6 @@ namespace MoneyBot.Telegram
             var message = await base.SendTextMessageAsync(account, text, parseMode, disableWebPagePreview, disableNotification, replyToMessageId, replyMarkup, cancellationToken);
             account.LastMessage = message;
             return message;
-
         }
 
         public void OnMessageRecieved(object sender, MessageEventArgs e)
@@ -123,8 +131,12 @@ namespace MoneyBot.Telegram
             {
                 HandleMessage(e.Message);
             }
-            catch (Exception ex) { Console.WriteLine(ex); }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
+
         public void OnQueryReceived(object sender, CallbackQueryEventArgs e)
         {
             Console.WriteLine(DateTime.Now.ToShortTimeString() + " " + e.CallbackQuery.From.Username + ": " + e.CallbackQuery.Data);
@@ -132,8 +144,10 @@ namespace MoneyBot.Telegram
             {
                 HandleQuery(e.CallbackQuery);
             }
-            catch (Exception ex) { Console.WriteLine(ex); }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
-
     }
 }

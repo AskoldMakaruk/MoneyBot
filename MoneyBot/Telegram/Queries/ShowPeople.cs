@@ -17,7 +17,7 @@ namespace MoneyBot.Telegram.Queries
 
             var person = account.People?.First(ct => ct.Id == id);
 
-            if (person == null || person.Transactions == null)
+            if (person?.Transactions == null)
             {
                 return new Response(message.Id, "Everything is null");
             }

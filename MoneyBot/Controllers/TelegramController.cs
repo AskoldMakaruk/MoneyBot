@@ -9,54 +9,22 @@ using Telegram.Bot.Types;
 
 namespace MoneyBot.Controllers
 {
-    public class TelegramController
+    public class AccountRepository
     {
-        public static bool First = true;
+        private readonly TelegramContext _context;
 
-        private TelegramContext Context;
-        public void Start()
+        public AccountRepository(TelegramContext context)
         {
-            Context = new TelegramContext();
-            if (First)
-            {
-                //Context.Database.EnsureDeleted();
-                First = false;
-            }
-            Context.Database.EnsureCreated();
+            _context = context;
         }
-        internal void DeleteDb()
-        {
-            try
-            {
-                Context.Database.EnsureDeleted();
-                Context.Database.EnsureCreated();
-                // Context.Accounts.AddRange(Accounts.Values);
-                Accounts = new Dictionary<long, Account>();
-            }
-            catch { }
-        }
-        #region Account
 
-        public static Dictionary<long, Account> Accounts = new Dictionary<long, Account>();
-        public Account FromId(int id)
-        {
+        public Account FromId(int id) => _context.Accounts.Find(id);
 
-            var account = Accounts.Values.FirstOrDefault(a => a.Id == id);
-            if (account == null)
-            {
-                account = Context.Accounts.Find(id);
-                Accounts.Add(account.ChatId, account);
-            }
-            return account;
-        }
+        public virtual Account FromMessage(Chat chat) => _context.Accounts.FirstOrDefault(a => a.ChatId == chat.Id);
 
         public virtual Account FromMessage(Message message)
         {
-            if (Accounts.ContainsKey(message.Chat.Id))
-            {
-                return Accounts[message.Chat.Id];
-            }
-            Account account = Context.Accounts.Include(a => a.Categories)
+            var account = _context.Accounts.Include(a => a.Categories)
                 .Include(a => a.People)
                 .Include("Categories.Expenses")
                 .Include("Categories.Templates")
@@ -68,22 +36,13 @@ namespace MoneyBot.Controllers
                 account = CreateAccount(message);
             }
             else
+            {
                 account.Status = AccountStatus.Free;
-
-            if (!Accounts.ContainsKey(account.ChatId))
-                Accounts.Add(account.ChatId, account);
+            }
 
             return account;
         }
 
-        public virtual Account FromMessage(Chat chat)
-        {
-            if (Accounts.ContainsKey(chat.Id))
-            {
-                return Accounts[chat.Id];
-            }
-            return Context.Accounts.FirstOrDefault(a => a.ChatId == chat.Id);
-        }
         private Account CreateAccount(Message message)
         {
             var account = new Account
@@ -94,77 +53,15 @@ namespace MoneyBot.Controllers
             };
             if (message.Chat.Username == null)
                 account.Name = message.Chat.FirstName + " " + message.Chat.LastName;
-            Context.Accounts.Add(account);
-            Context.SaveChanges();
+            _context.Accounts.Add(account);
+            _context.SaveChanges();
             return account;
         }
 
         internal void RemoveAccount(Account account)
         {
-            Context.Accounts.Remove(account);
-            Accounts.Remove(account.ChatId);
-            SaveChanges();
+            _context.Accounts.Remove(account);
+            _context.SaveChanges();
         }
-
-        #endregion
-
-        #region Categories
-        public virtual void AddCategories(IEnumerable<ExpenseCategory> categories)
-        {
-            Context.Categories.AddRange(categories);
-            SaveChanges();
-        }
-        public ExpenseCategory[] GetCategories(int accountId)
-        {
-            return Context.Categories.Where(c => c.Account.Id == accountId).ToArray();
-        }
-        #endregion
-
-        #region Expenses      
-        public virtual void AddExpense(Expense expense)
-        {
-            Context.Expenses.Add(expense);
-            SaveChanges();
-        }
-        public virtual void AddExpense(int templateId)
-        {
-            var template = Context.Templates.Include(q => q.Category).First(t => t.Id == templateId);
-            Context.Expenses.Add(new Expense
-            {
-                Description = template.Name,
-                    Category = template.Category,
-                    Date = DateTime.Now,
-                    Sum = template.Sum
-            });
-            SaveChanges();
-        }
-        #endregion
-
-        internal void AddTemplates(IEnumerable<Template> templates)
-        {
-            Context.Templates.AddRange(templates);
-            SaveChanges();
-        }
-
-        internal Stats GetStats(int accountId)
-        {
-            return new Stats()
-            {
-                Categories = Context.Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray(),
-                    People = Context.People.Include(c => c.Transactions).Where(c => c.Account.Id == accountId).ToArray(),
-            };
-        }
-        internal void AddPeople(IEnumerable<Person> people)
-        {
-            Context.People.AddRange(people);
-            SaveChanges();
-        }
-        internal void AddTransaction(Transaction transaction)
-        {
-            Context.Transactions.Add(transaction);
-            SaveChanges();
-        }
-
-        public void SaveChanges() => Context.SaveChanges();
     }
 }

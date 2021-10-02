@@ -1,14 +1,30 @@
-﻿using System;
+﻿using BotFramework.Abstractions;
+using BotFramework.Clients;
+using BotFramework.HostServices;
+using BotFramework.Middleware;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Telegram.Bot;
 
 namespace MoneyBot
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var bot = new MoneyBot.Telegram.Bot("823973981:AAGYpq1Eyl_AAYGXLeW8s28uCH89S7fsHZA");
-            bot.StartReceiving();
-            Console.ReadLine();
+            Host.CreateDefaultBuilder(args)
+                .UseConfigurationWithEnvironment()
+                .ConfigureApp((app, context) =>
+                {
+                    app.Services.AddSingleton<ITelegramBotClient>(_ =>
+                        // new TelegramBotClient(context.Configuration["BotToken"]));
+                        new TelegramBotClient("823973981:AAGYpq1Eyl_AAYGXLeW8s28uCH89S7fsHZA"));
+                    app.Services.AddTransient<IUpdateConsumer, Client>();
+                    app.UseHandlers();
+                    app.UseStaticCommands();
+                })
+                .Build()
+                .Run();
         }
     }
 }
