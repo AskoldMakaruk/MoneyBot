@@ -1,30 +1,30 @@
+using System.Threading.Tasks;
+using BotFramework.Abstractions;
 using MoneyBot.DB.Model;
 using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types;
+
 namespace MoneyBot.Telegram.Queries
 {
-    public class AddTypeQuery : Query
+    public class AddTypeQuery : IStaticCommand
     {
-        public override bool IsSuitable(CallbackQuery message, Account account)
+        private readonly Account _account;
+
+        public AddTypeQuery(Account account)
         {
-            return message.Data.StartsWith("AddType");
+            _account = account;
         }
-        public override Response Execute(CallbackQuery message, Account account)
+
+        public bool SuitableFirst(Update update) => update.CallbackQuery?.Data?.StartsWith("AddType") ?? false;
+
+        public async Task Execute(IClient client)
         {
+            var message = (await client.GetUpdate()).CallbackQuery;
+
             if (message.Data.EndsWith("Category"))
-                return SelectRecordType(account, RecordType.Expense, message.Message);
+                await client.SelectRecordType(_account, RecordType.Expense, message.Message);
             else
-                return SelectRecordType(account, RecordType.Transaction, message.Message);
-        }
-
-        public static Response SelectRecordType(Account account, RecordType category, Message message = null)
-        {
-            account.CurrentRecord = new AddRecord() { RecordType = category };
-            var res = new Response(account, $"Choose one:", Keyboards.CategoryTypes(account, "RecordType"));
-
-            if (message != null)
-                res.EditMessageId = message.MessageId;
-            return res;
+                await client.SelectRecordType(_account, RecordType.Transaction, message.Message);
         }
     }
 }

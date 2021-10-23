@@ -5,77 +5,85 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BotFramework.Abstractions;
 using BotFramework.Clients.ClientExtensions;
-using MoneyBot.Controllers;
+using BotFramework.Helpers;
 using MoneyBot.DB.Model;
-using MoneyBot.Telegram.Queries;
+using MoneyBot.Services;
 using Telegram.Bot.Types;
 
 namespace MoneyBot.Telegram.Commands
 {
     public class ManageMenuCommand : IStaticCommand
     {
-        private readonly AccountRepository _accountRepository;
+        private readonly Account _account;
 
-        public ManageMenuCommand(AccountRepository accountRepository)
+        public ManageMenuCommand(Account account)
         {
-            _accountRepository = accountRepository;
+            _account = account;
         }
 
         public bool SuitableFirst(Update update) => update?.Message?.Text == "Manage Menu";
 
         public async Task Execute(IClient client)
         {
-            var update = await client.GetTextMessage();
-            var account = _accountRepository.FromMessage(update);
+            await client.SendTextMessage("Do something", replyMarkup: Keyboards.Manage(_account));
+        }
+    }
 
-            await client.SendTextMessage("Do something", replyMarkup: Keyboards.Manage(account));
-            
-            //todo handle keyboard responses
+    public class AdminCommands : IStaticCommand
+    {
+        private readonly Account _account;
+
+        public AdminCommands(Account account)
+        {
+            _account = account;
+        }
+
+        public bool SuitableFirst(Update update)
+        {
+            return false;
+            return update.GetId() == 249258727;
+        }
+
+        public async Task Execute(IClient client)
+        {
+            var message = await client.GetTextMessage();
+            if (_account.ChatId == 249258727)
+            {
+                if (message.Text.ToLower() == "deletedb")
+                {
+                    // controller.DeleteDb();
+                    // await client.SendTextMessage(_account, "Beep boop.");
+                }
+
+                if (message.Text.ToLower() == "deleteme")
+                {
+                    // controller.RemoveAccount(_account);
+                    // await client.SendTextMessage(_account, "You were deleted.");
+                }
+
+                if (message.Text.ToLower() == "refreshme")
+                {
+                    // AccountRepository.Accounts.Remove(_account.ChatId);
+                    // await client.SendTextMessage(_account, "Feeling refreshed?");
+                }
+            }
         }
     }
 
     public class MainCommand : IStaticCommand
     {
-    }
+        private readonly Account _account;
 
-    public class MainCommand : IStaticCommand
-    {
-        private readonly AccountRepository _accountRepository;
-
-        public MainCommand(AccountRepository accountRepository)
+        public MainCommand(Account account)
         {
-            _accountRepository = accountRepository;
+            _account = account;
         }
 
         public bool SuitableLast(Update update) => true;
 
         public async Task Execute(IClient client)
         {
-            var update = await client.GetTextMessage();
-            var account = _accountRepository.FromMessage(update);
-
-            var controller = account.Controller;
-
-            if (account.ChatId == 249258727)
-            {
-                if (message.Text.ToLower() == "deletedb")
-                {
-                    controller.DeleteDb();
-                    return new Response(account, "Beep boop.");
-                }
-
-                if (message.Text.ToLower() == "deleteme")
-                {
-                    controller.RemoveAccount(account);
-                    return new Response(account, "You were deleted.");
-                }
-
-                if (message.Text.ToLower() == "refreshme")
-                {
-                    AccountRepository.Accounts.Remove(account.ChatId);
-                    return new Response(account, "Feeling refreshed?");
-                }
-            }
+            var message = await client.GetTextMessage();
 
             var regex = new Regex("(.{0,} - .{0,} - [0123456789.]{0,})");
             var added = message.Text
@@ -83,7 +91,7 @@ namespace MoneyBot.Telegram.Commands
                 .Where(m => regex.Match(m).Success)
                 .Select(m => new
                 {
-                    Category = account.Categories
+                    Category = _account.Categories
                         .FirstOrDefault(c => m.StartsWith(c.Emoji)),
                     Message = m
                 })
@@ -106,11 +114,11 @@ namespace MoneyBot.Telegram.Commands
                     builder.Append($"{expense.Category.Emoji}: {expense.Sum}\n");
                 }
 
-                account.Controller.SaveChanges();
-                return new Response(account, $"{builder.ToString()}", replyMarkup: Keyboards.MainKeyboard(account));
+                // _account.Controller.SaveChanges();
+                // await client.SendTextMessage(account, $"{builder.ToString()}", replyMarkup: Keyboards.MainKeyboard(account));
             }
 
-            return new Response(account, $"Hi!", replyMarkup: Keyboards.MainKeyboard(account));
+            // await client.SendTextMessage(account, $"Hi!", replyMarkup: Keyboards.MainKeyboard(account));
         }
     }
 }

@@ -1,10 +1,14 @@
-﻿using BotFramework.Abstractions;
-using BotFramework.Clients;
+﻿using BotFramework;
+using BotFramework.Extensions.Hosting;
 using BotFramework.HostServices;
 using BotFramework.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Telegram.Bot;
+using MoneyBot.DB;
+using MoneyBot.DB.Model;
+using MoneyBot.Services;
+using Serilog;
+using Serilog.Events;
 
 namespace MoneyBot
 {
@@ -14,14 +18,36 @@ namespace MoneyBot
         {
             Host.CreateDefaultBuilder(args)
                 .UseConfigurationWithEnvironment()
-                .ConfigureApp((app, context) =>
+                .UseSerilog((context, configuration) =>
                 {
-                    app.Services.AddSingleton<ITelegramBotClient>(_ =>
-                        // new TelegramBotClient(context.Configuration["BotToken"]));
-                        new TelegramBotClient("823973981:AAGYpq1Eyl_AAYGXLeW8s28uCH89S7fsHZA"));
-                    app.Services.AddTransient<IUpdateConsumer, Client>();
-                    app.UseHandlers();
+                    configuration
+                        .MinimumLevel.Debug()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                        .Enrich.FromLogContext()
+                        .WriteTo.Console();
+                })
+                // .UseSimpleBotFramework((builder, context) =>
+                // {
+                //     builder.Services.AddScoped<TelegramContext>();
+                //     builder.UseIdentity<Account>();
+                //     builder.Services.AddScoped<IUserRepository<Account>, AccountRepository>();
+                // })
+                .UseBotFramework((app, context) =>
+                {
+
+                    app.Services.AddScoped<PeopleRepository>();
+                    app.Services.AddScoped<PeopleService>();
+                    app.Services.AddScoped<TelegramContext>();
+                    app.Services.AddScoped<IUserRepository<Account>, AccountRepository>();
+
+                    app.Services.AddUpdateConsumer();
+                    app.Services.AddTelegramClient(context.Configuration["BotToken"]);
+                    
+                    app.UseMiddleware<LoggingMiddleware>();
+                    app.UseIdentity<Account>();
+
                     app.UseStaticCommands();
+                    app.UseMiddleware<SuitableMiddleware>();
                 })
                 .Build()
                 .Run();

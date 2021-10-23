@@ -1,29 +1,68 @@
-using System.Linq;
+using System;
+using System.Threading.Tasks;
+using BotFramework.Abstractions;
+using BotFramework.Clients.ClientExtensions;
 using MoneyBot.DB.Model;
+using MoneyBot.Services;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
+
 namespace MoneyBot.Telegram.Commands
 {
-    public class AddPeopleCommand : Command
+    public class AddPersonCommand : IStaticCommand
     {
-        public AddPeopleCommand() : base() { }
-        public override int Suitability(Message message, Account account)
+        private readonly Account _account;
+        private readonly PeopleService _peopleService;
+
+        public AddPersonCommand(Account account, PeopleService peopleService)
         {
-            int res = 0;
-            if (account.Status == AccountStatus.AddPeople) res += 2;
-            return res;
+            _account = account;
+            _peopleService = peopleService;
         }
-        public override Response Execute(Message message, Account account)
+
+        public bool SuitableFirst(Update update)
         {
-            var values = message.Text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
-            var people = values.Select(v => new Person()
+            return update.Message?.Text == "Add people";
+        }
+
+        public async Task Execute(IClient client)
+        {
+            var update = await client.GetUpdate();
+            await client.SendTextMessage($"Enter new person name:");
+
+            var message = await client.GetTextMessage();
+            var name = message.Text;
+            var alias = await _peopleService.GetAlias(name);
+
+            if (alias == null)
             {
-                Account = account,
-                    Alias = v[0],
-                    Name = v[1]
-            });
-            account.Controller.AddPeople(people);
-            account.Status = AccountStatus.Free;
-            return new Response(account, "People added", replyMarkup : Keyboards.MainKeyboard(account));
+                await client.SendTextMessage($"I couldn't come up with a **cool alias** for your fren. Please specify what it should be:", parseMode: ParseMode.Markdown);
+                alias = (await client.GetTextMessage()).Text;
+
+                while (!await _peopleService.AliasAvailable(alias))
+                {
+                    await client.SendTextMessage($"Sorry, but u already have a fren with this **alias**.", parseMode: ParseMode.Markdown);
+                    alias = (await client.GetTextMessage()).Text;
+                }
+            }
+
+            alias = alias.ToUpper();
+
+            var data = Guid.NewGuid().ToString()[0..10];
+            await client.SendTextMessage($"Confirm adding fren:\n**Name**: {name}\n**Alias**: {alias}",
+                replyMarkup: new InlineKeyboardMarkup(new InlineKeyboardButton()
+                {
+                    Text = $"Confirm {name}",
+                    CallbackData = data
+                }),
+                parseMode: ParseMode.Markdown);
+
+            var callback = await client.GetUpdateFilter();//.Where(a => a.CallbackQuery?.Data == data);
+
+            await _peopleService.AddPerson(name, alias);
+
+            await client.AnswerCallbackQuery(callback.CallbackQuery.Id, "Fren added");
         }
     }
 }

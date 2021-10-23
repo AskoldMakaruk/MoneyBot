@@ -1,22 +1,28 @@
+using System.Threading.Tasks;
+using BotFramework.Abstractions;
+using BotFramework.Clients.ClientExtensions;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
 
 namespace MoneyBot.Telegram.Commands
 {
-    public class StartCommand : Command
+    public class StartCommand : IStaticCommand
     {
-        public StartCommand() : base() { }
+        private readonly Account _account;
 
-        public override int Suitability(Message message, Account account)
+        public StartCommand(Account account)
         {
-            int res = 0;
-            if (account.Status == AccountStatus.Start && message.Text.StartsWith("/start")) res += 2;
-            return res;
+            _account = account;
         }
-        public override Response Execute(Message message, Account account)
+
+        public bool SuitableFirst(Update update)
         {
-            account.Status = AccountStatus.Free;
-            return new Response(account, "Welcome to MoneyBot.", replyMarkup : Keyboards.MainKeyboard(account));
+            return update.Message?.Text.StartsWith("/start") ?? false;
+        }
+
+        public async Task Execute(IClient client)
+        {
+            await client.SendTextMessage("Welcome to MoneyBot.", replyMarkup: Keyboards.MainKeyboard(_account));
         }
     }
 }

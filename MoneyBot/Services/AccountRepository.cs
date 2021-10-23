@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using BotFramework.Middleware;
 using Microsoft.EntityFrameworkCore;
 using MoneyBot.DB;
 using MoneyBot.DB.Model;
-using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types;
 
-namespace MoneyBot.Controllers
+namespace MoneyBot.Services
 {
-    public class AccountRepository
+    public class AccountRepository : IUserRepository<Account>
     {
         private readonly TelegramContext _context;
 
@@ -20,9 +19,7 @@ namespace MoneyBot.Controllers
 
         public Account FromId(int id) => _context.Accounts.Find(id);
 
-        public virtual Account FromMessage(Chat chat) => _context.Accounts.FirstOrDefault(a => a.ChatId == chat.Id);
-
-        public virtual Account FromMessage(Message message)
+        public async Task<Account> FromMessage(Message message)
         {
             var account = _context.Accounts.Include(a => a.Categories)
                 .Include(a => a.People)
@@ -33,7 +30,7 @@ namespace MoneyBot.Controllers
 
             if (account == null)
             {
-                account = CreateAccount(message);
+                account = await CreateUser(message.From);
             }
             else
             {
@@ -43,25 +40,34 @@ namespace MoneyBot.Controllers
             return account;
         }
 
-        private Account CreateAccount(Message message)
-        {
-            var account = new Account
-            {
-                ChatId = message.Chat.Id,
-                Name = message.Chat.Username,
-                Status = AccountStatus.Start,
-            };
-            if (message.Chat.Username == null)
-                account.Name = message.Chat.FirstName + " " + message.Chat.LastName;
-            _context.Accounts.Add(account);
-            _context.SaveChanges();
-            return account;
-        }
 
         internal void RemoveAccount(Account account)
         {
             _context.Accounts.Remove(account);
             _context.SaveChanges();
+        }
+
+        public async Task<Account?> GetUser(long userId)
+        {
+            return await _context.Accounts.FirstOrDefaultAsync(a => a.ChatId == userId);
+        }
+
+        public async Task<Account> CreateUser(User user)
+        {
+            var account = new Account
+            {
+                ChatId = user.Id,
+                Name = user.Username,
+                Status = AccountStatus.Start,
+            };
+            if (user.Username == null)
+            {
+                account.Name = user.FirstName + " " + user.LastName;
+            }
+
+            await _context.Accounts.AddAsync(account);
+            await _context.SaveChangesAsync();
+            return account;
         }
     }
 }

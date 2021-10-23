@@ -17,40 +17,54 @@ namespace MoneyBot.DB
         public DbSet<Template> Templates { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
+
+        public TelegramContext()
+        {
+            Start();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=database.db");
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Account>().HasMany(p => p.Categories).WithOne(p => p.Account).IsRequired();
+            modelBuilder.Entity<Account>()
+                .HasMany(p => p.Frens)
+                .WithOne(p => p.Account)
+                .HasForeignKey(p => p.AccountId);
+
+            modelBuilder.Entity<Fren>(builder =>
+                builder
+                    .HasOne(p => p.FrenAccount)
+            );
+
 
             modelBuilder.Entity<ExpenseCategory>().HasMany(p => p.Expenses).WithOne(p => p.Category).IsRequired();
             modelBuilder.Entity<ExpenseCategory>().HasIndex(p => p.Emoji).IsUnique();
             modelBuilder.Entity<Person>().HasIndex(p => p.Alias).IsUnique();
         }
-        
+
         public static bool First = true;
 
-        private TelegramContext _context;
 
         public void Start()
         {
-            _context = new TelegramContext();
             if (First)
             {
                 First = false;
             }
 
-            _context.Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         internal void DeleteDb()
         {
             try
             {
-                _context.Database.EnsureDeleted();
-                _context.Database.EnsureCreated();
+                Database.EnsureDeleted();
+                Database.EnsureCreated();
             }
             catch
             {
@@ -61,13 +75,13 @@ namespace MoneyBot.DB
 
         public virtual void AddCategories(IEnumerable<ExpenseCategory> categories)
         {
-            _context.Categories.AddRange(categories);
+            Categories.AddRange(categories);
             SaveChanges();
         }
 
         public ExpenseCategory[] GetCategories(int accountId)
         {
-            return _context.Categories.Where(c => c.Account.Id == accountId).ToArray();
+            return Categories.Where(c => c.Account.Id == accountId).ToArray();
         }
 
         #endregion
@@ -76,14 +90,14 @@ namespace MoneyBot.DB
 
         public virtual void AddExpense(Expense expense)
         {
-            _context.Expenses.Add(expense);
+            Expenses.Add(expense);
             SaveChanges();
         }
 
         public virtual void AddExpense(int templateId)
         {
-            var template = _context.Templates.Include(q => q.Category).First(t => t.Id == templateId);
-            _context.Expenses.Add(new Expense
+            var template = Templates.Include(q => q.Category).First(t => t.Id == templateId);
+            Expenses.Add(new Expense
             {
                 Description = template.Name,
                 Category = template.Category,
@@ -97,7 +111,7 @@ namespace MoneyBot.DB
 
         internal void AddTemplates(IEnumerable<Template> templates)
         {
-            _context.Templates.AddRange(templates);
+            Templates.AddRange(templates);
             SaveChanges();
         }
 
@@ -105,23 +119,18 @@ namespace MoneyBot.DB
         {
             return new Stats()
             {
-                Categories = _context.Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray(),
-                People = _context.People.Include(c => c.Transactions).Where(c => c.Account.Id == accountId).ToArray(),
+                Categories = Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray(),
+                People = People.Include(c => c.Transactions).Where(c => c.Account.Id == accountId).ToArray(),
             };
         }
 
-        internal void AddPeople(IEnumerable<Person> people)
-        {
-            _context.People.AddRange(people);
-            SaveChanges();
-        }
 
         internal void AddTransaction(Transaction transaction)
         {
-            _context.Transactions.Add(transaction);
+            Transactions.Add(transaction);
             SaveChanges();
         }
 
-        public void SaveChanges() => _context.SaveChanges();
+        public void SaveChanges() => SaveChanges();
     }
 }

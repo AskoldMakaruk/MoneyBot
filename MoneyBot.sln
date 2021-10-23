@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyBot", "MoneyBot\MoneyB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{EB25C551-3036-4FF1-9D4B-06DFE926FE77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyBot.Tests", "MoneyBot.Tests\MoneyBot.Tests.csproj", "{081B37DD-3061-4E99-BCAA-8C9A72BD0485}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EB25C551-3036-4FF1-9D4B-06DFE926FE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB25C551-3036-4FF1-9D4B-06DFE926FE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB25C551-3036-4FF1-9D4B-06DFE926FE77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{081B37DD-3061-4E99-BCAA-8C9A72BD0485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{081B37DD-3061-4E99-BCAA-8C9A72BD0485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{081B37DD-3061-4E99-BCAA-8C9A72BD0485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{081B37DD-3061-4E99-BCAA-8C9A72BD0485}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

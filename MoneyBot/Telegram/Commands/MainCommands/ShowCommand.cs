@@ -1,32 +1,39 @@
+using System.Threading.Tasks;
+using BotFramework.Abstractions;
+using BotFramework.Clients.ClientExtensions;
 using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
+
 namespace MoneyBot.Telegram.Commands
 {
-    public class ShowCommand : Command
+    public class ShowCommand : IStaticCommand
     {
-        public override int Suitability(Message message, Account account)
+        private readonly Account _account;
+
+        public ShowCommand(Account account)
         {
-            int res = 0;
-            if (message.Text == "Show" && account.Status == AccountStatus.Free) res += 2;
-            return res;
+            _account = account;
         }
-        public override Response Execute(Message message, Account account)
+
+        public bool SuitableFirst(Update update) => update.Message?.Text == "Show";
+
+        public async Task Execute(IClient client)
         {
-            if (account.PeopleInitedAndNotEmpty() && account.PeopleInitedAndNotEmpty())
+            if (_account.PeopleInitedAndNotEmpty() && _account.PeopleInitedAndNotEmpty())
             {
-                account.Status = AccountStatus.ChooseShow;
-                return new Response(account, $"What you desire to see?", replyMarkup : Keyboards.MainShow);
+                _account.Status = AccountStatus.ChooseShow;
+                await client.SendTextMessage($"What you desire to see?", replyMarkup: Keyboards.MainShow);
             }
-            else if (account.PeopleInitedAndNotEmpty())
+            else if (_account.PeopleInitedAndNotEmpty())
             {
-                return ShowCategoriesCommand.ToPeople(account);
+                await client.ToPeople(_account);
             }
-            else if (account.CategoriesInitedAndNotEmpty())
+            else if (_account.CategoriesInitedAndNotEmpty())
             {
-                return ShowCategoriesCommand.ToCategory(account);
+                await client.ToCategory(_account);
             }
             else
-                return new Response(account, $"Add category or person first");
+                await client.SendTextMessage($"Add category or person first");
         }
     }
 }
