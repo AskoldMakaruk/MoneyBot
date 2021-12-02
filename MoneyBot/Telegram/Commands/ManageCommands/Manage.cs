@@ -8,12 +8,12 @@
 //         public bool SuitableFirst(Update update)
 //         {
 //             int res = 0;
-//             if (account.Status == AccountStatus.Manage) res++;
+//             if (user.Status == AccountStatus.Manage) res++;
 //             return res;
 //         }
 //         public Task Execute(IClient client)
 //         {
-//             return Relieve(message, account);
+//             return Relieve(message, user);
 //         }
 //     }
 // }

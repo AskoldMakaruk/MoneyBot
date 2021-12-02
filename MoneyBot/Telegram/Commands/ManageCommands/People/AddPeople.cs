@@ -1,23 +1,23 @@
 using System;
 using System.Threading.Tasks;
 using BotFramework.Abstractions;
-using BotFramework.Clients.ClientExtensions;
-using MoneyBot.DB.Model;
+using BotFramework.Services.Extensioins;
 using MoneyBot.Services;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using User = MoneyBot.DB.Model.User;
 
 namespace MoneyBot.Telegram.Commands
 {
     public class AddPersonCommand : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
         private readonly PeopleService _peopleService;
 
-        public AddPersonCommand(Account account, PeopleService peopleService)
+        public AddPersonCommand(User user, PeopleService peopleService)
         {
-            _account = account;
+            _user = user;
             _peopleService = peopleService;
         }
 

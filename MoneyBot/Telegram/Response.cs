@@ -5,16 +5,16 @@ namespace MoneyBot.Telegram
 {
     public class Response
     {
-        public Response(Account account, string text, IReplyMarkup replyMarkup = null, int replyToMessageId = 0)
+        public Response(User user, string text, IReplyMarkup replyMarkup = null, int replyToMessageId = 0)
         {
-            Account = account;
+            User = user;
             Text = text;
             ReplyToMessageId = replyToMessageId;
             ReplyMarkup = replyMarkup;
         }
-        public Response(Account account, int editMessageId, string text, IReplyMarkup replyMarkup = null)
+        public Response(User user, int editMessageId, string text, IReplyMarkup replyMarkup = null)
         {
-            Account = account;
+            User = user;
             Text = text;
             ReplyMarkup = replyMarkup;
             EditMessageId = editMessageId;
@@ -25,7 +25,7 @@ namespace MoneyBot.Telegram
             Text = text;
             AnswerQuery = answerQuery;
         }
-        public Account Account { get; set; }
+        public User User { get; set; }
         public string Text { get; set; }
         public int ReplyToMessageId { get; set; } = 0;
         public IReplyMarkup ReplyMarkup { get; set; }

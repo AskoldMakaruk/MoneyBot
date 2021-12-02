@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoneyBot.DB.Model;
@@ -14,13 +13,13 @@ namespace MoneyBot.Telegram
             },
             true, true);
         public static IReplyMarkup Clear => new ReplyKeyboardRemove();
-        public static ReplyKeyboardMarkup MainKeyboard(Account account)
+        public static ReplyKeyboardMarkup MainKeyboard(User user)
         {
 
             var firstRow = new List<KeyboardButton>();
             var secondRow = new List<KeyboardButton>();
 
-            if (account.CategoriesInited() || account.PeopleInited())
+            if (user.CategoriesInited() || user.PeopleInited())
             {
                 firstRow = new List<KeyboardButton>
                 {
@@ -37,14 +36,14 @@ namespace MoneyBot.Telegram
             }, true);
         }
 
-        public static ReplyKeyboardMarkup Manage(Account account)
+        public static ReplyKeyboardMarkup Manage(User user)
         {
             var firstRow = new List<KeyboardButton>() { "Add categories" };
             var secondRow = new List<KeyboardButton>();
             var thirdRow = new List<KeyboardButton>() { "Add people" };
             var fourthRow = new List<KeyboardButton>();
 
-            if (account.CategoriesInited())
+            if (user.CategoriesInited())
             {
                 firstRow.Add("Override categories");
                 firstRow.Add("Show categories");
@@ -53,16 +52,16 @@ namespace MoneyBot.Telegram
                 secondRow.Add("Override templates");
                 secondRow.Add("Show templates");
             }
-            if (account.PeopleInited())
+            if (user.PeopleInited())
             {
                 thirdRow.Add("Override people");
                 thirdRow.Add("Show people");
             }
-            if (account.FundsInited())
-            {
-                fourthRow.Add("Override funds");
-                fourthRow.Add("Show funds");
-            }
+            // if (user.FundsInited())
+            // {
+            //     fourthRow.Add("Override funds");
+            //     fourthRow.Add("Show funds");
+            // }
             return new ReplyKeyboardMarkup(new []
             {
                 firstRow,
@@ -80,16 +79,16 @@ namespace MoneyBot.Telegram
             },
             true);
 
-        internal static InlineKeyboardMarkup AddType(Account account)
+        internal static InlineKeyboardMarkup AddType(User user)
         {
             var keys = new List<InlineKeyboardButton>();
-            if (account.PeopleInited())
+            if (user.PeopleInited())
                 keys.Add(new InlineKeyboardButton()
                 {
                     CallbackData = "AddType Person",
                         Text = "Someone else and me"
                 });
-            if (account.CategoriesInited())
+            if (user.CategoriesInited())
                 keys.Add(new InlineKeyboardButton()
                 {
                     CallbackData = "AddType Category",
@@ -98,7 +97,7 @@ namespace MoneyBot.Telegram
             return keys.ToArray();
         }
 
-        public static InlineKeyboardMarkup CategoryTypes(Account account, string query)
+        public static InlineKeyboardMarkup CategoryTypes(User user, string query)
         {
             var templatesKeyboard = new List<List<InlineKeyboardButton>>();
             var lastRow = new List<InlineKeyboardButton>
@@ -115,38 +114,38 @@ namespace MoneyBot.Telegram
                 },
             };
 
-            if (account.CurrentRecord.RecordType == RecordType.Expense)
-            {
-                var templates = account.Categories.SelectMany(c => c.Templates).ToArray();
-                if (templates.Count() > 0)
-                {
-                    for (int i = 0; i < templates.Length; i++)
-                    {
-                        var template = templates[i];
-                        var button = new InlineKeyboardButton()
-                        {
-                            Text = $"{template.Category.Emoji} {template.Name} - {template.Sum}",
-                            CallbackData = query + " " + template.Id
-                        };
-                        if (templatesKeyboard.Count == 0)
-                        {
-                            var arr = new List<InlineKeyboardButton>() { button };
-                            templatesKeyboard.Add(arr);
-                        }
-                        else if (templatesKeyboard.Count > 0)
-                        {
-                            if (templatesKeyboard.Last().Count == 1)
-                            {
-                                templatesKeyboard.Last() [1] = button;
-                            }
-                            else
-                            {
-                                templatesKeyboard.Add(new List<InlineKeyboardButton> { button });
-                            }
-                        }
-                    }
-                }
-            }
+            // if (user.CurrentRecord.RecordType == RecordType.Expense)
+            // {
+            //     var templates = user.Categories.SelectMany(c => c.Templates).ToArray();
+            //     if (templates.Length > 0)
+            //     {
+            //         for (int i = 0; i < templates.Length; i++)
+            //         {
+            //             var template = templates[i];
+            //             var button = new InlineKeyboardButton()
+            //             {
+            //                 Text = $"{template.Category.Emoji} {template.Name} - {template.Sum}",
+            //                 CallbackData = query + " " + template.Id
+            //             };
+            //             if (templatesKeyboard.Count == 0)
+            //             {
+            //                 var arr = new List<InlineKeyboardButton>() { button };
+            //                 templatesKeyboard.Add(arr);
+            //             }
+            //             else if (templatesKeyboard.Count > 0)
+            //             {
+            //                 if (templatesKeyboard.Last().Count == 1)
+            //                 {
+            //                     templatesKeyboard.Last() [1] = button;
+            //                 }
+            //                 else
+            //                 {
+            //                     templatesKeyboard.Add(new List<InlineKeyboardButton> { button });
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
             templatesKeyboard.Add(lastRow);
             return templatesKeyboard.ToArray();
         }

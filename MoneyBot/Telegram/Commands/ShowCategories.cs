@@ -10,22 +10,22 @@
 //         public bool SuitableFirst(Update update)
 //         {
 //             int res = 0;
-//             if (account.Status == AccountStatus.ChooseShow) res += 2;
+//             if (user.Status == AccountStatus.ChooseShow) res += 2;
 //             return res;
 //         }
 //         public Task Execute(IClient client)
 //         {
 //             if (message.Text == "Show categories")
 //             {
-//                 return ToCategory(account);
+//                 return ToCategory(user);
 //
 //             }
 //             if (message.Text == "Show people")
 //             {
-//                 return ToPeople(account);
+//                 return ToPeople(user);
 //
 //             }
-//             return Relieve(message, account);
+//             return Relieve(message, user);
 //         }
 //        
 //     }

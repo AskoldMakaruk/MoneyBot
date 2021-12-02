@@ -16,11 +16,11 @@
 //         }
 //         public async Task Execute(IClient client)
 //         {
-//             account.Status = AccountStatus.Free;
+//             user.Status = AccountStatus.Free;
 //
 //             message.Data.TryParseId(out var id);
 //
-//             var category = account.Categories?.First(ct => ct.Id == id);
+//             var category = user.Categories?.First(ct => ct.Id == id);
 //             if (category == null || category?.Expenses == null)
 //             {
 //                 await client.SendTextMessage(message.Id, "Everything is null");
@@ -33,7 +33,7 @@
 //
 //             if (message.Message.Text != mes)
 //             {
-//                 await client.SendTextMessage(account, message.Message.MessageId, mes, replyMarkup : Keyboards.ShowActiveCategories(account.Categories));
+//                 await client.SendTextMessage(user, message.Message.MessageId, mes, replyMarkup : Keyboards.ShowActiveCategories(user.Categories));
 //             }
 //             else await client.SendTextMessage(message.Id, null);
 //         }

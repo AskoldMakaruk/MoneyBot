@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using BotFramework.Middleware;
 using Microsoft.EntityFrameworkCore;
 using MoneyBot.DB;
-using MoneyBot.DB.Model;
 using Telegram.Bot.Types;
+using User = MoneyBot.DB.Model.User;
 
 namespace MoneyBot.Services
 {
-    public class AccountRepository : IUserRepository<Account>
+    public class AccountRepository : IUserRepository<User>
     {
         private readonly TelegramContext _context;
 
@@ -17,12 +17,12 @@ namespace MoneyBot.Services
             _context = context;
         }
 
-        public Account FromId(int id) => _context.Accounts.Find(id);
+        public User FromId(int id) => _context.Accounts.Find(id);
 
-        public async Task<Account> FromMessage(Message message)
+        public async Task<User> FromMessage(Message message)
         {
             var account = _context.Accounts.Include(a => a.Categories)
-                .Include(a => a.People)
+                .Include(a => a.Frens)
                 .Include("Categories.Expenses")
                 .Include("Categories.Templates")
                 .Include("People.Transactions")
@@ -32,33 +32,28 @@ namespace MoneyBot.Services
             {
                 account = await CreateUser(message.From);
             }
-            else
-            {
-                account.Status = AccountStatus.Free;
-            }
 
             return account;
         }
 
 
-        internal void RemoveAccount(Account account)
+        internal void RemoveAccount(User user)
         {
-            _context.Accounts.Remove(account);
+            _context.Accounts.Remove(user);
             _context.SaveChanges();
         }
 
-        public async Task<Account?> GetUser(long userId)
+        public async Task<User?> GetUser(long userId)
         {
             return await _context.Accounts.FirstOrDefaultAsync(a => a.ChatId == userId);
         }
 
-        public async Task<Account> CreateUser(User user)
+        public async Task<User> CreateUser(global::Telegram.Bot.Types.User user)
         {
-            var account = new Account
+            var account = new User
             {
                 ChatId = user.Id,
-                Name = user.Username,
-                Status = AccountStatus.Start,
+                Name = user.Username
             };
             if (user.Username == null)
             {

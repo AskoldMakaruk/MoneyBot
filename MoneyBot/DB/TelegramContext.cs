@@ -9,14 +9,15 @@ namespace MoneyBot.DB
 {
     public class TelegramContext : DbContext
     {
-        public DbSet<Account> Accounts { get; set; }
+        public DbSet<User> Accounts { get; set; }
         public DbSet<ExpenseCategory> Categories { get; set; }
+
         public DbSet<Expense> Expenses { get; set; }
-        public DbSet<Fund> Funds { get; set; }
+
+        // public DbSet<Fund> Funds { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<Template> Templates { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-
 
         public TelegramContext()
         {
@@ -25,25 +26,24 @@ namespace MoneyBot.DB
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=database.db");
+            optionsBuilder.UseSqlite("Data Source=database1.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Account>()
+            modelBuilder.Entity<User>()
                 .HasMany(p => p.Frens)
-                .WithOne(p => p.Account)
-                .HasForeignKey(p => p.AccountId);
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId);
 
-            modelBuilder.Entity<Fren>(builder =>
-                builder
-                    .HasOne(p => p.FrenAccount)
-            );
+            modelBuilder.Entity<ExpenseCategory>(e =>
+            {
+                e.HasOne<User>().WithMany(a => a.Categories).HasForeignKey(a => a.UserId);
+                e.HasMany(p => p.Expenses).WithOne(p => p.Category).IsRequired();
+                e.HasIndex(p => new { p.Emoji, p.UserId }).IsUnique();
+            });
 
-
-            modelBuilder.Entity<ExpenseCategory>().HasMany(p => p.Expenses).WithOne(p => p.Category).IsRequired();
-            modelBuilder.Entity<ExpenseCategory>().HasIndex(p => p.Emoji).IsUnique();
-            modelBuilder.Entity<Person>().HasIndex(p => p.Alias).IsUnique();
+            modelBuilder.Entity<Person>(builder => { builder.HasIndex(p => p.Alias).IsUnique(); });
         }
 
         public static bool First = true;
@@ -81,7 +81,7 @@ namespace MoneyBot.DB
 
         public ExpenseCategory[] GetCategories(int accountId)
         {
-            return Categories.Where(c => c.Account.Id == accountId).ToArray();
+            return Categories.Where(c => c.User.Id == accountId).ToArray();
         }
 
         #endregion
@@ -119,8 +119,8 @@ namespace MoneyBot.DB
         {
             return new Stats()
             {
-                Categories = Categories.Include(c => c.Expenses).Where(c => c.Account.Id == accountId).ToArray(),
-                People = People.Include(c => c.Transactions).Where(c => c.Account.Id == accountId).ToArray(),
+                Categories = Categories.Include(c => c.Expenses).Where(c => c.User.Id == accountId).ToArray(),
+                People = People.Include(c => c.Transactions).Where(c => c.User.Id == accountId).ToArray(),
             };
         }
 

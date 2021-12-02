@@ -12,7 +12,7 @@
 //         public bool SuitableFirst(Update update)
 //         {
 //             int res = 0;
-//             if (account.Status == AccountStatus.AddCategories) res += 2;
+//             if (user.Status == AccountStatus.AddCategories) res += 2;
 //             return res;
 //         }
 //         public Task Execute(IClient client)
@@ -22,15 +22,15 @@
 //
 //             var categories = values.Select(v => new ExpenseCategory()
 //             {
-//                 Account = account,
+//                 User = user,
 //                     Emoji = v[0],
 //                     //TODO default type if one is missing
 //                     Type = v[1].ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out,
 //                     Name = v[2],
 //
 //             });
-//             account.Controller.AddCategories(categories);
-//             account.Status = AccountStatus.Free;
+//             user.Controller.AddCategories(categories);
+//             user.Status = AccountStatus.Free;
 //             var mes = "";
 //             if (categories.Count() == 0)
 //             {
@@ -44,7 +44,7 @@
 //             {
 //                 mes = $"{categories.Count()} categories were added.";
 //             }
-//             await client.SendTextMessage(account, mes, Keyboards.MainKeyboard(account));
+//             await client.SendTextMessage(user, mes, Keyboards.MainKeyboard(user));
 //         }
 //     }
 // }

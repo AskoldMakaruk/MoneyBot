@@ -1,19 +1,18 @@
 using System.Threading.Tasks;
 using BotFramework.Abstractions;
-using BotFramework.Clients.ClientExtensions;
-using MoneyBot.DB.Model;
-using MoneyBot.Telegram.Queries;
+using BotFramework.Services.Extensioins;
 using Telegram.Bot.Types;
+using User = MoneyBot.DB.Model.User;
 
 namespace MoneyBot.Telegram.Commands
 {
     public class AddCommand : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
 
-        public AddCommand(Account account)
+        public AddCommand(User user)
         {
-            _account = account;
+            _user = user;
         }
 
         public bool SuitableFirst(Update update) => update?.Message?.Text == "Add";
@@ -23,18 +22,18 @@ namespace MoneyBot.Telegram.Commands
             var update = await client.GetTextMessage();
 
             //todo fast templates and change text on buttons
-            var keys = Keyboards.AddType(_account);
-            if (_account.PeopleInited() && _account.CategoriesInited())
+            var keys = Keyboards.AddType(_user);
+            if (_user.PeopleInited() && _user.CategoriesInited())
             {
                 await client.SendTextMessage($"This is about", replyMarkup: keys);
             }
-            else if (_account.PeopleInited())
+            else if (_user.PeopleInited())
             {
-                await client.SelectRecordType(_account, DB.Secondary.RecordType.Transaction);
+                await client.SelectRecordType(_user, DB.Secondary.RecordType.Transaction);
             }
-            else if (_account.CategoriesInited())
+            else if (_user.CategoriesInited())
             {
-                await client.SelectRecordType(_account, DB.Secondary.RecordType.Expense);
+                await client.SelectRecordType(_user, DB.Secondary.RecordType.Expense);
             }
             else
             {

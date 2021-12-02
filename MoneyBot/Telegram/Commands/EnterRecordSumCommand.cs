@@ -10,7 +10,7 @@
 //         public bool SuitableFirst(Update update)
 //         {
 //             int res = 0;
-//             if (account.Status == AccountStatus.EnterRecordSum) res += 2;
+//             if (user.Status == AccountStatus.EnterRecordSum) res += 2;
 //             return res;
 //         }
 //         public Task Execute(IClient client)
@@ -37,9 +37,9 @@
 //                 success = double.TryParse(text.Trim(), out sum);
 //             }
 //
-//             if (success && account.CurrentRecord != null)
+//             if (success && user.CurrentRecord != null)
 //             {
-//                 var record = account.CurrentRecord;
+//                 var record = user.CurrentRecord;
 //                 record.Description = description;
 //                 record.Sum = sum;
 //
@@ -47,18 +47,18 @@
 //                 switch (record.RecordType)
 //                 {
 //                     case RecordType.Expense:
-//                         account.Controller.AddExpense(new Expense
+//                         user.Controller.AddExpense(new Expense
 //                         {
-//                             Category = account.Categories.First(c => c.Id == record.FromId),
+//                             Category = user.Categories.First(c => c.Id == record.FromId),
 //                                 Date = record.Date,
 //                                 Description = record.Description,
 //                                 Sum = record.Sum
 //                         });
 //                         break;
 //                     case RecordType.Transaction:
-//                         account.Controller.AddTransaction(new Transaction
+//                         user.Controller.AddTransaction(new Transaction
 //                         {
-//                             Person = account.People.First(c => c.Id == record.FromId),
+//                             Person = user.People.First(c => c.Id == record.FromId),
 //                                 Date = record.Date,
 //                                 Description = record.Description,
 //                                 Sum = record.Sum,
@@ -67,16 +67,16 @@
 //                         break;
 //                 }
 //
-//                 account.Status = AccountStatus.Free;
-//                 await client.SendTextMessage(account, $"Success!", replyMarkup : Keyboards.MainKeyboard(account));
+//                 user.Status = AccountStatus.Free;
+//                 await client.SendTextMessage(user, $"Success!", replyMarkup : Keyboards.MainKeyboard(user));
 //
 //             }
-//             await client.SendTextMessage(account, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
+//             await client.SendTextMessage(user, $"Sum cannot be parsed", replyMarkup : Keyboards.Cancel);
 //         }
-//         public override Response Relieve(Message message, Account account)
+//         public override Response Relieve(Message message, User user)
 //         {
-//             account.Status = AccountStatus.Free;
-//             await client.SendTextMessage(account, $"You shall be freed", replyMarkup : Keyboards.MainKeyboard(account));
+//             user.Status = AccountStatus.Free;
+//             await client.SendTextMessage(user, $"You shall be freed", replyMarkup : Keyboards.MainKeyboard(user));
 //         }
 //     }
 // }

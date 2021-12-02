@@ -9,7 +9,7 @@
 //         public bool SuitableFirst(Update update)
 //         {
 //             int res = 0;
-//             if (account.Status == AccountStatus.OverrideCategories) res += 2;
+//             if (user.Status == AccountStatus.OverrideCategories) res += 2;
 //             return res;
 //         }
 //         public Task Execute(IClient client)
@@ -18,7 +18,7 @@
 //
 //             var categories = values.Select(v => new ExpenseCategory()
 //             {
-//                 Account = account,
+//                 User = user,
 //                     Emoji = v[0],
 //                     //TODO default type if one is missing
 //                     Type = v[1].ToLower().Contains("in") ? MoneyDirection.In : MoneyDirection.Out,
@@ -26,13 +26,13 @@
 //
 //             });
 //             //categories to be saved
-//             var saved = account.Categories.Where(c => categories.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) != null);
+//             var saved = user.Categories.Where(c => categories.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) != null);
 //             //to save records about categories that haven't changed
-//             account.Categories = saved.Union(categories.Where(c => saved.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) == null)).ToList();
+//             user.Categories = saved.Union(categories.Where(c => saved.FirstOrDefault(e => e.Name == c.Name && e.Emoji == c.Emoji) == null)).ToList();
 //
-//             account.Controller.SaveChanges();
-//             account.Status = AccountStatus.Free;
-//             await client.SendTextMessage(account, "Categories overrided", Keyboards.MainKeyboard(account));
+//             user.Controller.SaveChanges();
+//             user.Status = AccountStatus.Free;
+//             await client.SendTextMessage(user, "Categories overrided", Keyboards.MainKeyboard(user));
 //         }
 //     }
 // }

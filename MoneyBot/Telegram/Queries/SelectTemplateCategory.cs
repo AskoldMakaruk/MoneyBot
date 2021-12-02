@@ -21,13 +21,13 @@
 //                 await client.SendTextMessage(message.Id, "Internal error");
 //
 //             }
-//             account.CurrentTemplate.Category = account.Categories.First(c => c.Id == categoryId);
-//             var templates = account.CurrentTemplate.Category.Templates;
-//             account.Status = AccountStatus.EnterTemplate;
+//             user.CurrentTemplate.Category = user.Categories.First(c => c.Id == categoryId);
+//             var templates = user.CurrentTemplate.Category.Templates;
+//             user.Status = AccountStatus.EnterTemplate;
 //             await client.SendTextMessage(
-//                 account,
+//                 user,
 //                 message.Message.MessageId,
-//                 $"Adding template to {account.CurrentTemplate.Category.ToString()}\n" +
+//                 $"Adding template to {user.CurrentTemplate.Category.ToString()}\n" +
 //                 $@"Enter new template in format:
 // [Name] - [sum]
 //

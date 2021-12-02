@@ -17,8 +17,8 @@
 //         }
 //         public async Task Execute(IClient client)
 //         {
-//             var record = account.CurrentRecord;
-//             if (record == null) await client.SendTextMessage(account, "InternalError");
+//             var record = user.CurrentRecord;
+//             if (record == null) await client.SendTextMessage(user, "InternalError");
 //
 //             record.Direction = message.Data.EndsWith("In") ? MoneyDirection.In : MoneyDirection.Out;
 //             InlineKeyboardMarkup keyboard;
@@ -26,21 +26,21 @@
 //             string mes;
 //             if (record.RecordType == RecordType.Expense)
 //             {
-//                 var categories = account.Categories.Where(c => c.Type == record.Direction);
+//                 var categories = user.Categories.Where(c => c.Type == record.Direction);
 //                 keyboard = Keyboards.Categories(categories, "AddRecord");
 //                 mes = "Select expense category:";
 //             }
-//             else if (account.CurrentRecord?.RecordType == RecordType.Transaction)
+//             else if (user.CurrentRecord?.RecordType == RecordType.Transaction)
 //             {
-//                 keyboard = Keyboards.People(account.People, "AddRecord");
+//                 keyboard = Keyboards.People(user.People, "AddRecord");
 //                 mes = $"Select person that {(record.Direction == MoneyDirection.In?"gives money to you": "ownes you money")}:";
 //             }
 //             else
 //             {
 //                 //todo default error message
-//                 await client.SendTextMessage(account, "InternalError");
+//                 await client.SendTextMessage(user, "InternalError");
 //             }
-//             await client.SendTextMessage(account, message.Message.MessageId, mes, replyMarkup : keyboard);
+//             await client.SendTextMessage(user, message.Message.MessageId, mes, replyMarkup : keyboard);
 //         }
 //     }
 // }

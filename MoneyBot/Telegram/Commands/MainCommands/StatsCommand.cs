@@ -15,9 +15,9 @@
 //         }
 //         public Task Execute(IClient client)
 //         {
-//             var stats = account.GetStats(account.Id);
+//             var stats = user.GetStats(user.Id);
 //
-//             bool ownings = account.PeopleInitedAndNotEmpty();
+//             bool ownings = user.PeopleInitedAndNotEmpty();
 //             bool incomes = stats.TopIncomeCategories.Count() != 0;
 //             bool expenses = stats.TopExpenseCategories.Count() != 0;
 //             bool creditors = stats.TopCreditors.Count() != 0;
@@ -53,7 +53,7 @@
 //                 builder.AppendJoin("\n", stats.TopDeptors.Select(d => $"{d.Name}: {d.CountSum()}"));
 //             }
 //
-//             await client.SendTextMessage(account, builder.ToString());
+//             await client.SendTextMessage(user, builder.ToString());
 //         }
 //     }
 // }

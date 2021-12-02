@@ -1,6 +1,4 @@
-﻿using BotFramework;
-using BotFramework.Extensions.Hosting;
-using BotFramework.HostServices;
+﻿using BotFramework.Extensions.Hosting;
 using BotFramework.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,7 +19,7 @@ namespace MoneyBot
                 .UseSerilog((context, configuration) =>
                 {
                     configuration
-                        .MinimumLevel.Debug()
+                        .MinimumLevel.Verbose()
                         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                         .Enrich.FromLogContext()
                         .WriteTo.Console();
@@ -29,25 +27,19 @@ namespace MoneyBot
                 // .UseSimpleBotFramework((builder, context) =>
                 // {
                 //     builder.Services.AddScoped<TelegramContext>();
-                //     builder.UseIdentity<Account>();
-                //     builder.Services.AddScoped<IUserRepository<Account>, AccountRepository>();
+                //     builder.UseIdentity<User>();
+                //     builder.Services.AddScoped<IUserRepository<User>, AccountRepository>();
                 // })
-                .UseBotFramework((app, context) =>
+                .UseSimpleBotFramework((app, context) =>
                 {
 
                     app.Services.AddScoped<PeopleRepository>();
                     app.Services.AddScoped<PeopleService>();
                     app.Services.AddScoped<TelegramContext>();
-                    app.Services.AddScoped<IUserRepository<Account>, AccountRepository>();
-
-                    app.Services.AddUpdateConsumer();
-                    app.Services.AddTelegramClient(context.Configuration["BotToken"]);
+                    app.Services.AddScoped<IUserRepository<User>, AccountRepository>();
                     
                     app.UseMiddleware<LoggingMiddleware>();
-                    app.UseIdentity<Account>();
-
-                    app.UseStaticCommands();
-                    app.UseMiddleware<SuitableMiddleware>();
+                    app.UseIdentity<User>();
                 })
                 .Build()
                 .Run();

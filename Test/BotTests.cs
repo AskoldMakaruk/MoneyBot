@@ -22,17 +22,17 @@
 //         {
 //             var mes  = Create(message);
 //             var mock = new Mock<TelegramController>();
-//             mock.Setup(c => c.FromMessage(mes)).Returns(new Account());
+//             mock.Setup(c => c.FromMessage(mes)).Returns(new User());
 //             mock.Setup(c => c.AddCategories(null)).Callback((IEnumerable<ExpenseCategory> input) =>
 //             {
 //                 Assert.Equal(input.Count(), count);
 //             });
 //
-//             var account = mock.Object.FromMessage(mes);
-//             account.Controller = mock.Object;
+//             var user = mock.Object.FromMessage(mes);
+//             user.Controller = mock.Object;
 //
 //             var cmd    = new AddCategoryCommand();
-//             var outmes = cmd.Execute(mes, account);
+//             var outmes = cmd.Execute(mes, user);
 //         }
 //
 //         [Theory]
@@ -48,7 +48,7 @@
 //             var mock = new Mock<TelegramController>();
 //             mock.Setup(c => c.AddExpense(null)).Callback((Expense input) => { Assert.Equal(input.Sum, sum); });
 //
-//             var account = new Account
+//             var user = new User
 //             {
 //                 CurrentRecord = new AddRecord()
 //                 {
@@ -68,7 +68,7 @@
 //             };
 //
 //             var cmd    = new EnterRecordSumCommand();
-//             var outmes = cmd.Execute(mes, account);
+//             var outmes = cmd.Execute(mes, user);
 //         }
 //
 //         public static Message Create(string text) => new Message()

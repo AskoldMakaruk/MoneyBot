@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,7 +13,7 @@ namespace MoneyBot
             return source.Split(splitChars.First(c => source.Contains(c)));
         }
 
-        public static bool IsNullOrEmpty(this string source) => source == null || source == "";
+        public static bool IsNullOrEmpty(this string source) => string.IsNullOrEmpty(source);
 
         public static string TrimDoubleSpaces(this string source)
         {
@@ -22,7 +23,7 @@ namespace MoneyBot
 
         public static bool TryParseId(this string source, out int result)
         {
-            return int.TryParse(source.Substring(source.IndexOf(" ") + 1), out result);
+            return int.TryParse(source.Substring(source.IndexOf(" ", StringComparison.Ordinal) + 1), out result);
         }
 
         public static double ParseSum(this string source)
@@ -38,31 +39,31 @@ namespace MoneyBot
             return source.Transactions.Select(t => t.Type == MoneyDirection.In ? t.Sum : -t.Sum).Sum();
         }
 
-        public static bool CategoriesInited(this Account account)
+        public static bool CategoriesInited(this User user)
         {
-            return account.Categories != null && account.Categories.Count != 0;
+            return user.Categories != null && user.Categories.Count != 0;
         }
 
-        public static bool CategoriesInitedAndNotEmpty(this Account account)
+        public static bool CategoriesInitedAndNotEmpty(this User user)
         {
-            return CategoriesInited(account) &&
-                   account.Categories.Where(c => c.Expenses != null).SelectMany(c => c.Expenses).Count() != 0;
+            return CategoriesInited(user) &&
+                   user.Categories.Where(c => c.Expenses != null).SelectMany(c => c.Expenses).Count() != 0;
         }
 
-        public static bool PeopleInited(this Account account)
+        public static bool PeopleInited(this User user)
         {
-            return account.People != null && account.People.Count != 0;
+            return user.Frens != null && user.Frens.Count != 0;
         }
-
-        public static bool PeopleInitedAndNotEmpty(this Account account)
+        
+        public static bool PeopleInitedAndNotEmpty(this User user)
         {
-            return PeopleInited(account) &&
-                   account.People.Where(c => c.Transactions != null).SelectMany(c => c.Transactions).Count() != 0;
+            return PeopleInited(user) &&
+                   user.Frens.Where(c => c.Transactions != null).SelectMany(c => c.Transactions).Count() != 0;
         }
-
-        public static bool FundsInited(this Account account)
-        {
-            return account.Funds != null && account.Funds.Count != 0;
-        }
+        
+        // public static bool FundsInited(this User user)
+        // {
+        //     return user.Funds != null && user.Funds.Count != 0;
+        // }
     }
 }

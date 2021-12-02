@@ -13,8 +13,8 @@
 //             if (message.Data.TryParseId(out var template))
 //             {
 //                 Controller.AddExpense(template);
-//                 account.Status = AccountStatus.Free;
-//                 await client.SendTextMessage(account, "Success!") { EditMessageId = message.Message.MessageId };
+//                 user.Status = AccountStatus.Free;
+//                 await client.SendTextMessage(user, "Success!") { EditMessageId = message.Message.MessageId };
 //             }
 //             else await client.SendTextMessage(message.Id, "Server error: template not found");
 //

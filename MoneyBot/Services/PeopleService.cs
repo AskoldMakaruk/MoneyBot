@@ -8,12 +8,12 @@ namespace MoneyBot.Services
     public class PeopleService
     {
         private readonly PeopleRepository _repository;
-        private readonly Account _account;
+        private readonly User _user;
 
-        public PeopleService(PeopleRepository repository, Account account)
+        public PeopleService(PeopleRepository repository, User user)
         {
             _repository = repository;
-            _account = account;
+            _user = user;
         }
 
         public async Task<bool> AliasAvailable(string alias) => !await _repository.AliasExists(alias);
@@ -59,7 +59,7 @@ namespace MoneyBot.Services
             var values = text.Split('\n').Select(v => v.TrimDoubleSpaces().TrySplit('-', ' '));
             var people = values.Select(v => new Person()
             {
-                Account = _account,
+                User = _user,
                 Alias = v[0],
                 Name = v[1]
             });

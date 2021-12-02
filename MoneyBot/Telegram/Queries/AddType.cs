@@ -1,18 +1,18 @@
 using System.Threading.Tasks;
 using BotFramework.Abstractions;
-using MoneyBot.DB.Model;
 using MoneyBot.DB.Secondary;
 using Telegram.Bot.Types;
+using User = MoneyBot.DB.Model.User;
 
 namespace MoneyBot.Telegram.Queries
 {
     public class AddTypeQuery : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
 
-        public AddTypeQuery(Account account)
+        public AddTypeQuery(User user)
         {
-            _account = account;
+            _user = user;
         }
 
         public bool SuitableFirst(Update update) => update.CallbackQuery?.Data?.StartsWith("AddType") ?? false;
@@ -22,9 +22,9 @@ namespace MoneyBot.Telegram.Queries
             var message = (await client.GetUpdate()).CallbackQuery;
 
             if (message.Data.EndsWith("Category"))
-                await client.SelectRecordType(_account, RecordType.Expense, message.Message);
+                await client.SelectRecordType(_user, RecordType.Expense, message.Message);
             else
-                await client.SelectRecordType(_account, RecordType.Transaction, message.Message);
+                await client.SelectRecordType(_user, RecordType.Transaction, message.Message);
         }
     }
 }

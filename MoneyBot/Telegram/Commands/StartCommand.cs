@@ -1,18 +1,18 @@
 using System.Threading.Tasks;
 using BotFramework.Abstractions;
-using BotFramework.Clients.ClientExtensions;
-using MoneyBot.DB.Model;
+using BotFramework.Services.Extensioins;
 using Telegram.Bot.Types;
+using User = MoneyBot.DB.Model.User;
 
 namespace MoneyBot.Telegram.Commands
 {
     public class StartCommand : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
 
-        public StartCommand(Account account)
+        public StartCommand(User user)
         {
-            _account = account;
+            _user = user;
         }
 
         public bool SuitableFirst(Update update)
@@ -22,7 +22,7 @@ namespace MoneyBot.Telegram.Commands
 
         public async Task Execute(IClient client)
         {
-            await client.SendTextMessage("Welcome to MoneyBot.", replyMarkup: Keyboards.MainKeyboard(_account));
+            await client.SendTextMessage("Welcome to MoneyBot.", replyMarkup: Keyboards.MainKeyboard(_user));
         }
     }
 }

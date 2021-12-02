@@ -4,38 +4,38 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BotFramework.Abstractions;
-using BotFramework.Clients.ClientExtensions;
-using BotFramework.Helpers;
+using BotFramework.Extensions;
+using BotFramework.Services.Extensioins;
 using MoneyBot.DB.Model;
-using MoneyBot.Services;
 using Telegram.Bot.Types;
+using User = MoneyBot.DB.Model.User;
 
 namespace MoneyBot.Telegram.Commands
 {
     public class ManageMenuCommand : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
 
-        public ManageMenuCommand(Account account)
+        public ManageMenuCommand(User user)
         {
-            _account = account;
+            _user = user;
         }
 
         public bool SuitableFirst(Update update) => update?.Message?.Text == "Manage Menu";
 
         public async Task Execute(IClient client)
         {
-            await client.SendTextMessage("Do something", replyMarkup: Keyboards.Manage(_account));
+            await client.SendTextMessage("Do something", replyMarkup: Keyboards.Manage(_user));
         }
     }
 
     public class AdminCommands : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
 
-        public AdminCommands(Account account)
+        public AdminCommands(User user)
         {
-            _account = account;
+            _user = user;
         }
 
         public bool SuitableFirst(Update update)
@@ -47,24 +47,24 @@ namespace MoneyBot.Telegram.Commands
         public async Task Execute(IClient client)
         {
             var message = await client.GetTextMessage();
-            if (_account.ChatId == 249258727)
+            if (_user.Id == 249258727)
             {
                 if (message.Text.ToLower() == "deletedb")
                 {
                     // controller.DeleteDb();
-                    // await client.SendTextMessage(_account, "Beep boop.");
+                    // await client.SendTextMessage(_user, "Beep boop.");
                 }
 
                 if (message.Text.ToLower() == "deleteme")
                 {
-                    // controller.RemoveAccount(_account);
-                    // await client.SendTextMessage(_account, "You were deleted.");
+                    // controller.RemoveAccount(_user);
+                    // await client.SendTextMessage(_user, "You were deleted.");
                 }
 
                 if (message.Text.ToLower() == "refreshme")
                 {
-                    // AccountRepository.Accounts.Remove(_account.ChatId);
-                    // await client.SendTextMessage(_account, "Feeling refreshed?");
+                    // AccountRepository.Accounts.Remove(_user.ChatId);
+                    // await client.SendTextMessage(_user, "Feeling refreshed?");
                 }
             }
         }
@@ -72,14 +72,14 @@ namespace MoneyBot.Telegram.Commands
 
     public class MainCommand : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
 
-        public MainCommand(Account account)
+        public MainCommand(User user)
         {
-            _account = account;
+            _user = user;
         }
 
-        public bool SuitableLast(Update update) => true;
+        // public bool SuitableLast(Update update) => true;
 
         public async Task Execute(IClient client)
         {
@@ -91,8 +91,7 @@ namespace MoneyBot.Telegram.Commands
                 .Where(m => regex.Match(m).Success)
                 .Select(m => new
                 {
-                    Category = _account.Categories
-                        .FirstOrDefault(c => m.StartsWith(c.Emoji)),
+                    Category = _user.Categories.FirstOrDefault(c => m.StartsWith(c.Emoji)),
                     Message = m
                 })
                 .Where(c => c.Category != null);
@@ -114,11 +113,11 @@ namespace MoneyBot.Telegram.Commands
                     builder.Append($"{expense.Category.Emoji}: {expense.Sum}\n");
                 }
 
-                // _account.Controller.SaveChanges();
-                // await client.SendTextMessage(account, $"{builder.ToString()}", replyMarkup: Keyboards.MainKeyboard(account));
+                // _user.Controller.SaveChanges();
+                // await client.SendTextMessage(user, $"{builder.ToString()}", replyMarkup: Keyboards.MainKeyboard(user));
             }
 
-            // await client.SendTextMessage(account, $"Hi!", replyMarkup: Keyboards.MainKeyboard(account));
+            // await client.SendTextMessage(user, $"Hi!", replyMarkup: Keyboards.MainKeyboard(user));
         }
     }
 }

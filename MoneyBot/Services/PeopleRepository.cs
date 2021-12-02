@@ -8,17 +8,17 @@ namespace MoneyBot.Services
     public class PeopleRepository
     {
         private readonly TelegramContext _context;
-        private readonly Account _account;
+        private readonly User _user;
 
-        public PeopleRepository(TelegramContext context, Account account)
+        public PeopleRepository(TelegramContext context, User user)
         {
             _context = context;
-            _account = account;
+            _user = user;
         }
 
         public async Task AddPerson(Person person)
         {
-            _account.People.Add(person);
+            _user.Frens.Add(person);
             await _context.SaveChangesAsync();
         }
 
@@ -30,7 +30,7 @@ namespace MoneyBot.Services
 
         public async Task<bool> AliasExists(string alias)
         {
-            return await _context.People.AnyAsync(a => a.Alias == alias && a.Account == _account); // todo to id
+            return await _context.People.AnyAsync(a => a.Alias == alias && a.User == _user); // todo to id
         }
     }
 }

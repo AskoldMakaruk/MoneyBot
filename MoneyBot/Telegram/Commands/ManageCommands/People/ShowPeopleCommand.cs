@@ -1,28 +1,28 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BotFramework.Abstractions;
-using BotFramework.Clients.ClientExtensions;
-using MoneyBot.DB.Model;
+using BotFramework.Services.Extensioins;
 using Telegram.Bot.Types;
+using User = MoneyBot.DB.Model.User;
 
 namespace MoneyBot.Telegram.Commands
 {
     public class ShowPeopleCommand : IStaticCommand
     {
-        private readonly Account _account;
+        private readonly User _user;
 
-        public ShowPeopleCommand(Account account)
+        public ShowPeopleCommand(User user)
         {
-            _account = account;
+            _user = user;
         }
 
         public bool SuitableFirst(Update update) => update.Message?.Text == "Show people";
 
         public async Task Execute(IClient client)
         {
-            if (_account.People != null && _account.People.Count != 0)
+            if (_user.Frens != null && _user.Frens.Count != 0)
             {
-                await client.SendTextMessage($"{string.Join("\n", _account.People.Select(c => $"{c.Alias} - {c.Name}"))}");
+                await client.SendTextMessage($"{string.Join("\n", _user.Frens.Select(c => $"{c.Alias} - {c.Name}"))}");
             }
             else
             {

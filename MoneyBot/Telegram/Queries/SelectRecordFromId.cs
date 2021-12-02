@@ -20,7 +20,7 @@
 //         public async Task Execute(IClient client)
 //         {
 //             var message = (await client.GetUpdate()).CallbackQuery;
-//             var record = account.CurrentRecord;
+//             var record = user.CurrentRecord;
 //             if (record == null) await client.EditMessageText(message.Id, "You have no expenses");
 //
 //             if (!message.Data.TryParseId(out var id))
@@ -29,7 +29,7 @@
 //             }
 //
 //             record.FromId = id;
-//             account.Status = AccountStatus.EnterRecordSum;
+//             user.Status = AccountStatus.EnterRecordSum;
 //
 //             string enterDetails = "Enter details in format:\n[Description] - [sum]\nOr\n[sum]";
 //
@@ -37,7 +37,7 @@
 //             InlineKeyboardMarkup replyMarkup = null;
 //             if (record.RecordType == RecordType.Expense)
 //             {
-//                 var category = account.Categories.First(c => c.Id == id);
+//                 var category = user.Categories.First(c => c.Id == id);
 //                 var templates = category.Templates;
 //                 builder.AppendLine($"Adding expense to {category.ToString()}");
 //                 builder.AppendLine(enterDetails);
@@ -51,14 +51,14 @@
 //             }
 //             else if (record.RecordType == RecordType.Transaction)
 //             {
-//                 var person = account.People.First(p => p.Id == id);
+//                 var person = user.People.First(p => p.Id == id);
 //                 builder.AppendLine($"Adding transaction between you and{person.Name}");
 //                 builder.AppendLine(enterDetails);
 //                 builder.AppendLine("Example:\nFor vodka - 50\n49");
 //             }
 //             else await client.SendTextMessage(message.Id, "Internal error");
 //
-//             await client.SendTextMessage(account, builder.ToString(), replyMarkup)
+//             await client.SendTextMessage(user, builder.ToString(), replyMarkup)
 //             {
 //                 EditMessageId = message.Message.MessageId
 //             }
